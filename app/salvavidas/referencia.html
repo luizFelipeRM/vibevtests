@@ -1,0 +1,1121 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salva-Vidas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;family=Poppins:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Quicksand', sans-serif;
+    }
+    
+    h1, h2, h3, .font-display {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .case-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .case-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    @keyframes pulse-urgent {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    }
+    
+    .urgent-pulse {
+      animation: pulse-urgent 2s infinite;
+    }
+    
+    @keyframes float-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-float-in {
+      animation: float-in 0.5s ease-out forwards;
+    }
+    
+    @keyframes confetti {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100%) rotate(720deg); opacity: 0; }
+    }
+    
+    .confetti {
+      position: fixed;
+      animation: confetti 3s ease-out forwards;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    
+    .modal-backdrop {
+      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.6);
+    }
+    
+    .timeline-step {
+      position: relative;
+      padding-left: 3rem;
+      padding-bottom: 2rem;
+    }
+    
+    .timeline-step::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 40px;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, #10b981, #d1d5db);
+    }
+    
+    .timeline-step:last-child::before {
+      display: none;
+    }
+    
+    .timeline-icon {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .toast {
+      animation: slide-up 0.3s ease-out;
+    }
+    
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .happy-card {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 3px solid #fbbf24;
+    }
+    
+    .tab-active {
+      background: linear-gradient(135deg, #017F00, #059669);
+      color: white;
+      box-shadow: 0 4px 12px rgba(1, 127, 0, 0.3);
+    }
+    
+    .comment-item {
+      border-left: 3px solid #10b981;
+      transition: all 0.2s;
+    }
+    
+    .comment-item:hover {
+      border-left-color: #017F00;
+      background: #f9fafb;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full bg-gray-50">
+  <div id="app" class="h-full w-full overflow-auto"><!-- Header -->
+   <header class="bg-gradient-to-r from-[#017F00] to-[#059669] text-white py-4 px-6 shadow-xl sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto">
+     <div class="flex items-center justify-between gap-6"><!-- Logo -->
+      <div class="flex items-center gap-3 flex-shrink-0 cursor-pointer" id="home-btn">
+       <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+        <svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+       </div>
+       <div>
+        <h1 id="platform-title" class="text-2xl font-extrabold tracking-tight font-display">Salva-Vidas</h1>
+        <p id="platform-tagline" class="text-xs text-white/80 font-medium">Salvando vidas, criando finais felizes</p>
+       </div>
+      </div><!-- Search Bar -->
+      <div class="flex-1 max-w-2xl">
+       <div class="relative"><input type="text" id="header-search" placeholder="Buscar casos, cidades ou tipo de ajuda..." class="w-full px-4 py-2.5 pl-11 rounded-xl bg-white/20 text-white placeholder-white/70 focus:outline-none focus:bg-white/30 transition-all backdrop-blur-sm">
+        <svg class="w-5 h-5 text-white/80 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+       </div>
+      </div><!-- Action Icons -->
+      <div class="flex items-center gap-3 flex-shrink-0"><button id="new-case-btn" class="w-11 h-11 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:scale-105" title="Criar novo caso">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg></button> <button id="profile-btn" class="w-11 h-11 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:scale-105" title="Meu perfil">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg></button>
+      </div>
+     </div><!-- Navigation Tabs -->
+     <div class="flex gap-2 mt-4 overflow-x-auto pb-2"><button data-view="home" class="nav-tab tab-active px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap text-sm"> 🏠 Início </button> <button data-view="rescue" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 🛟 Resgates </button> <button data-view="adoption" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 🏡 Adoção </button> <button data-view="lost" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 🔍 Perdidos </button> <button data-view="vet" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 🏥 Veterinário </button> <button data-view="temp-home" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 🏠 Lar Temporário </button> <button data-view="donations" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 💰 Doações </button> <button data-view="transport" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 🚗 Transporte </button> <button data-view="abuse" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 🚨 Denúncias </button> <button data-view="happy" class="nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm"> 🎉 Finais Felizes </button>
+     </div>
+    </div>
+   </header><!-- Main Content -->
+   <main id="main-content" class="max-w-7xl mx-auto px-6 py-6"><!-- Content will be dynamically loaded -->
+   </main><!-- New Case Modal -->
+   <div id="new-case-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0 bg-black/50" id="modal-backdrop"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4 overflow-auto">
+     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl relative animate-float-in my-8">
+      <div class="bg-gradient-to-r from-[#017F00] to-[#059669] p-6 rounded-t-3xl">
+       <h2 class="text-2xl font-bold text-white flex items-center gap-2 font-display"><span>📝</span> Novo Caso</h2>
+       <p class="text-white/90 mt-1">Escolha o tipo de caso que deseja criar</p>
+      </div>
+      <div class="p-6">
+       <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6"><button data-case-type="resgate" class="case-type-btn p-6 border-2 border-gray-200 rounded-2xl hover:border-[#017F00] hover:bg-green-50 transition-all text-center group">
+         <div class="text-4xl mb-2">
+          🛟
+         </div>
+         <div class="font-bold text-gray-800 group-hover:text-[#017F00]">
+          Resgate
+         </div></button> <button data-case-type="adocao" class="case-type-btn p-6 border-2 border-gray-200 rounded-2xl hover:border-pink-500 hover:bg-pink-50 transition-all text-center group">
+         <div class="text-4xl mb-2">
+          🏡
+         </div>
+         <div class="font-bold text-gray-800 group-hover:text-pink-600">
+          Adoção
+         </div></button> <button data-case-type="perdido" class="case-type-btn p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:bg-blue-50 transition-all text-center group">
+         <div class="text-4xl mb-2">
+          🔍
+         </div>
+         <div class="font-bold text-gray-800 group-hover:text-blue-600">
+          Perdido
+         </div></button> <button data-case-type="veterinario" class="case-type-btn p-6 border-2 border-gray-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition-all text-center group">
+         <div class="text-4xl mb-2">
+          🏥
+         </div>
+         <div class="font-bold text-gray-800 group-hover:text-emerald-600">
+          Veterinário
+         </div></button> <button data-case-type="lar-temporario" class="case-type-btn p-6 border-2 border-gray-200 rounded-2xl hover:border-purple-500 hover:bg-purple-50 transition-all text-center group">
+         <div class="text-4xl mb-2">
+          🏠
+         </div>
+         <div class="font-bold text-gray-800 group-hover:text-purple-600">
+          Lar Temporário
+         </div></button> <button data-case-type="doacao" class="case-type-btn p-6 border-2 border-gray-200 rounded-2xl hover:border-yellow-500 hover:bg-yellow-50 transition-all text-center group">
+         <div class="text-4xl mb-2">
+          💰
+         </div>
+         <div class="font-bold text-gray-800 group-hover:text-yellow-600">
+          Doação
+         </div></button> <button data-case-type="transporte" class="case-type-btn p-6 border-2 border-gray-200 rounded-2xl hover:border-orange-500 hover:bg-orange-50 transition-all text-center group">
+         <div class="text-4xl mb-2">
+          🚗
+         </div>
+         <div class="font-bold text-gray-800 group-hover:text-orange-600">
+          Transporte
+         </div></button> <button data-case-type="denuncia" class="case-type-btn p-6 border-2 border-gray-200 rounded-2xl hover:border-red-500 hover:bg-red-50 transition-all text-center group">
+         <div class="text-4xl mb-2">
+          🚨
+         </div>
+         <div class="font-bold text-gray-800 group-hover:text-red-600">
+          Denúncia
+         </div></button>
+       </div><button id="cancel-type-btn" class="w-full px-6 py-3 border-2 border-gray-300 text-gray-600 rounded-xl font-semibold hover:bg-gray-50 transition-colors"> Cancelar </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Case Form Modal -->
+   <div id="case-form-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0 bg-black/50" id="form-backdrop"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4 overflow-auto">
+     <div id="case-form-container" class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl relative animate-float-in my-8"><!-- Form content will be dynamically loaded -->
+     </div>
+    </div>
+   </div><!-- Case Detail Modal -->
+   <div id="detail-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0" id="detail-backdrop"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4 overflow-auto">
+     <div id="detail-content" class="glass-card rounded-3xl shadow-2xl w-full max-w-6xl relative animate-float-in my-8"></div>
+    </div>
+   </div><!-- Toast Container -->
+   <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2"></div>
+  </div>
+  <script>
+    const defaultConfig = {
+      platform_title: 'Salva-Vidas',
+      platform_tagline: 'Salvando vidas, criando finais felizes'
+    };
+
+    let config = { ...defaultConfig };
+    let allCases = [];
+    let currentView = 'home';
+    let currentRecordCount = 0;
+    let currentUser = 'Voluntário Anônimo';
+    let hasInitializedSampleData = false;
+
+    const animalEmojis = {
+      'cachorro': '🐕',
+      'gato': '🐈',
+      'passaro': '🐦',
+      'coelho': '🐰',
+      'outro': '🐾'
+    };
+
+    const caseTypeConfig = {
+      'resgate': {
+        emoji: '🛟',
+        label: 'Resgate',
+        color: 'from-red-400 to-orange-500',
+        bgClass: 'bg-red-50',
+        borderClass: 'border-red-200',
+        textClass: 'text-red-700'
+      },
+      'adocao': {
+        emoji: '🏡',
+        label: 'Adoção',
+        color: 'from-pink-400 to-rose-500',
+        bgClass: 'bg-pink-50',
+        borderClass: 'border-pink-200',
+        textClass: 'text-pink-700'
+      },
+      'perdido': {
+        emoji: '🔍',
+        label: 'Perdido',
+        color: 'from-blue-400 to-blue-600',
+        bgClass: 'bg-blue-50',
+        borderClass: 'border-blue-200',
+        textClass: 'text-blue-700'
+      },
+      'veterinario': {
+        emoji: '🏥',
+        label: 'Veterinário',
+        color: 'from-green-400 to-emerald-500',
+        bgClass: 'bg-emerald-50',
+        borderClass: 'border-emerald-200',
+        textClass: 'text-emerald-700'
+      },
+      'lar-temporario': {
+        emoji: '🏠',
+        label: 'Lar Temporário',
+        color: 'from-purple-400 to-violet-500',
+        bgClass: 'bg-purple-50',
+        borderClass: 'border-purple-200',
+        textClass: 'text-purple-700'
+      },
+      'doacao': {
+        emoji: '💰',
+        label: 'Doação',
+        color: 'from-yellow-400 to-amber-500',
+        bgClass: 'bg-yellow-50',
+        borderClass: 'border-yellow-200',
+        textClass: 'text-yellow-700'
+      },
+      'transporte': {
+        emoji: '🚗',
+        label: 'Transporte',
+        color: 'from-orange-400 to-orange-600',
+        bgClass: 'bg-orange-50',
+        borderClass: 'border-orange-200',
+        textClass: 'text-orange-700'
+      },
+      'denuncia': {
+        emoji: '🚨',
+        label: 'Denúncia',
+        color: 'from-red-500 to-red-700',
+        bgClass: 'bg-red-50',
+        borderClass: 'border-red-300',
+        textClass: 'text-red-700'
+      }
+    };
+
+    const statusInfo = {
+      'novo': { label: 'Novo', emoji: '🆕', color: '#3b82f6' },
+      'em-andamento': { label: 'Em Andamento', emoji: '⏳', color: '#f59e0b' },
+      'resolvido': { label: 'Resolvido', emoji: '✅', color: '#10b981' },
+      'final-feliz': { label: 'Final Feliz!', emoji: '🎉', color: '#10b981' }
+    };
+
+    const sampleCases = [
+      {
+        animal_name: 'Rex',
+        animal_type: 'cachorro',
+        case_type: 'resgate',
+        location: 'Centro, São Paulo - SP',
+        story: 'Rex foi encontrado abandonado em uma caixa de papelão embaixo de uma ponte. Estava com fome, frio e muito assustado.',
+        description: 'Cachorro de porte médio, aparentemente vira-lata, muito dócil. Precisa de abrigo urgente e cuidados veterinários.',
+        contact: '(11) 98765-4321',
+        urgency: 'critica',
+        status: 'em-andamento',
+        responsible: 'Maria Silva',
+        breed: 'Vira-lata',
+        size: 'medio',
+        age: '2 anos',
+        vaccinated: false,
+        neutered: false
+      },
+      {
+        animal_name: 'Mimi',
+        animal_type: 'gato',
+        case_type: 'adocao',
+        location: 'Jardim Paulista, São Paulo - SP',
+        story: 'Mimi foi resgatada há 3 meses de uma situação de abandono. Passou por todos os tratamentos e agora está pronta para um lar definitivo!',
+        description: 'Gatinha super carinhosa, adora colo e brincadeiras. Já está vacinada, castrada e vermifugada.',
+        contact: '(11) 91234-5678',
+        urgency: 'baixa',
+        status: 'novo',
+        responsible: 'João Santos',
+        breed: 'Siamesa',
+        size: 'pequeno',
+        age: '1 ano',
+        vaccinated: true,
+        neutered: true
+      },
+      {
+        animal_name: 'Totó',
+        animal_type: 'cachorro',
+        case_type: 'perdido',
+        location: 'Vila Mariana, São Paulo - SP',
+        story: 'Totó fugiu durante os fogos de artifício no ano novo. A família está desesperada procurando por ele.',
+        description: 'Cachorro pequeno, da raça Poodle, cor branca, usa coleira azul com plaquinha. Atende pelo nome Totó.',
+        contact: '(11) 99876-5432',
+        urgency: 'alta',
+        status: 'em-andamento',
+        responsible: 'Família Oliveira',
+        last_seen: 'Visto pela última vez na Praça da Vila Mariana no dia 01/01',
+        search_radius: '3km'
+      },
+      {
+        animal_name: 'Luna',
+        animal_type: 'gato',
+        case_type: 'veterinario',
+        location: 'Mooca, São Paulo - SP',
+        story: 'Luna foi atropelada e está com a patinha fraturada. A tutora não tem condições de pagar o tratamento completo.',
+        description: 'Gatinha de 3 anos precisa de cirurgia na pata traseira. Orçamento: R$ 1.200,00',
+        contact: '(11) 98888-7777',
+        urgency: 'alta',
+        status: 'em-andamento',
+        responsible: 'Ana Costa',
+        vet_clinic: 'Clínica Veterinária Pet Life',
+        treatment_budget: 'R$ 1.200,00'
+      },
+      {
+        animal_name: 'Bob',
+        animal_type: 'cachorro',
+        case_type: 'lar-temporario',
+        location: 'Pinheiros, São Paulo - SP',
+        story: 'Bob foi resgatado das ruas e precisa de um lar temporário enquanto aguarda adoção definitiva.',
+        description: 'Cachorro dócil, de porte grande, precisa de espaço para correr. Lar temporário por 2-3 meses.',
+        contact: '(11) 97777-6666',
+        urgency: 'alta',
+        status: 'novo',
+        responsible: 'ONG Patinhas Felizes',
+        temp_home_period: '2-3 meses',
+        temp_home_requirements: 'Casa com quintal, experiência com cães de grande porte'
+      },
+      {
+        animal_name: 'Mel',
+        animal_type: 'gato',
+        case_type: 'doacao',
+        location: 'Lapa, São Paulo - SP',
+        story: 'Mel precisa de uma cirurgia de emergência e estamos arrecadando fundos para custear o procedimento.',
+        description: 'Gatinha de 5 anos diagnosticada com problema renal. Precisa de cirurgia urgente.',
+        contact: '(11) 96666-5555',
+        urgency: 'critica',
+        status: 'em-andamento',
+        responsible: 'Carla Mendes',
+        donation_type: 'veterinario',
+        donation_goal: 'R$ 2.500,00',
+        donation_amount: '850'
+      },
+      {
+        animal_name: 'Buddy',
+        animal_type: 'cachorro',
+        case_type: 'transporte',
+        location: 'De Guarulhos para Campinas',
+        story: 'Buddy foi adotado por uma família em Campinas mas precisa de transporte de Guarulhos até lá.',
+        description: 'Cachorro de porte médio, precisa de transporte seguro para sua nova casa.',
+        contact: '(11) 95555-4444',
+        urgency: 'media',
+        status: 'novo',
+        responsible: 'Pedro Almeida',
+        transport_needed: 'Transporte de Guarulhos (SP) para Campinas (SP), dia 15/01, cachorro de 15kg'
+      },
+      {
+        animal_name: 'Animais em situação crítica',
+        animal_type: 'outro',
+        case_type: 'denuncia',
+        location: 'Zona Leste, São Paulo - SP',
+        story: 'Vários animais foram encontrados em condições deploráveis em um terreno abandonado.',
+        description: 'Denúncia de maus-tratos. Aproximadamente 10 animais sem água, comida e em p��ssimo estado de saúde.',
+        contact: '(11) 94444-3333',
+        urgency: 'critica',
+        status: 'em-andamento',
+        responsible: 'Denúncia Anônima',
+        abuse_report_details: 'Animais abandonados em terreno na Zona Leste, sem comida, água e abrigo. Alguns apresentam ferimentos graves.',
+        legal_status: 'Aguardando ação das autoridades'
+      },
+      {
+        animal_name: 'Pipoca',
+        animal_type: 'gato',
+        case_type: 'adocao',
+        location: 'Butantã, São Paulo - SP',
+        story: 'Pipoca foi encontrada filhote na rua e foi cuidada com muito amor. Agora está linda e saudável, procurando um lar!',
+        description: 'Gatinha super brincalhona e carinhosa, 6 meses de idade, vacinada e castrada.',
+        contact: '(11) 93333-2222',
+        urgency: 'baixa',
+        status: 'novo',
+        responsible: 'Fernanda Lima',
+        breed: 'Vira-lata',
+        size: 'pequeno',
+        age: '6 meses',
+        vaccinated: true,
+        neutered: true
+      },
+      {
+        animal_name: 'Thor',
+        animal_type: 'cachorro',
+        case_type: 'resgate',
+        location: 'Santo Amaro, São Paulo - SP',
+        story: 'Thor estava preso com corrente curta há anos no quintal de uma casa abandonada. Vizinhos denunciaram e conseguimos resgatá-lo!',
+        description: 'Cachorro de grande porte, desnutrido mas muito dócil. Em recuperação e precisa de um lar amoroso.',
+        contact: '(11) 92222-1111',
+        urgency: 'alta',
+        status: 'final-feliz',
+        responsible: 'ONG Amor Animal',
+        happy_ending_story: 'Thor foi adotado por uma família maravilhosa que tem um sítio! Agora ele corre livre, recebe todo amor do mundo e está irreconhecível de tão saudável e feliz. Finalmente conheceu o que é ser amado! 🎉',
+        breed: 'Labrador mix',
+        size: 'grande',
+        age: '4 anos',
+        vaccinated: true,
+        neutered: true
+      },
+      {
+        animal_name: 'Nina',
+        animal_type: 'gato',
+        case_type: 'perdido',
+        location: 'Itaim Bibi, São Paulo - SP',
+        story: 'Nina saiu pela janela e não voltou mais. É uma gata caseira que nunca tinha saído antes.',
+        description: 'Gata persa, cor cinza, olhos verdes, muito peluda. Usa coleira rosa com guizo.',
+        contact: '(11) 91111-0000',
+        urgency: 'alta',
+        status: 'final-feliz',
+        responsible: 'Camila Rodrigues',
+        last_seen: 'Vista pela última vez na Rua João Cachoeira no dia 28/12',
+        search_radius: '1km',
+        happy_ending_story: 'Nina foi encontrada escondida no porão de um prédio vizinho! Estava com medo mas estava bem. A família ficou tão feliz de reencontrá-la! Agora todas as janelas têm telas de proteção. ❤️'
+      }
+    ];
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-orange-500';
+      toast.className = `toast ${bgColor} text-white px-6 py-3 rounded-xl shadow-lg font-semibold flex items-center gap-2`;
+      toast.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+        toast.style.transition = 'all 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    function parseJSON(jsonStr) {
+      if (!jsonStr) return [];
+      try {
+        return JSON.parse(jsonStr);
+      } catch {
+        return [];
+      }
+    }
+
+    async function initializeSampleData() {
+      if (hasInitializedSampleData || allCases.length > 0) {
+        return;
+      }
+      
+      hasInitializedSampleData = true;
+      
+      for (const sampleCase of sampleCases) {
+        const initialTimeline = [{
+          date: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+          status: sampleCase.status === 'final-feliz' ? 'novo' : sampleCase.status,
+          message: 'Caso registrado no sistema',
+          changed_by: sampleCase.responsible
+        }];
+        
+        if (sampleCase.status === 'em-andamento') {
+          initialTimeline.push({
+            date: new Date(Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000).toISOString(),
+            status: 'em-andamento',
+            message: 'Caso em andamento, voluntários mobilizados',
+            changed_by: sampleCase.responsible
+          });
+        }
+        
+        if (sampleCase.status === 'final-feliz') {
+          initialTimeline.push({
+            date: new Date(Date.now() - Math.random() * 5 * 24 * 60 * 60 * 1000).toISOString(),
+            status: 'em-andamento',
+            message: 'Caso em andamento, voluntários mobilizados',
+            changed_by: sampleCase.responsible
+          });
+          initialTimeline.push({
+            date: new Date(Date.now() - Math.random() * 2 * 24 * 60 * 60 * 1000).toISOString(),
+            status: 'final-feliz',
+            message: 'Caso resolvido com final feliz! 🎉',
+            changed_by: sampleCase.responsible
+          });
+        }
+        
+        const baseData = {
+          animal_name: sampleCase.animal_name,
+          animal_type: sampleCase.animal_type,
+          case_type: sampleCase.case_type,
+          location: sampleCase.location,
+          story: sampleCase.story,
+          description: sampleCase.description,
+          contact: sampleCase.contact,
+          urgency: sampleCase.urgency,
+          status: sampleCase.status,
+          responsible: sampleCase.responsible,
+          timeline: JSON.stringify(initialTimeline),
+          comments: JSON.stringify([]),
+          followers: JSON.stringify([sampleCase.responsible]),
+          helpers: JSON.stringify(sampleCase.status === 'final-feliz' ? [{ name: 'Voluntário 1', date: new Date().toISOString() }, { name: 'Voluntário 2', date: new Date().toISOString() }] : []),
+          temporary_home: '',
+          help_needed: '',
+          happy_ending_story: sampleCase.happy_ending_story || '',
+          before_description: '',
+          after_description: '',
+          outcome: '',
+          breed: sampleCase.breed || '',
+          size: sampleCase.size || '',
+          age: sampleCase.age || '',
+          vaccinated: sampleCase.vaccinated || false,
+          neutered: sampleCase.neutered || false,
+          adoption_form: '',
+          applicants: JSON.stringify([]),
+          last_seen: sampleCase.last_seen || '',
+          search_radius: sampleCase.search_radius || '',
+          vet_clinic: sampleCase.vet_clinic || '',
+          treatment_budget: sampleCase.treatment_budget || '',
+          treatment_steps: JSON.stringify([]),
+          temp_home_requirements: sampleCase.temp_home_requirements || '',
+          temp_home_period: sampleCase.temp_home_period || '',
+          donation_type: sampleCase.donation_type || '',
+          donation_amount: sampleCase.donation_amount || '0',
+          donation_goal: sampleCase.donation_goal || '',
+          donation_proof: JSON.stringify([]),
+          donations_received: JSON.stringify([]),
+          transport_needed: sampleCase.transport_needed || '',
+          volunteers_assigned: JSON.stringify([]),
+          abuse_report_details: sampleCase.abuse_report_details || '',
+          legal_status: sampleCase.legal_status || '',
+          views: 0,
+          created_at: new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000).toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        await window.dataSdk.create(baseData);
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    }
+
+    function switchView(view) {
+      currentView = view;
+      
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        if (tab.dataset.view === view) {
+          tab.className = 'nav-tab tab-active px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap text-sm';
+        } else {
+          tab.className = 'nav-tab px-5 py-2 rounded-xl font-bold transition-all whitespace-nowrap bg-white/10 hover:bg-white/20 text-white text-sm';
+        }
+      });
+      
+      renderView();
+    }
+
+    function renderView() {
+      const mainContent = document.getElementById('main-content');
+      
+      if (currentView === 'home') {
+        renderHomeView(mainContent);
+      } else if (currentView === 'profile') {
+        renderProfileView(mainContent);
+      } else if (currentView === 'happy') {
+        renderHappyView(mainContent);
+      } else {
+        renderCategoryView(mainContent, currentView);
+      }
+    }
+
+    function renderHomeView(container) {
+      const recentCases = [...allCases].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 12);
+      
+      container.innerHTML = `
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+          <div class="bg-white rounded-2xl p-5 shadow-md border-2 border-gray-100">
+            <div class="text-3xl font-bold text-[#017F00] mb-1">${allCases.length}</div>
+            <div class="text-gray-600 text-sm font-semibold">Total de Casos</div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 shadow-md border-2 border-blue-100">
+            <div class="text-3xl font-bold text-blue-600 mb-1">${allCases.filter(c => c.status === 'em-andamento').length}</div>
+            <div class="text-gray-600 text-sm font-semibold">Em Andamento</div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 shadow-md border-2 border-green-100">
+            <div class="text-3xl font-bold text-green-600 mb-1">${allCases.filter(c => c.status === 'final-feliz').length}</div>
+            <div class="text-gray-600 text-sm font-semibold">🎉 Finais Felizes</div>
+          </div>
+        </div>
+        
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2 font-display">
+            <span>📋</span> Casos Recentes
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="recent-cases-container"></div>
+        </div>
+        
+        ${allCases.length === 0 ? `
+        <div class="text-center py-16">
+          <div class="text-8xl mb-4">🐾</div>
+          <h3 class="text-2xl font-bold text-gray-700 mb-2 font-display">Carregando casos...</h3>
+          <p class="text-gray-500 mb-6">Aguarde enquanto preparamos os dados iniciais</p>
+        </div>
+        ` : ''}
+      `;
+      
+      const recentContainer = container.querySelector('#recent-cases-container');
+      if (recentContainer) {
+        recentCases.forEach((caseData, index) => {
+          const card = createCaseCard(caseData);
+          card.style.animationDelay = `${index * 0.05}s`;
+          card.classList.add('animate-float-in');
+          recentContainer.appendChild(card);
+        });
+      }
+    }
+
+    function renderCategoryView(container, category) {
+      const caseTypeMap = {
+        'rescue': 'resgate',
+        'adoption': 'adocao',
+        'lost': 'perdido',
+        'vet': 'veterinario',
+        'temp-home': 'lar-temporario',
+        'donations': 'doacao',
+        'transport': 'transporte',
+        'abuse': 'denuncia'
+      };
+      
+      const caseType = caseTypeMap[category];
+      const typeConfig = caseTypeConfig[caseType];
+      const filteredCases = allCases.filter(c => c.case_type === caseType);
+      
+      container.innerHTML = `
+        <div class="mb-6">
+          <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-3 font-display">
+            <span class="text-5xl">${typeConfig.emoji}</span>
+            ${typeConfig.label}
+          </h2>
+          <p class="text-gray-600 mt-2">${filteredCases.length} caso(s) registrado(s)</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="category-cases-container"></div>
+        
+        ${filteredCases.length === 0 ? `
+        <div class="text-center py-16 bg-white rounded-2xl">
+          <div class="text-8xl mb-4">${typeConfig.emoji}</div>
+          <h3 class="text-2xl font-bold text-gray-700 mb-2 font-display">Nenhum caso de ${typeConfig.label}</h3>
+          <p class="text-gray-500 mb-6">Seja o primeiro a registrar um caso!</p>
+        </div>
+        ` : ''}
+      `;
+      
+      const casesContainer = container.querySelector('#category-cases-container');
+      if (casesContainer) {
+        filteredCases.forEach((caseData, index) => {
+          const card = createCaseCard(caseData);
+          card.style.animationDelay = `${index * 0.05}s`;
+          card.classList.add('animate-float-in');
+          casesContainer.appendChild(card);
+        });
+      }
+    }
+
+    function renderHappyView(container) {
+      const happyCases = allCases.filter(c => c.status === 'final-feliz');
+      
+      container.innerHTML = `
+        <div class="text-center mb-8">
+          <h2 class="text-4xl font-extrabold text-[#017F00] mb-3 font-display">🎉 Histórias de Sucesso</h2>
+          <p class="text-gray-600 text-lg">Celebre com a gente os finais felizes que mudaram vidas!</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="happy-cases-container"></div>
+        
+        ${happyCases.length === 0 ? `
+        <div class="text-center py-16">
+          <div class="text-8xl mb-4">🌟</div>
+          <h3 class="text-2xl font-bold text-gray-700 mb-2 font-display">Aguardando o primeiro final feliz</h3>
+          <p class="text-gray-500">Em breve teremos histórias emocionantes para compartilhar!</p>
+        </div>
+        ` : ''}
+      `;
+      
+      const happyContainer = container.querySelector('#happy-cases-container');
+      if (happyContainer) {
+        happyCases.forEach((caseData, index) => {
+          const card = createHappyCard(caseData);
+          card.style.animationDelay = `${index * 0.1}s`;
+          card.classList.add('animate-float-in');
+          happyContainer.appendChild(card);
+        });
+      }
+    }
+
+    function renderProfileView(container) {
+      const followedCases = allCases.filter(c => {
+        const followers = parseJSON(c.followers);
+        return followers.includes(currentUser);
+      });
+      
+      const responsibleCases = allCases.filter(c => c.responsible === currentUser);
+      const helpedCases = allCases.filter(c => {
+        const helpers = parseJSON(c.helpers);
+        return helpers.some(h => h.name === currentUser);
+      });
+      
+      const myComments = [];
+      allCases.forEach(c => {
+        const comments = parseJSON(c.comments);
+        comments.forEach(comment => {
+          if (comment.author === currentUser) {
+            myComments.push({ ...comment, case: c });
+          }
+        });
+      });
+      
+      const badges = [];
+      if (responsibleCases.filter(c => c.case_type === 'resgate').length >= 3) {
+        badges.push({ emoji: '🛟', name: 'Resgatador', color: 'bg-red-100 text-red-700' });
+      }
+      if (responsibleCases.filter(c => c.case_type === 'lar-temporario').length >= 2) {
+        badges.push({ emoji: '🏠', name: 'Lar Temporário', color: 'bg-purple-100 text-purple-700' });
+      }
+      if (helpedCases.length >= 5) {
+        badges.push({ emoji: '❤️', name: 'Voluntário Ativo', color: 'bg-pink-100 text-pink-700' });
+      }
+      if (allCases.filter(c => c.responsible === currentUser && c.status === 'final-feliz').length >= 1) {
+        badges.push({ emoji: '🌟', name: 'Criador de Finais Felizes', color: 'bg-yellow-100 text-yellow-700' });
+      }
+      
+      container.innerHTML = `
+        <div class="max-w-4xl mx-auto">
+          <div class="bg-gradient-to-r from-[#017F00] to-[#059669] rounded-3xl p-8 mb-6 shadow-xl">
+            <div class="flex items-start gap-6">
+              <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h2 class="text-3xl font-bold text-white mb-2 font-display">${currentUser}</h2>
+                <p class="text-white/90 mb-4">Membro ativo da comunidade Salva-Vidas</p>
+                
+                ${badges.length > 0 ? `
+                <div class="flex flex-wrap gap-2">
+                  ${badges.map(badge => `
+                    <span class="badge ${badge.color}">
+                      <span>${badge.emoji}</span>
+                      <span>${badge.name}</span>
+                    </span>
+                  `).join('')}
+                </div>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-2xl p-5 shadow-md text-center">
+              <div class="text-3xl font-bold text-blue-600 mb-1">${followedCases.length}</div>
+              <div class="text-gray-600 text-sm font-semibold">Acompanhando</div>
+            </div>
+            <div class="bg-white rounded-2xl p-5 shadow-md text-center">
+              <div class="text-3xl font-bold text-[#017F00] mb-1">${responsibleCases.length}</div>
+              <div class="text-gray-600 text-sm font-semibold">Responsável</div>
+            </div>
+            <div class="bg-white rounded-2xl p-5 shadow-md text-center">
+              <div class="text-3xl font-bold text-pink-600 mb-1">${helpedCases.length}</div>
+              <div class="text-gray-600 text-sm font-semibold">Ajudei</div>
+            </div>
+            <div class="bg-white rounded-2xl p-5 shadow-md text-center">
+              <div class="text-3xl font-bold text-purple-600 mb-1">${myComments.length}</div>
+              <div class="text-gray-600 text-sm font-semibold">Comentários</div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-2xl shadow-md mb-6">
+            <div class="flex border-b">
+              <button class="profile-tab active flex-1 px-6 py-4 font-semibold text-[#017F00] border-b-2 border-[#017F00]" data-tab="following">
+                Acompanhando (${followedCases.length})
+              </button>
+              <button class="profile-tab flex-1 px-6 py-4 font-semibold text-gray-600 hover:text-[#017F00]" data-tab="responsible">
+                Meus Casos (${responsibleCases.length})
+              </button>
+              <button class="profile-tab flex-1 px-6 py-4 font-semibold text-gray-600 hover:text-[#017F00]" data-tab="helped">
+                Ajudei (${helpedCases.length})
+              </button>
+            </div>
+            
+            <div id="profile-tab-content" class="p-6"></div>
+          </div>
+        </div>
+      `;
+      
+      container.querySelectorAll('.profile-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          container.querySelectorAll('.profile-tab').forEach(t => {
+            t.className = 'profile-tab flex-1 px-6 py-4 font-semibold text-gray-600 hover:text-[#017F00]';
+          });
+          tab.className = 'profile-tab active flex-1 px-6 py-4 font-semibold text-[#017F00] border-b-2 border-[#017F00]';
+          
+          const tabContent = container.querySelector('#profile-tab-content');
+          const tabType = tab.dataset.tab;
+          
+          if (tabType === 'following') {
+            renderProfileCases(tabContent, followedCases);
+          } else if (tabType === 'responsible') {
+            renderProfileCases(tabContent, responsibleCases);
+          } else if (tabType === 'helped') {
+            renderProfileCases(tabContent, helpedCases);
+          }
+        });
+      });
+      
+      const tabContent = container.querySelector('#profile-tab-content');
+      if (tabContent) {
+        renderProfileCases(tabContent, followedCases);
+      }
+    }
+
+    function renderProfileCases(container, cases) {
+      if (cases.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <div class="text-6xl mb-3">📭</div>
+            <p class="text-gray-500">Nenhum caso nesta categoria</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="profile-cases-grid"></div>
+      `;
+      
+      const grid = container.querySelector('#profile-cases-grid');
+      cases.forEach(caseData => {
+        const card = createCaseCard(caseData, true);
+        grid.appendChild(card);
+      });
+    }
+
+    function createCaseCard(caseData, compact = false) {
+      const typeConfig = caseTypeConfig[caseData.case_type];
+      const statusData = statusInfo[caseData.status];
+      const animalEmoji = animalEmojis[caseData.animal_type] || '🐾';
+      
+      const card = document.createElement('div');
+      card.className = 'case-card bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer';
+      
+      const createdDate = new Date(caseData.created_at).toLocaleDateString('pt-BR', { 
+        day: '2-digit', 
+        month: 'short'
+      });
+      
+      const comments = parseJSON(caseData.comments);
+      const followers = parseJSON(caseData.followers);
+      
+      card.innerHTML = `
+        <div class="relative">
+          <div class="h-32 bg-gradient-to-br ${typeConfig.color} flex items-center justify-center">
+            <span class="text-6xl">${animalEmoji}</span>
+          </div>
+          ${caseData.urgency === 'critica' ? `
+          <div class="absolute top-3 left-3">
+            <span class="urgent-pulse px-3 py-1 rounded-full text-xs font-bold bg-red-600 text-white shadow-md">🔴 URGENTE</span>
+          </div>
+          ` : ''}
+          <div class="absolute top-3 right-3">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-white text-gray-700 flex items-center gap-1 shadow-md">${typeConfig.emoji} ${typeConfig.label}</span>
+          </div>
+        </div>
+        <div class="p-5">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold text-gray-800 flex-1 font-display">${escapeHtml(caseData.animal_name)}</h3>
+          </div>
+          <p class="text-gray-500 text-sm mb-3 flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            ${escapeHtml(caseData.location)}
+          </p>
+          <p class="text-gray-600 text-sm line-clamp-2 mb-3">${escapeHtml(caseData.description)}</p>
+          <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t">
+            <div class="flex items-center gap-3">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                ${comments.length}
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                ${followers.length}
+              </span>
+            </div>
+            <span>📅 ${createdDate}</span>
+          </div>
+        </div>
+      `;
+      
+      card.addEventListener('click', () => openCaseDetail(caseData));
+      return card;
+    }
+
+    function createHappyCard(caseData) {
+      const animalEmoji = animalEmojis[caseData.animal_type] || '🐾';
+      const helpers = parseJSON(caseData.helpers);
+      
+      const card = document.createElement('div');
+      card.className = 'happy-card rounded-2xl overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all hover:scale-105';
+      
+      card.innerHTML = `
+        <div class="relative">
+          <div class="h-48 bg-gradient-to-br from-yellow-200 to-orange-300 flex items-center justify-center">
+            <span class="text-8xl">${animalEmoji}</span>
+          </div>
+          <div class="absolute top-4 right-4">
+            <span class="px-4 py-2 rounded-full text-sm font-bold bg-white text-green-600 shadow-lg flex items-center gap-2">
+              <span class="text-2xl">🎉</span> Final Feliz!
+            </span>
+          </div>
+        </div>
+        <div class="p-6 bg-white">
+          <h3 class="text-2xl font-bold text-gray-800 mb-3 font-display">${escapeHtml(caseData.animal_name)}</h3>
+          <p class="text-gray-700 leading-relaxed mb-4 line-clamp-3">${escapeHtml(caseData.happy_ending_story || 'História emocionante de superação e amor!')}</p>
+          ${helpers.length > 0 ? `
+            <div class="flex items-center gap-2 text-sm text-gray-600">
+              <span class="font-semibold">❤️ Ajudaram:</span>
+              <span class="text-[#017F00] font-medium">${helpers.length} pessoas</span>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      
+      card.addEventListener('click', () => openCaseDetail(caseData));
+      return card;
+    }
+
+    function openNewCaseModal() {
+      if (currentRecordCount >= 999) {
+        showToast('Limite de 999 casos atingido!', 'warning');
+        return;
+      }
+      document.getElementById('new-case-modal').classList.remove('hidden');
+    }
+
+    function closeNewCaseModal() {
+      document.getElementById('new-case-modal').classList.add('hidden');
+    }
+
+    function openCaseDetail(caseData) {
+      const modal = document.getElementById('detail-modal');
+      const container = document.getElementById('detail-content');
+      const typeConfig = caseTypeConfig[caseData.case_type];
+      const animalEmoji = animalEmojis[caseData.animal_type] || '🐾';
+      
+      const timeline = parseJSON(caseData.timeline);
+      const comments = parseJSON(caseData.comments);
+      const followers = parseJSON(caseData.followers);
+      const helpers = parseJSON(caseData.helpers);
+      
+      const isFollowing = followers.includes(currentUser);
+      const hasHelped = helpers.some(h => h.name === currentUser);
+      const isResponsible = caseData.responsible === currentUser;
+      
+      container.innerHTML = `
+        <div class="bg-gradient-to-r ${typeConfig.color} p-6 rounded-t-3xl">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-20 h-20 bg-white/30 rounded-2xl flex items-center justify-center text-5xl">${animalEmoji}</div>
+              <div>
+                <h2 class="text-3xl font-bold text-white mb-1 font-display">${escapeHtml(caseData.animal_name)}</h2>
+                <p class="text-white/90 flex items-center gap-2">
+                  <span>${typeConfig.emoji} ${typeConfig.label}</span>
+                  <span>•</span>
+                  <span>📍 ${escapeHtml(caseData.location)}</span>
+                </p>
+              </div>
+            </div>
+            <button id="close-detail-btn" class="text-white/80 hover:text-white transition-colors">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="p-6 max-h-[70vh] overflow-y-auto">
+          <div class="flex gap-6 mb-6">
+            <div class="flex-1">
+              <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 mb-4">
+                <h3 class="font-bold text-blue-900 mb-2 flex items-center gap-2">
+                  <span>📖</span> Como Começou
+                </h3>
+                <p class="text-blue-800">${escapeHtml(caseData.story)}</p>
+              </div>
+              
+              <div class="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 mb-4">
