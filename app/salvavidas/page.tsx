@@ -53,6 +53,7 @@ const tokens = {
     lg: 24,
     xl: 32,
     xxl: 48,
+    giant: 80,
   },
   radii: {
     sm: 8,
@@ -765,8 +766,10 @@ function HappyCard({ caseData, onClick }) {
 }
 
 // Case Detail Modal
-function CaseDetailModal({ caseData, onClose }) {
+function CaseDetailModal({ caseData, onClose }: { caseData: any, onClose: () => void }) {
   const [activeTab, setActiveTab] = useState("detalhes");
+  const [activeAction, setActiveAction] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   if (!caseData) return null;
 
@@ -1099,6 +1102,10 @@ function CaseDetailModal({ caseData, onClose }) {
                   return (
                     <motion.button
                       key={index}
+                      onClick={() => {
+                        setActiveAction(action.label);
+                        setIsSubmitted(false);
+                      }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       style={{
@@ -1109,8 +1116,8 @@ function CaseDetailModal({ caseData, onClose }) {
                         color: action.primary ? "white" : tokens.colors.primary,
                         border: action.primary ? "none" : `2px solid ${tokens.colors.primary}`,
                         borderRadius: tokens.radii.md,
-                        fontSize: 15,
-                        fontWeight: 700,
+                        fontSize: 16,
+                        fontWeight: 800,
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
@@ -1130,316 +1137,472 @@ function CaseDetailModal({ caseData, onClose }) {
 
           {/* Main Content */}
           <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-            {/* Tabs */}
-            <div
-              style={{
-                borderBottom: `1px solid ${tokens.colors.border}`,
-                padding: `0 ${tokens.space.xl}px`,
-                display: "flex",
-                gap: tokens.space.lg,
-                background: "white",
-              }}
-            >
-              {["detalhes", "timeline", "comentarios"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
+            {activeAction ? (
+              /* Action View */
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "white" }}>
+                <div style={{ padding: `${tokens.space.lg}px ${tokens.space.xl}px`, borderBottom: `1px solid ${tokens.colors.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <h3 style={{ fontSize: 18, fontWeight: 700, color: tokens.colors.text }}>{activeAction}</h3>
+                  <button
+                    onClick={() => setActiveAction(null)}
+                    style={{ background: tokens.colors.bg, border: `1px solid ${tokens.colors.border}`, color: tokens.colors.text, padding: "6px 12px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 700 }}
+                  >
+                    ← Voltar
+                  </button>
+                </div>
+
+                <div style={{ flex: 1, overflow: "auto", padding: tokens.space.xxl }}>
+                  {isSubmitted ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      style={{ textAlign: "center", padding: tokens.space.xxl }}
+                    >
+                      <div style={{ width: 80, height: 80, borderRadius: "50%", background: tokens.colors.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+                        <CheckCircle size={48} color={tokens.colors.primary} />
+                      </div>
+                      <h2 style={{ fontSize: 28, fontWeight: 800, color: tokens.colors.text, marginBottom: 16 }}>Solicitação Enviada!</h2>
+                      <p style={{ fontSize: 18, color: tokens.colors.text, lineHeight: 1.6, marginBottom: 32, fontWeight: 500 }}>
+                        Sua mensagem foi enviada para o responsável. Você receberá uma notificação assim que houver um retorno.
+                      </p>
+                      <button
+                        onClick={() => setActiveAction(null)}
+                        style={{ padding: `${tokens.space.md}px ${tokens.space.xl}px`, background: tokens.colors.primary, color: "white", border: "none", borderRadius: tokens.radii.md, fontWeight: 700, cursor: "pointer" }}
+                      >
+                        Concluído
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <div style={{ maxWidth: 500, margin: "0 auto" }}>
+                      {/* Dynamic Form based on activeAction */}
+                      {(activeAction.includes("Adotar") || activeAction.includes("Temporário") || activeAction.includes("Abrigo")) && (
+                        <div style={{ display: "grid", gap: tokens.space.lg }}>
+                          <p style={{ color: tokens.colors.text, fontSize: 15, fontWeight: 500, marginBottom: 8 }}>Preencha as informações básicas para que o responsável entre em contato.</p>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Seu Nome</label>
+                            <input type="text" style={{ width: "100%", padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} placeholder="Digite seu nome" />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>WhatsApp/Telefone</label>
+                            <input type="text" style={{ width: "100%", padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} placeholder="(00) 00000-0000" />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Possui outros animais?</label>
+                            <select style={{ width: "100%", padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }}>
+                              <option>Não</option>
+                              <option>Sim, cachorro(s)</option>
+                              <option>Sim, gato(s)</option>
+                              <option>Sim, outros</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Mensagem (Opcional)</label>
+                            <textarea style={{ width: "100%", minHeight: 100, padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} placeholder="Conte um pouco por que você quer ajudar..." />
+                          </div>
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setIsSubmitted(true)}
+                            style={{ padding: tokens.space.lg, background: tokens.colors.primary, color: "white", border: "none", borderRadius: tokens.radii.md, fontWeight: 700, cursor: "pointer", marginTop: 16 }}
+                          >
+                            Enviar Solicitação
+                          </motion.button>
+                        </div>
+                      )}
+
+                      {(activeAction.includes("Doar") || activeAction.includes("Doação")) && (
+                        <div style={{ textAlign: "center" }}>
+                          <div style={{ background: tokens.colors.primaryLighter, padding: tokens.space.xl, borderRadius: tokens.radii.lg, marginBottom: 24, border: `2px dashed ${tokens.colors.primary}40` }}>
+                            <DollarSign size={40} color={tokens.colors.primary} style={{ marginBottom: 16 }} />
+                            <h4 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Contribua via PIX</h4>
+                            <p style={{ fontSize: 15, color: tokens.colors.text, marginBottom: 20, fontWeight: 500 }}>Toda ajuda é bem-vinda para o tratamento do animal.</p>
+                            <div style={{ background: "white", padding: 16, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", border: `2px solid ${tokens.colors.primary}` }}>
+                              <code style={{ fontSize: 16, fontWeight: 800, color: tokens.colors.primary }}>ajuda@guiavegano.org</code>
+                              <button style={{ background: tokens.colors.primary, color: "white", border: "none", padding: "8px 16px", borderRadius: 6, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Copiar</button>
+                            </div>
+                          </div>
+                          <p style={{ fontSize: 14, color: tokens.colors.text, fontWeight: 500 }}>Após realizar a doação, envie o comprovante para facilitar o acompanhamento do caso.</p>
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setIsSubmitted(true)}
+                            style={{ width: "100%", padding: tokens.space.lg, background: tokens.colors.primary, color: "white", border: "none", borderRadius: tokens.radii.md, fontWeight: 700, cursor: "pointer", marginTop: 24 }}
+                          >
+                            Já realizei a doação
+                          </motion.button>
+                        </div>
+                      )}
+
+                      {(activeAction.includes("Vi Este") || activeAction.includes("Visto")) && (
+                        <div style={{ display: "grid", gap: tokens.space.lg }}>
+                          <p style={{ color: tokens.colors.text, fontSize: 15, fontWeight: 500, marginBottom: 8 }}>Se você viu este animal, por favor nos ajude com o máximo de detalhes possível.</p>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Onde viu?</label>
+                            <input type="text" style={{ width: "100%", padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} placeholder="Ex: Av. Paulista, altura do número 1000" />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Quando viu?</label>
+                            <input type="datetime-local" style={{ width: "100%", padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Detalhes do avistamento</label>
+                            <textarea style={{ width: "100%", minHeight: 100, padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} placeholder="Como o animal estava? Em que direção seguiu? Estava acompanhado?" />
+                          </div>
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setIsSubmitted(true)}
+                            style={{ padding: tokens.space.lg, background: tokens.colors.red, color: "white", border: "none", borderRadius: tokens.radii.md, fontWeight: 700, cursor: "pointer", marginTop: 16 }}
+                          >
+                            Informar Avistamento
+                          </motion.button>
+                        </div>
+                      )}
+
+                      {/* Default Form for other actions */}
+                      {!activeAction.includes("Adotar") && !activeAction.includes("Temporário") && !activeAction.includes("Abrigo") && !activeAction.includes("Doar") && !activeAction.includes("Doação") && !activeAction.includes("Vi Este") && !activeAction.includes("Visto") && (
+                        <div style={{ display: "grid", gap: tokens.space.lg }}>
+                          <p style={{ color: tokens.colors.text, fontSize: 15, fontWeight: 500, marginBottom: 8 }}>Deixe seus dados e uma mensagem para entrar em contato com o responsável.</p>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Seu Nome</label>
+                            <input type="text" style={{ width: "100%", padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} placeholder="Digite seu nome" />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>WhatsApp/Telefone</label>
+                            <input type="text" style={{ width: "100%", padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} placeholder="(00) 00000-0000" />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: 14, fontWeight: 700, marginBottom: 8, color: tokens.colors.text }}>Sua Mensagem</label>
+                            <textarea style={{ width: "100%", minHeight: 150, padding: tokens.space.md, border: `2px solid ${tokens.colors.border}`, borderRadius: tokens.radii.sm, fontSize: 15, color: tokens.colors.text, outline: "none" }} placeholder="Escreva aqui como você pode ajudar..." />
+                          </div>
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setIsSubmitted(true)}
+                            style={{ padding: tokens.space.lg, background: tokens.colors.primary, color: "white", border: "none", borderRadius: tokens.radii.md, fontWeight: 700, cursor: "pointer", marginTop: 16 }}
+                          >
+                            Enviar Mensagem
+                          </motion.button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              /* Regular Tabs View */
+              <>
+                {/* Tabs */}
+                <div
                   style={{
-                    padding: `${tokens.space.lg}px 0`,
-                    background: "none",
-                    border: "none",
-                    borderBottom: activeTab === tab ? `3px solid ${tokens.colors.primary}` : "3px solid transparent",
-                    color: activeTab === tab ? tokens.colors.primary : tokens.colors.textMuted,
-                    fontSize: 15,
-                    fontWeight: 700,
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    textTransform: "capitalize",
+                    borderBottom: `1px solid ${tokens.colors.border}`,
+                    padding: `0 ${tokens.space.xl}px`,
+                    display: "flex",
+                    gap: tokens.space.lg,
+                    background: "white",
                   }}
                 >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab Content */}
-            <div style={{ flex: 1, overflow: "auto", padding: tokens.space.xxl }}>
-              <AnimatePresence mode="wait">
-                {activeTab === "detalhes" && (
-                  <motion.div
-                    key="detalhes"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {/* Happy Ending Banner */}
-                    {caseData.happyEnding && (
-                      <div
-                        style={{
-                          background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
-                          padding: tokens.space.xxl,
-                          borderRadius: tokens.radii.lg,
-                          border: "3px solid #fbbf24",
-                          marginBottom: tokens.space.xxl,
-                        }}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md, marginBottom: tokens.space.lg }}>
-                          <div
-                            style={{
-                              width: 48,
-                              height: 48,
-                              borderRadius: tokens.radii.md,
-                              background: "white",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <PartyPopper size={24} color={tokens.colors.green} />
-                          </div>
-                          <h3 style={{ fontSize: 22, fontWeight: 800, color: tokens.colors.text, margin: 0 }}>
-                            Final Feliz!
-                          </h3>
-                        </div>
-                        <p style={{ fontSize: 16, lineHeight: 1.7, color: tokens.colors.text, margin: 0 }}>
-                          {caseData.happyEnding}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Story */}
-                    <div style={{ marginBottom: tokens.space.xxl }}>
-                      <h3
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 700,
-                          marginBottom: tokens.space.lg,
-                          color: tokens.colors.text,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: tokens.space.sm,
-                        }}
-                      >
-                        📖 Como Começou
-                      </h3>
-                      <p style={{ fontSize: 15, lineHeight: 1.8, color: tokens.colors.textMuted, margin: 0 }}>
-                        {caseData.story}
-                      </p>
-                    </div>
-
-                    {/* Description */}
-                    <div>
-                      <h3
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 700,
-                          marginBottom: tokens.space.lg,
-                          color: tokens.colors.text,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: tokens.space.sm,
-                        }}
-                      >
-                        ℹ️ Informações Detalhadas
-                      </h3>
-                      <p style={{ fontSize: 15, lineHeight: 1.8, color: tokens.colors.textMuted, margin: 0 }}>
-                        {caseData.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-
-                {activeTab === "timeline" && (
-                  <motion.div
-                    key="timeline"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <h3
+                  {["detalhes", "timeline", "comentarios"].map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
                       style={{
-                        fontSize: 18,
+                        padding: `${tokens.space.lg}px 0`,
+                        background: "none",
+                        border: "none",
+                        borderBottom: activeTab === tab ? `3px solid ${tokens.colors.primary}` : "3px solid transparent",
+                        color: activeTab === tab ? tokens.colors.primary : tokens.colors.textMuted,
+                        fontSize: 15,
                         fontWeight: 700,
-                        marginBottom: tokens.space.xl,
-                        color: tokens.colors.text,
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                        textTransform: "capitalize",
                       }}
                     >
-                      📅 Linha do Tempo
-                    </h3>
+                      {tab}
+                    </button>
+                  ))}
+                </div>
 
-                    <div style={{ position: "relative", paddingLeft: tokens.space.xl }}>
-                      {/* Timeline Line */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: 15,
-                          top: 24,
-                          bottom: 0,
-                          width: 3,
-                          background: `linear-gradient(to bottom, ${tokens.colors.primary}, ${tokens.colors.border})`,
-                        }}
-                      />
+                {/* Tab Content */}
+                <div style={{ flex: 1, overflow: "auto", padding: tokens.space.xxl }}>
+                  <AnimatePresence mode="wait">
+                    {activeTab === "detalhes" && (
+                      <motion.div
+                        key="detalhes"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {/* Happy Ending Banner */}
+                        {caseData.happyEnding && (
+                          <div
+                            style={{
+                              background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+                              padding: tokens.space.xxl,
+                              borderRadius: tokens.radii.lg,
+                              border: "3px solid #fbbf24",
+                              marginBottom: tokens.space.xxl,
+                            }}
+                          >
+                            <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md, marginBottom: tokens.space.lg }}>
+                              <div
+                                style={{
+                                  width: 48,
+                                  height: 48,
+                                  borderRadius: tokens.radii.md,
+                                  background: "white",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <PartyPopper size={24} color={tokens.colors.green} />
+                              </div>
+                              <h3 style={{ fontSize: 22, fontWeight: 800, color: tokens.colors.text, margin: 0 }}>
+                                Final Feliz!
+                              </h3>
+                            </div>
+                            <p style={{ fontSize: 16, lineHeight: 1.7, color: tokens.colors.text, margin: 0 }}>
+                              {caseData.happyEnding}
+                            </p>
+                          </div>
+                        )}
 
-                      {/* Timeline Items */}
-                      {caseData.updates?.map((update, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
+                        {/* Story */}
+                        <div style={{ marginBottom: tokens.space.xxl }}>
+                          <h3
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 700,
+                              marginBottom: tokens.space.lg,
+                              color: tokens.colors.text,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: tokens.space.sm,
+                            }}
+                          >
+                            📖 Como Começou
+                          </h3>
+                          <p style={{ fontSize: 15, lineHeight: 1.8, color: tokens.colors.textMuted, margin: 0 }}>
+                            {caseData.story}
+                          </p>
+                        </div>
+
+                        {/* Description */}
+                        <div>
+                          <h3
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 700,
+                              marginBottom: tokens.space.lg,
+                              color: tokens.colors.text,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: tokens.space.sm,
+                            }}
+                          >
+                            ℹ️ Informações Detalhadas
+                          </h3>
+                          <p style={{ fontSize: 15, lineHeight: 1.8, color: tokens.colors.textMuted, margin: 0 }}>
+                            {caseData.description}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activeTab === "timeline" && (
+                      <motion.div
+                        key="timeline"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <h3
                           style={{
-                            position: "relative",
+                            fontSize: 18,
+                            fontWeight: 700,
                             marginBottom: tokens.space.xl,
+                            color: tokens.colors.text,
                           }}
                         >
-                          {/* Timeline Dot */}
+                          📅 Linha do Tempo
+                        </h3>
+
+                        <div style={{ position: "relative", paddingLeft: tokens.space.xl }}>
+                          {/* Timeline Line */}
                           <div
                             style={{
                               position: "absolute",
-                              left: -29,
-                              top: 8,
-                              width: 12,
-                              height: 12,
-                              borderRadius: "50%",
-                              background: tokens.colors.primary,
-                              border: "3px solid white",
-                              boxShadow: "0 2px 8px rgba(4, 128, 3, 0.3)",
+                              left: 15,
+                              top: 24,
+                              bottom: 0,
+                              width: 3,
+                              background: `linear-gradient(to bottom, ${tokens.colors.primary}, ${tokens.colors.border})`,
                             }}
                           />
 
-                          <div
-                            style={{
-                              background: "white",
-                              padding: tokens.space.lg,
-                              borderRadius: tokens.radii.md,
-                              border: `1px solid ${tokens.colors.border}`,
-                            }}
-                          >
-                            <div
+                          {/* Timeline Items */}
+                          {caseData.updates?.map((update, index) => (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.1 }}
                               style={{
-                                fontSize: 12,
-                                color: tokens.colors.textMuted,
-                                marginBottom: tokens.space.sm,
+                                position: "relative",
+                                marginBottom: tokens.space.xl,
                               }}
                             >
-                              {new Date(update.date).toLocaleString("pt-BR")}
-                            </div>
-                            <div style={{ fontSize: 15, color: tokens.colors.text, marginBottom: tokens.space.xs }}>
-                              {update.text}
-                            </div>
-                            <div style={{ fontSize: 13, color: tokens.colors.primary, fontWeight: 600 }}>
-                              Por {update.author}
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
+                              {/* Timeline Dot */}
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  left: -29,
+                                  top: 8,
+                                  width: 12,
+                                  height: 12,
+                                  borderRadius: "50%",
+                                  background: tokens.colors.primary,
+                                  border: "3px solid white",
+                                  boxShadow: "0 2px 8px rgba(4, 128, 3, 0.3)",
+                                }}
+                              />
 
-                {activeTab === "comentarios" && (
-                  <motion.div
-                    key="comentarios"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <h3
-                      style={{
-                        fontSize: 18,
-                        fontWeight: 700,
-                        marginBottom: tokens.space.xl,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      💬 Comentários ({caseData.userComments?.length || 0})
-                    </h3>
+                              <div
+                                style={{
+                                  background: "white",
+                                  padding: tokens.space.lg,
+                                  borderRadius: tokens.radii.md,
+                                  border: `1px solid ${tokens.colors.border}`,
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    fontSize: 12,
+                                    color: tokens.colors.textMuted,
+                                    marginBottom: tokens.space.sm,
+                                  }}
+                                >
+                                  {new Date(update.date).toLocaleString("pt-BR")}
+                                </div>
+                                <div style={{ fontSize: 15, color: tokens.colors.text, marginBottom: tokens.space.xs }}>
+                                  {update.text}
+                                </div>
+                                <div style={{ fontSize: 13, color: tokens.colors.primary, fontWeight: 600 }}>
+                                  Por {update.author}
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
 
-                    {/* New Comment Form */}
-                    <div
-                      style={{
-                        background: tokens.colors.bg,
-                        padding: tokens.space.lg,
-                        borderRadius: tokens.radii.md,
-                        marginBottom: tokens.space.xl,
-                      }}
-                    >
-                      <textarea
-                        placeholder="Deixe seu comentário..."
-                        style={{
-                          width: "100%",
-                          minHeight: 80,
-                          padding: tokens.space.md,
-                          border: `1px solid ${tokens.colors.border}`,
-                          borderRadius: tokens.radii.sm,
-                          fontSize: 14,
-                          fontFamily: "inherit",
-                          resize: "vertical",
-                          outline: "none",
-                        }}
-                      />
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        style={{
-                          marginTop: tokens.space.md,
-                          padding: `${tokens.space.md}px ${tokens.space.xl}px`,
-                          background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
-                          color: "white",
-                          border: "none",
-                          borderRadius: tokens.radii.md,
-                          fontSize: 14,
-                          fontWeight: 700,
-                          cursor: "pointer",
-                        }}
+                    {activeTab === "comentarios" && (
+                      <motion.div
+                        key="comentarios"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
                       >
-                        Comentar
-                      </motion.button>
-                    </div>
-
-                    {/* Comments List */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: tokens.space.lg }}>
-                      {caseData.userComments?.map((comment, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.05 }}
+                        <h3
                           style={{
-                            background: "white",
-                            padding: tokens.space.lg,
-                            borderRadius: tokens.radii.md,
-                            border: `1px solid ${tokens.colors.border}`,
-                            borderLeft: `4px solid ${tokens.colors.primary}`,
+                            fontSize: 18,
+                            fontWeight: 700,
+                            marginBottom: tokens.space.xl,
+                            color: tokens.colors.text,
                           }}
                         >
-                          <div
+                          💬 Comentários ({caseData.userComments?.length || 0})
+                        </h3>
+
+                        {/* New Comment Form */}
+                        <div
+                          style={{
+                            background: tokens.colors.bg,
+                            padding: tokens.space.lg,
+                            borderRadius: tokens.radii.md,
+                            marginBottom: tokens.space.xl,
+                          }}
+                        >
+                          <textarea
+                            placeholder="Deixe seu comentário..."
                             style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginBottom: tokens.space.sm,
+                              width: "100%",
+                              minHeight: 80,
+                              padding: tokens.space.md,
+                              border: `1px solid ${tokens.colors.border}`,
+                              borderRadius: tokens.radii.sm,
+                              fontSize: 14,
+                              fontFamily: "inherit",
+                              resize: "vertical",
+                              outline: "none",
+                            }}
+                          />
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            style={{
+                              marginTop: tokens.space.md,
+                              padding: `${tokens.space.md}px ${tokens.space.xl}px`,
+                              background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
+                              color: "white",
+                              border: "none",
+                              borderRadius: tokens.radii.md,
+                              fontSize: 14,
+                              fontWeight: 700,
+                              cursor: "pointer",
                             }}
                           >
-                            <div style={{ fontSize: 14, fontWeight: 700, color: tokens.colors.text }}>
-                              {comment.author}
-                            </div>
-                            <div style={{ fontSize: 12, color: tokens.colors.textMuted }}>
-                              {new Date(comment.date).toLocaleString("pt-BR")}
-                            </div>
-                          </div>
-                          <div style={{ fontSize: 14, color: tokens.colors.textMuted, lineHeight: 1.6 }}>
-                            {comment.text}
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                            Comentar
+                          </motion.button>
+                        </div>
+
+                        {/* Comments List */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: tokens.space.lg }}>
+                          {caseData.userComments?.map((comment, index) => (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.05 }}
+                              style={{
+                                background: "white",
+                                padding: tokens.space.lg,
+                                borderRadius: tokens.radii.md,
+                                border: `1px solid ${tokens.colors.border}`,
+                                borderLeft: `4px solid ${tokens.colors.primary}`,
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  marginBottom: tokens.space.sm,
+                                }}
+                              >
+                                <div style={{ fontSize: 14, fontWeight: 700, color: tokens.colors.text }}>
+                                  {comment.author}
+                                </div>
+                                <div style={{ fontSize: 12, color: tokens.colors.textMuted }}>
+                                  {new Date(comment.date).toLocaleString("pt-BR")}
+                                </div>
+                              </div>
+                              <div style={{ fontSize: 14, color: tokens.colors.textMuted, lineHeight: 1.6 }}>
+                                {comment.text}
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </>
+            )}
           </div>
         </motion.div>
       </motion.div>
@@ -1450,7 +1613,7 @@ function CaseDetailModal({ caseData, onClose }) {
 // Main Component
 export default function SalvaVidasPage() {
   const [selectedCategory, setSelectedCategory] = useState("todos");
-  const [selectedCase, setSelectedCase] = useState(null);
+  const [selectedCase, setSelectedCase] = useState<any>(null);
   const [showNewCaseModal, setShowNewCaseModal] = useState(false);
 
   const filteredCases =
