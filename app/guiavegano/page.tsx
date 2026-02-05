@@ -59,7 +59,7 @@ const tokens = {
 };
 
 // Floating Animation Component
-const FloatingElement = ({ children, delay = 0 }) => (
+const FloatingElement = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
   <motion.div
     initial={{ y: 0 }}
     animate={{ y: [-10, 10, -10] }}
@@ -92,7 +92,7 @@ function IntroSection() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as any },
     },
   };
 
@@ -336,10 +336,10 @@ function IntroSection() {
 }
 
 // Question Item
-function QuestionItem({ question, isExpanded, onToggle }) {
+function QuestionItem({ question, isExpanded, onToggle }: { question: any; isExpanded: boolean; onToggle: () => void }) {
   const [isHovered, setIsHovered] = useState(false);
 
-  const iconMap = {
+  const iconMap: Record<number, any> = {
     1: Search,
     2: ChefHat,
     3: MapPin,
@@ -348,9 +348,9 @@ function QuestionItem({ question, isExpanded, onToggle }) {
     6: Stethoscope,
   };
 
-  const Icon = iconMap[question.id];
+  const Icon = iconMap[question.id as number];
 
-  const ctaIconMap = {
+  const ctaIconMap: Record<string, any> = {
     "📷": Camera,
     "🔎": Search,
     "📖": Book,
@@ -552,7 +552,7 @@ function QuestionItem({ question, isExpanded, onToggle }) {
                     gap: tokens.space.lg,
                   }}
                 >
-                  {question.content.map((item, index) => (
+                  {question.content.map((item: any, index: number) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -638,7 +638,7 @@ function QuestionItem({ question, isExpanded, onToggle }) {
                     gap: tokens.space.md,
                   }}
                 >
-                  {question.ctas.map((cta, index) => {
+                  {question.ctas.map((cta: any, index: number) => {
                     const CtaIcon = ctaIconMap[cta.icon] || Search;
                     return (
                       <CTAButton key={index} cta={cta} CtaIcon={CtaIcon} />
@@ -655,7 +655,7 @@ function QuestionItem({ question, isExpanded, onToggle }) {
 }
 
 // CTA Button Component
-function CTAButton({ cta, CtaIcon }) {
+function CTAButton({ cta, CtaIcon }: { cta: any; CtaIcon: any }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -721,9 +721,9 @@ function CTAButton({ cta, CtaIcon }) {
 
 // Questions Section
 function QuestionsSection() {
-  const [expandedQuestion, setExpandedQuestion] = useState(1);
+  const [expandedQuestion, setExpandedQuestion] = useState<number | null>(1);
 
-  const toggleQuestion = (id) => {
+  const toggleQuestion = (id: number) => {
     setExpandedQuestion(expandedQuestion === id ? null : id);
   };
 
