@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Leaf,
@@ -22,6 +22,10 @@ import {
   CheckCircle2,
   ArrowRight,
   Zap,
+  Monitor,
+  Apple,
+  X,
+  MessageSquare,
 } from "lucide-react";
 
 // Design Tokens
@@ -58,285 +62,92 @@ const tokens = {
   },
 };
 
-// Floating Animation Component
-const FloatingElement = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
-  <motion.div
-    initial={{ y: 0 }}
-    animate={{ y: [-10, 10, -10] }}
-    transition={{
-      duration: 4,
-      repeat: Infinity,
-      ease: "easeInOut",
-      delay,
-    }}
-  >
-    {children}
-  </motion.div>
-);
-
 // Hero Section
-function IntroSection() {
+function IntroSection({ onStartClick }: { onStartClick: () => void }) {
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as any },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as any } },
   };
 
   const benefits = [
-    { icon: Zap, text: "Te ajudar a decidir rápido" },
-    { icon: CheckCircle2, text: "Evitar erros desnecessários" },
-    { icon: Users, text: "Conectar você com pessoas e serviços veganos" },
+    { icon: Zap, text: "Soluções Instantâneas" },
+    { icon: CheckCircle2, text: "Apps Especializados" },
+    { icon: Users, text: "Ecossistema Completo" },
   ];
 
   return (
     <div
       style={{
-        background: "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%)",
-        padding: `${tokens.space.xl}px ${tokens.space.xl}px`, // Reduced from massive
+        background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+        padding: `${tokens.space.massive}px ${tokens.space.xl}px ${tokens.space.massive}px`,
         position: "relative",
         overflow: "hidden",
+        borderBottom: `1px solid ${tokens.colors.border}`,
       }}
     >
-      {/* Elementos decorativos */}
-      <FloatingElement delay={0}>
-        <div
-          style={{
-            position: "absolute",
-            top: "10%",
-            right: "10%",
-            width: 200,
-            height: 200,
-            borderRadius: "50%",
-            background: "rgba(16, 185, 129, 0.1)",
-            filter: "blur(60px)",
-            pointerEvents: "none",
-          }}
-        />
-      </FloatingElement>
-
-      <FloatingElement delay={1}>
-        <div
-          style={{
-            position: "absolute",
-            bottom: "20%",
-            left: "5%",
-            width: 150,
-            height: 150,
-            borderRadius: "50%",
-            background: "rgba(139, 92, 246, 0.1)",
-            filter: "blur(50px)",
-            pointerEvents: "none",
-          }}
-        />
-      </FloatingElement>
+      {/* Immersive background elements */}
+      <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+        <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%)", filter: "blur(80px)" }} />
+        <div style={{ position: "absolute", bottom: "-10%", left: "-5%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        <div style={{ position: "absolute", inset: 0, opacity: 0.02, backgroundImage: "radial-gradient(#10b981 0.5px, transparent 0.5px)", backgroundSize: "24px 24px" }} />
+      </div>
 
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
-        style={{
-          maxWidth: "1000px",
-          margin: "0 auto",
-          textAlign: "center",
-          position: "relative",
-          zIndex: 1,
-        }}
+        whileInView="visible"
+        viewport={{ once: true }}
+        style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}
       >
-        {/* Ícone principal */}
-        <motion.div
-          variants={itemVariants}
-          whileHover={{ scale: 1.05, rotate: 5 }}
-          style={{
-            width: 80, // Reduced from 120
-            height: 80, // Reduced from 120
-            borderRadius: tokens.radii.full,
-            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto",
-            marginBottom: tokens.space.lg, // Reduced from xxl
-            boxShadow: "0 10px 30px rgba(16, 185, 129, 0.3)",
-            border: "4px solid white", // Reduced from 6px
-          }}
-        >
-          <Leaf size={40} color="white" strokeWidth={2.5} />
+        <motion.div variants={itemVariants} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 64, height: 64, backgroundColor: "white", borderRadius: tokens.radii.lg, color: tokens.colors.primaryDark, marginBottom: tokens.space.xl, boxShadow: "0 10px 25px rgba(0,0,0,0.06)", border: `1px solid ${tokens.colors.border}` }}>
+          <Leaf size={32} strokeWidth={2.5} />
         </motion.div>
 
-        {/* Título */}
-        <motion.h1
-          variants={itemVariants}
-          style={{
-            fontSize: 32, // Reduced from 48
-            fontWeight: 800,
-            color: tokens.colors.text,
-            lineHeight: 1.2,
-            marginBottom: tokens.space.lg, // Reduced from xl
-            letterSpacing: "-0.02em",
-          }}
-        >
-          Ser vegano é simples.
-          <br />
-          <span
-            style={{
-              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              display: "inline-block",
-              marginTop: tokens.space.sm, // Reduced from md
-            }}
-          >
-            O difícil é viver num mundo que não foi feito pra isso.
-          </span>
+        <motion.h1 variants={itemVariants} style={{ fontSize: "clamp(2.5rem, 8vw, 4.2rem)", fontWeight: 800, color: tokens.colors.text, lineHeight: 1.1, marginBottom: tokens.space.lg, letterSpacing: "-0.04em" }}>
+          O Ecossistema de Apps que<br />
+          <span style={{ color: tokens.colors.primaryDark }}>facilita sua vida vegana.</span>
         </motion.h1>
 
-        {/* Card de benefícios */}
-        <motion.div
-          variants={itemVariants}
-          whileHover={{ y: -5 }}
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
-            backdropFilter: "blur(20px)",
-            padding: `${tokens.space.lg}px ${tokens.space.xl}px`, // Reduced padding
-            borderRadius: tokens.radii.xl,
-            border: "1px solid rgba(16, 185, 129, 0.2)",
-            maxWidth: 700,
-            margin: "0 auto",
-            marginBottom: tokens.space.lg, // Reduced margin
-            boxShadow: "0 10px 20px rgba(0, 0, 0, 0.08)", // Softer shadow
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: tokens.space.sm,
-              marginBottom: tokens.space.lg, // Reduced from xl
-            }}
-          >
-            <Sparkles size={20} color={tokens.colors.primary} />
-            <p
-              style={{
-                fontSize: 18, // Reduced from 20
-                fontWeight: 600,
-                color: tokens.colors.text,
-                margin: 0,
-              }}
-            >
-              Esse app existe pra:
-            </p>
-          </div>
+        <motion.p variants={itemVariants} style={{ fontSize: 20, color: tokens.colors.textMuted, maxWidth: 740, margin: "0 auto", marginBottom: tokens.space.xxl, lineHeight: 1.6, fontWeight: 450 }}>
+          Descubra o primeiro Super App dedicado a facilitar cada passo da sua jornada. Uma infraestrutura de aplicações integradas para resolver — na hora — qualquer dificuldade de ser vegano hoje.
+        </motion.p>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: tokens.space.md, // Reduced from lg
-            }}
+        <motion.div variants={itemVariants} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: tokens.space.md, marginBottom: tokens.space.massive }}>
+          <button
+            onClick={onStartClick}
+            style={{ backgroundColor: tokens.colors.text, color: "white", padding: `${tokens.space.md}px ${tokens.space.xxl}px`, borderRadius: tokens.radii.lg, border: "none", fontSize: 17, fontWeight: 700, cursor: "pointer", transition: "all 0.3s ease", display: "flex", alignItems: "center", gap: tokens.space.sm, boxShadow: "0 20px 40px rgba(0,0,0,0.1)", width: "fit-content" }}
           >
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
-                whileHover={{ x: 5, scale: 1.01 }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: tokens.space.md, // Reduced from lg
-                  padding: tokens.space.md, // Reduced from lg
-                  borderRadius: tokens.radii.md,
-                  background: "linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)",
-                  border: `1px solid ${tokens.colors.border}`,
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <div
-                  style={{
-                    width: 36, // Reduced from 48
-                    height: 36, // Reduced from 48
-                    borderRadius: tokens.radii.md,
-                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <benefit.icon size={18} color="white" strokeWidth={2.5} />
-                </div>
-                <span
-                  style={{
-                    fontSize: 16, // Reduced from 18
-                    color: tokens.colors.text,
-                    fontWeight: 500,
-                  }}
-                >
-                  {benefit.text}
-                </span>
-              </motion.div>
-            ))}
-          </div>
+            Dificuldades Veganas que o APP resolve <ArrowRight size={20} />
+          </button>
+
+          <span style={{ fontSize: 13, color: tokens.colors.textMuted, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+            Tecnologia para Facilitar sua Vida Ética
+          </span>
         </motion.div>
 
-        {/* Frase final */}
-        <motion.div
-          variants={itemVariants}
-          style={{
-            padding: tokens.space.lg,
-            maxWidth: 600,
-            margin: "0 auto",
-          }}
-        >
-          <div
-            style={{
-              height: 2,
-              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-              marginBottom: tokens.space.lg,
-              borderRadius: tokens.radii.full,
-              opacity: 0.3,
-            }}
-          />
-          <p
-            style={{
-              fontSize: 20, // Reduced from 24
-              fontStyle: "italic",
-              color: tokens.colors.primaryDark,
-              fontWeight: 500,
-              margin: 0,
-              lineHeight: 1.4,
-            }}
-          >
-            A gente cuida da parte chata.
-            <br />
-            <span style={{ fontWeight: 700 }}>Você só vive.</span>
-          </p>
+        {/* Minimal Benefits Grid */}
+        <motion.div variants={itemVariants} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: tokens.space.xl, maxWidth: 800, margin: "0 auto", padding: tokens.space.xl, backgroundColor: "white", borderRadius: tokens.radii.xl, border: `1px solid ${tokens.colors.border}`, boxShadow: "0 10px 30px rgba(0,0,0,0.02)" }}>
+          {benefits.map((benefit, idx) => (
+            <div key={idx} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: tokens.space.sm, textAlign: "center" }}>
+              <div style={{ width: 40, height: 40, borderRadius: tokens.radii.full, backgroundColor: tokens.colors.primaryLighter, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: tokens.space.xs, color: tokens.colors.primaryDark }}>
+                <benefit.icon size={20} />
+              </div>
+              <span style={{ fontSize: 14, color: tokens.colors.text, fontWeight: 600 }}>{benefit.text}</span>
+            </div>
+          ))}
         </motion.div>
       </motion.div>
     </div>
   );
 }
 
-// Question Item
-function QuestionItem({ question, isExpanded, onToggle }: { question: any; isExpanded: boolean; onToggle: () => void }) {
+// Problem Solver Item
+function ProblemItem({ item, isExpanded, onToggle }: { item: any; isExpanded: boolean; onToggle: () => void }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const iconMap: Record<number, any> = {
@@ -348,7 +159,7 @@ function QuestionItem({ question, isExpanded, onToggle }: { question: any; isExp
     6: Stethoscope,
   };
 
-  const Icon = iconMap[question.id as number];
+  const Icon = iconMap[item.id as number];
 
   const ctaIconMap: Record<string, any> = {
     "📷": Camera,
@@ -366,286 +177,82 @@ function QuestionItem({ question, isExpanded, onToggle }: { question: any; isExp
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      style={{
-        marginBottom: tokens.space.lg,
-        width: "100%",
-      }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      style={{ marginBottom: tokens.space.xl, width: "100%" }}
     >
-      <motion.button
+      <motion.div
         onClick={onToggle}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: 1.01, y: -2 }}
-        whileTap={{ scale: 0.99 }}
         style={{
           width: "100%",
-          padding: tokens.space.xl,
-          backgroundColor: isExpanded ? "rgba(255, 255, 255, 1)" : tokens.colors.surface,
-          border: `2px solid ${isExpanded ? tokens.colors.primary : tokens.colors.border}`,
-          borderRadius: tokens.radii.lg,
+          padding: `${tokens.space.xl}px ${tokens.space.xl}px ${isExpanded ? tokens.space.md : tokens.space.xl}px`,
+          backgroundColor: isExpanded ? tokens.colors.surface : "transparent",
+          borderRadius: `${tokens.radii.lg}px ${tokens.radii.lg}px ${isExpanded ? 0 : tokens.radii.lg}px ${isExpanded ? 0 : tokens.radii.lg}px`,
+          borderBottom: isExpanded ? `1px solid ${tokens.colors.border}` : "none",
           textAlign: "left",
           cursor: "pointer",
-          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          transition: "all 0.3s ease",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          boxShadow: isExpanded ? "0 10px 30px rgba(0, 0, 0, 0.1)" : "0 1px 3px rgba(0,0,0,0.06)",
           position: "relative",
-          overflow: "hidden",
         }}
       >
-        {/* Gradiente de fundo no hover */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: `linear-gradient(135deg, ${tokens.colors.primaryLighter} 0%, transparent 100%)`,
-            opacity: isHovered ? 1 : 0,
-            transition: "opacity 0.3s ease",
-            zIndex: 0,
-            pointerEvents: "none",
-          }}
-        />
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: tokens.space.xl,
-            flex: 1,
-            zIndex: 1,
-          }}
-        >
-          {/* Ícone */}
-          <motion.div
-            whileHover={{ rotate: 5, scale: 1.05 }}
-            style={{
-              width: 70,
-              height: 70,
-              borderRadius: tokens.radii.lg,
-              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              boxShadow: isExpanded
-                ? "0 0 30px rgba(16, 185, 129, 0.3)"
-                : "0 1px 3px rgba(0,0,0,0.06)",
-            }}
-          >
-            <Icon size={32} color="white" strokeWidth={2.5} />
-          </motion.div>
-
+        <div style={{ display: "flex", alignItems: "center", gap: tokens.space.xl, flex: 1, zIndex: 1 }}>
+          <div style={{ width: 60, height: 60, borderRadius: tokens.radii.md, background: isExpanded ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" : tokens.colors.primaryLighter, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isExpanded ? "white" : tokens.colors.primary, transition: "all 0.3s ease" }}>
+            <Icon size={28} strokeWidth={2.5} />
+          </div>
           <div style={{ flex: 1 }}>
-            <div
-              style={{
-                fontSize: 24,
-                fontWeight: 700,
-                color: tokens.colors.text,
-                marginBottom: tokens.space.xs,
-                display: "flex",
-                alignItems: "center",
-                gap: tokens.space.md,
-              }}
-            >
-              {question.title}
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: "white",
-                  background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                  padding: `${tokens.space.xs}px ${tokens.space.md}px`,
-                  borderRadius: tokens.radii.pill,
-                }}
-              >
-                {question.id}/6
-              </span>
-            </div>
-            <div
-              style={{
-                fontSize: 18,
-                color: tokens.colors.textMuted,
-                fontStyle: "italic",
-              }}
-            >
-              {question.problem}
-            </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: tokens.colors.text, marginBottom: 4, letterSpacing: "-0.01em" }}>{item.title}</div>
+            <div style={{ fontSize: 16, color: tokens.colors.textMuted, fontWeight: 500 }}>{item.problem}</div>
           </div>
         </div>
-
-        {/* Ícone de expansão */}
-        <motion.div
-          animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-          style={{
-            marginLeft: tokens.space.lg,
-            zIndex: 1,
-          }}
-        >
-          <ChevronDown size={28} color={tokens.colors.primary} strokeWidth={2.5} />
+        <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} style={{ marginLeft: tokens.space.lg }}>
+          <ChevronDown size={24} color={tokens.colors.primary} strokeWidth={3} />
         </motion.div>
-      </motion.button>
+      </motion.div>
 
-      {/* Conteúdo expandido */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            style={{
-              overflow: "hidden",
-            }}
+            transition={{ duration: 0.3 }}
+            style={{ backgroundColor: tokens.colors.surface, borderRadius: `0 0 ${tokens.radii.lg}px ${tokens.radii.lg}px`, overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.05)" }}
           >
-            <div
-              style={{
-                padding: tokens.space.xxl,
-                backgroundColor: "rgba(255, 255, 255, 0.5)",
-                backdropFilter: "blur(10px)",
-                border: `2px solid ${tokens.colors.primary}`,
-                borderTop: "none",
-                borderRadius: `0 0 ${tokens.radii.lg}px ${tokens.radii.lg}px`,
-                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              {/* Informações importantes */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                style={{
-                  marginBottom: tokens.space.xxl,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: tokens.space.md,
-                    marginBottom: tokens.space.xl,
-                  }}
-                >
-                  <Sparkles size={24} color={tokens.colors.primary} />
-                  <h4
-                    style={{
-                      fontSize: 20,
-                      fontWeight: 700,
-                      color: tokens.colors.text,
-                      margin: 0,
-                    }}
-                  >
-                    Informações importantes
-                  </h4>
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                    gap: tokens.space.lg,
-                  }}
-                >
-                  {question.content.map((item: any, index: number) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.1 + index * 0.05 }}
-                      whileHover={{ y: -4, scale: 1.02 }}
-                      style={{
-                        padding: tokens.space.lg,
-                        backgroundColor: "white",
-                        borderRadius: tokens.radii.md,
-                        border: `1px solid ${tokens.colors.border}`,
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: tokens.space.md,
-                        transition: "all 0.3s ease",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                        cursor: "default",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: tokens.radii.full,
-                          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flexShrink: 0,
-                          color: "white",
-                          fontSize: 14,
-                          fontWeight: 700,
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                        }}
-                      >
-                        {index + 1}
-                      </div>
-                      <span
-                        style={{
-                          fontSize: 16,
-                          color: tokens.colors.text,
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        {item}
-                      </span>
-                    </motion.div>
+            <div style={{ padding: tokens.space.xl }}>
+              <div style={{ marginBottom: tokens.space.xl }}>
+                <p style={{ fontSize: 16, color: tokens.colors.textMuted, lineHeight: 1.6, marginBottom: tokens.space.lg, paddingLeft: tokens.space.md, borderLeft: `3px solid ${tokens.colors.primary}20` }}>
+                  Apps integrados para facilitar sua jornada:
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: tokens.space.md }}>
+                  {item.content.map((contentItem: any, idx: number) => (
+                    <div key={idx} style={{ padding: tokens.space.md, backgroundColor: tokens.colors.bg, borderRadius: tokens.radii.md, display: "flex", alignItems: "center", gap: tokens.space.md, border: `1px solid ${tokens.colors.border}40` }}>
+                      <div style={{ width: 28, height: 28, borderRadius: tokens.radii.full, background: tokens.colors.primary, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "white", fontSize: 12, fontWeight: 700 }}>{idx + 1}</div>
+                      <span style={{ fontSize: 15, color: tokens.colors.text, fontWeight: 500 }}>{contentItem}</span>
+                    </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
 
-              {/* CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: tokens.space.md,
-                    marginBottom: tokens.space.xl,
-                  }}
-                >
-                  <Zap size={24} color={tokens.colors.accent} />
-                  <h4
-                    style={{
-                      fontSize: 20,
-                      fontWeight: 700,
-                      color: tokens.colors.text,
-                      margin: 0,
-                    }}
-                  >
-                    No nosso app você pode
-                  </h4>
+              <div style={{ background: `linear-gradient(135deg, ${tokens.colors.primaryLighter} 0%, rgba(255,255,255,0.2) 100%)`, padding: tokens.space.xl, borderRadius: tokens.radii.lg, border: `1px solid ${tokens.colors.primary}15` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md, marginBottom: tokens.space.xl }}>
+                  <div style={{ width: 40, height: 40, borderRadius: tokens.radii.md, backgroundColor: "white", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 10px rgba(0,0,0,0.05)" }}><Zap size={22} color={tokens.colors.primary} /></div>
+                  <div>
+                    <h4 style={{ fontSize: 18, fontWeight: 800, color: tokens.colors.text, margin: 0 }}>Resolva facilita agora no Ecossistema</h4>
+                    <p style={{ fontSize: 13, color: tokens.colors.textMuted, margin: 0 }}>Infraestrutura de apps dedicados</p>
+                  </div>
                 </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                    gap: tokens.space.md,
-                  }}
-                >
-                  {question.ctas.map((cta: any, index: number) => {
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: tokens.space.md }}>
+                  {item.ctas.map((cta: any, idx: number) => {
                     const CtaIcon = ctaIconMap[cta.icon] || Search;
-                    return (
-                      <CTAButton key={index} cta={cta} CtaIcon={CtaIcon} />
-                    );
+                    return <CTAButton key={idx} cta={cta} CtaIcon={CtaIcon} />;
                   })}
                 </div>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         )}
@@ -663,386 +270,128 @@ function CTAButton({ cta, CtaIcon }: { cta: any; CtaIcon: any }) {
       onClick={() => window.open(cta.link, "_blank")}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      whileHover={{ y: -4, scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       style={{
-        padding: `${tokens.space.lg}px ${tokens.space.xl}px`,
-        backgroundColor: "white",
-        color: isHovered ? "white" : tokens.colors.primary,
-        border: `2px solid ${tokens.colors.primary}`,
-        borderRadius: tokens.radii.md,
-        fontSize: 16,
-        fontWeight: 600,
+        background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        padding: tokens.space.lg,
+        borderRadius: tokens.radii.lg,
+        border: "none",
         cursor: "pointer",
         textAlign: "left",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        transition: "all 0.3s ease",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        gap: tokens.space.md,
+        transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
+        boxShadow: isHovered ? `0 20px 40px ${tokens.colors.primary}40, 0 8px 16px ${tokens.colors.primary}25` : `0 4px 12px ${tokens.colors.primary}20`,
         position: "relative",
         overflow: "hidden",
+        width: "100%",
+        minHeight: 80,
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-          opacity: isHovered ? 1 : 0,
-          transition: "opacity 0.3s ease",
-          zIndex: 0,
-        }}
-      />
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: tokens.space.md,
-          zIndex: 1,
-          position: "relative",
-        }}
-      >
-        <CtaIcon size={20} strokeWidth={2.5} />
-        <span>{cta.text}</span>
+      <motion.div animate={{ left: isHovered ? "120%" : "-20%" }} transition={{ duration: 0.8, ease: "easeInOut" }} style={{ position: "absolute", top: 0, width: "50%", height: "100%", background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)", zIndex: 1, pointerEvents: "none" }} />
+      <div style={{ display: "flex", alignItems: "center", gap: tokens.space.lg, zIndex: 2, position: "relative", width: "100%" }}>
+        <div style={{ width: 48, height: 48, borderRadius: tokens.radii.md, background: "rgba(255, 255, 255, 0.15)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "white", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}>
+          <CtaIcon size={24} strokeWidth={2.5} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <span style={{ fontSize: 16, fontWeight: 700, color: "white", display: "block", letterSpacing: "-0.01em" }}>{cta.text}</span>
+          <span style={{ fontSize: 12, fontWeight: 500, color: "rgba(255, 255, 255, 0.8)" }}>Acessar aplicação</span>
+        </div>
+        <motion.div animate={{ x: isHovered ? 5 : 0, opacity: 1 }} style={{ color: "white" }}>
+          <ArrowRight size={20} strokeWidth={3} />
+        </motion.div>
       </div>
-      <ArrowRight
-        size={20}
-        strokeWidth={2.5}
-        style={{ zIndex: 1, position: "relative" }}
-      />
     </motion.button>
   );
 }
 
-// Questions Section
-function QuestionsSection() {
-  const [expandedQuestion, setExpandedQuestion] = useState<number | null>(1);
+// Custom Android Icon
+const AndroidIcon = ({ size = 24 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.523 15.3414C17.0734 15.3414 16.7092 14.9772 16.7092 14.5275C16.7092 14.0779 17.0734 13.7137 17.523 13.7137C17.9727 13.7137 18.3369 14.0779 18.3369 14.5275C18.3369 14.9772 17.9727 15.3414 17.523 15.3414ZM6.47702 15.3414C6.02736 15.3414 5.66318 14.9772 5.66318 14.5275C5.66318 14.0779 6.02736 13.7137 6.47702 13.7137C6.92668 13.7137 7.29086 14.0779 7.29086 14.5275C7.29086 14.9772 6.92668 15.3414 6.47702 15.3414ZM17.9863 11.238L19.7825 8.12659C19.9213 7.88607 19.8389 7.57917 19.5984 7.4404C19.3578 7.30164 19.051 7.38401 18.9122 7.62453L17.1009 10.7618C15.6599 10.1036 14.0041 9.71887 12.25 9.71887C10.4959 9.71887 8.84013 10.1036 7.39912 10.7618L5.58778 7.62453C5.44901 7.38401 5.14211 7.30164 4.90159 7.4404C4.66107 7.57917 4.5787 7.88601 4.71746 8.12659L6.51371 11.238C3.12056 12.915 0.796875 16.3315 0.75 20.3228H23.75C23.7031 16.3315 21.3794 12.915 17.9863 11.238Z" />
+  </svg>
+);
 
-  const toggleQuestion = (id: number) => {
-    setExpandedQuestion(expandedQuestion === id ? null : id);
-  };
-
+function QuestionsSection({ expandedIndices, setExpandedIndices, sectionRef }: { expandedIndices: number[]; setExpandedIndices: React.Dispatch<React.SetStateAction<number[]>>; sectionRef: React.RefObject<HTMLDivElement> }) {
   return (
-    <div
-      style={{
-        padding: `${tokens.space.giant}px ${tokens.space.xl}px`,
-        maxWidth: "1100px",
-        margin: "0 auto",
-        backgroundColor: tokens.colors.bg,
-      }}
+    <section
+      id="questions"
+      ref={sectionRef}
+      style={{ padding: `0 0 ${tokens.space.massive}px`, position: "relative" }}
     >
-      {/* Cabeçalho */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        style={{
-          textAlign: "center",
-          marginBottom: tokens.space.giant,
-        }}
-      >
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: tokens.space.sm,
-            padding: `${tokens.space.md}px ${tokens.space.xl}px`,
-            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-            borderRadius: tokens.radii.pill,
-            marginBottom: tokens.space.xl,
-            boxShadow: "0 0 30px rgba(16, 185, 129, 0.3)",
-          }}
-        >
-          <Sparkles size={18} color="white" />
-          <span
-            style={{
-              fontSize: 16,
-              fontWeight: 600,
-              color: "white",
-            }}
-          >
-            Guia completo
-          </span>
-        </motion.div>
-
-        <h2
-          style={{
-            fontSize: 36,
-            fontWeight: 800,
-            color: tokens.colors.text,
-            marginBottom: tokens.space.lg,
-            letterSpacing: "-0.02em",
-          }}
-        >
-          Perguntas recorrentes
-        </h2>
-        <p
-          style={{
-            fontSize: 20,
-            color: tokens.colors.textMuted,
-            maxWidth: 700,
-            margin: "0 auto",
-            lineHeight: 1.6,
-          }}
-        >
-          Clique em qualquer pergunta para ver informações detalhadas e soluções
-          práticas
-        </p>
-      </motion.div>
-
-      {/* Lista de perguntas */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: tokens.space.lg,
-        }}
-      >
-        {questionsData.map((question, index) => (
-          <motion.div
-            key={question.id}
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <QuestionItem
-              question={question}
-              isExpanded={expandedQuestion === question.id}
-              onToggle={() => toggleQuestion(question.id)}
-            />
-          </motion.div>
+      <div style={{ maxWidth: 840, margin: "0 auto", padding: `0 ${tokens.space.lg}px` }}>
+        {questionsData.map((item: any, index: number) => (
+          <ProblemItem key={item.id} item={item} isExpanded={expandedIndices.includes(index)} onToggle={() => setExpandedIndices(prev => prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index])} />
         ))}
       </div>
 
-      {/* Rodapé */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        whileHover={{ scale: 1.02, y: -5 }}
-        style={{
-          marginTop: tokens.space.giant,
-          padding: tokens.space.xxl,
-          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-          borderRadius: tokens.radii.xl,
-          textAlign: "center",
-          boxShadow: "0 0 40px rgba(16, 185, 129, 0.5)",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <FloatingElement>
-          <div
-            style={{
-              position: "absolute",
-              top: -50,
-              right: -50,
-              width: 200,
-              height: 200,
-              borderRadius: "50%",
-              background: "rgba(255, 255, 255, 0.1)",
-              filter: "blur(40px)",
-              pointerEvents: "none",
-            }}
-          />
-        </FloatingElement>
-
-        <motion.div
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2, type: "spring" }}
-        >
-          <Leaf
-            size={48}
-            color="white"
-            strokeWidth={2}
-            style={{ marginBottom: tokens.space.lg }}
-          />
-        </motion.div>
-
-        <p
-          style={{
-            fontSize: 24,
-            color: "white",
-            fontWeight: 700,
-            marginBottom: tokens.space.xl,
-            position: "relative",
-          }}
-        >
-          Baixe nosso app para ter todas essas soluções na palma da mão
-        </p>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          style={{
-            padding: `${tokens.space.lg}px ${tokens.space.xxl}px`,
-            backgroundColor: "white",
-            color: tokens.colors.primary,
-            border: "none",
-            borderRadius: tokens.radii.pill,
-            fontSize: 18,
-            fontWeight: 700,
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: tokens.space.md,
-            position: "relative",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-          }}
-        >
-          Baixar App Gratuito
-          <ArrowRight size={24} strokeWidth={2.5} />
-        </motion.button>
+      <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} style={{ marginTop: tokens.space.massive, padding: `${tokens.space.massive}px ${tokens.space.xl}px`, background: "linear-gradient(135deg, #065f46 0%, #059669 100%)", textAlign: "center", position: "relative", overflow: "hidden", width: "100vw", marginLeft: "calc(-50vw + 50%)", boxSizing: "border-box" }}>
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
+          <div style={{ position: "absolute", top: "-20%", right: "-5%", width: "50%", height: "120%", background: "radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, transparent 70%)", filter: "blur(80px)" }} />
+          <div style={{ position: "absolute", bottom: "-20%", left: "-5%", width: "40%", height: "100%", background: "radial-gradient(circle, rgba(5, 150, 105, 0.3) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        </div>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto" }}>
+          <motion.div initial={{ scale: 0, rotate: -20 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, type: "spring", stiffness: 200 }} style={{ width: 56, height: 56, borderRadius: tokens.radii.lg, background: "rgba(255, 255, 255, 0.15)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", marginBottom: tokens.space.xl, color: "white", border: "1px solid rgba(255, 255, 255, 0.2)" }}><Leaf size={28} strokeWidth={2.5} /></motion.div>
+          <h3 style={{ fontSize: 40, color: "white", fontWeight: 800, marginBottom: tokens.space.lg, letterSpacing: "-0.02em" }}>O Super App na sua mão</h3>
+          <p style={{ fontSize: 20, color: "rgba(255, 255, 255, 0.9)", maxWidth: 700, margin: "0 auto", marginBottom: tokens.space.giant, lineHeight: 1.6 }}>Desbloqueie o poder total do ecossistema para facilitar sua vida: notificações inteligentes, modo offline e infraestrutura dedicada para sua jornada ética.</p>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: tokens.space.xl, marginBottom: tokens.space.giant }}>
+            <motion.button whileHover={{ y: -10, boxShadow: "0 30px 60px rgba(0,0,0,0.4)" }} whileTap={{ scale: 0.96 }} style={{ width: 260, minHeight: 180, padding: `${tokens.space.xl}px`, backgroundColor: "rgba(0, 0, 0, 0.45)", backdropFilter: "blur(20px)", color: "white", border: "1px solid rgba(255, 255, 255, 0.2)", borderRadius: tokens.radii.xl, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: tokens.space.lg, transition: "all 0.5s cubic-bezier(0.23, 1, 0.32, 1)" }}>
+              <Apple size={48} fill="white" />
+              <div style={{ textAlign: "center" }}><span style={{ fontSize: 12, display: "block", color: "rgba(255, 255, 255, 0.5)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 4 }}>Premium Ecosystem</span><span style={{ fontSize: 24, fontWeight: 800, display: "block" }}>iPhone Super App</span></div>
+            </motion.button>
+            <motion.button whileHover={{ y: -10, boxShadow: "0 30px 60px rgba(0,0,0,0.4)" }} whileTap={{ scale: 0.96 }} style={{ width: 260, minHeight: 180, padding: `${tokens.space.xl}px`, backgroundColor: "rgba(0, 0, 0, 0.45)", backdropFilter: "blur(20px)", color: "white", border: "1px solid rgba(255, 255, 255, 0.2)", borderRadius: tokens.radii.xl, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: tokens.space.lg, transition: "all 0.5s cubic-bezier(0.23, 1, 0.32, 1)" }}>
+              <AndroidIcon size={48} />
+              <div style={{ textAlign: "center" }}><span style={{ fontSize: 12, display: "block", color: "rgba(255, 255, 255, 0.5)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 4 }}>Full Infrastructure</span><span style={{ fontSize: 24, fontWeight: 800, display: "block" }}>Android Super App</span></div>
+            </motion.button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: tokens.space.lg, borderTop: "1px solid rgba(255,255,255,0.15)", paddingTop: tokens.space.xxl, maxWidth: 500, margin: "0 auto" }}>
+            <motion.button whileHover={{ color: "white", y: -1 }} style={{ background: "none", border: "none", color: "rgba(255, 255, 255, 0.65)", fontSize: 15, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: tokens.space.sm, transition: "all 0.2s ease" }}><Monitor size={20} />Acessar via Web Browser</motion.button>
+            <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md, color: "rgba(255,255,255,0.3)", fontSize: 13, fontWeight: 500 }}>
+              <span>© 2026 Guia Vegano</span>
+              <div style={{ width: 4, height: 4, borderRadius: "50%", backgroundColor: "currentColor" }} />
+              <span>Infraestrutura para Facilitar sua Vida</span>
+            </div>
+          </div>
+        </div>
       </motion.div>
-    </div>
+    </section>
   );
 }
 
 // Dados das perguntas
 const questionsData = [
-  {
-    id: 1,
-    title: "Decidir sem errar",
-    problem: "Isso é vegano?",
-    content: [
-      "Erros comuns que iniciantes cometem ao ler rótulos",
-      "Ingredientes armadilha que parecem veganos mas não são",
-      "Como identificar derivados animais em listas de ingredientes",
-    ],
-    ctas: [
-      { text: "Escanear produto", icon: "📷", link: "/app/scanner" },
-      { text: "Pesquisar ingrediente", icon: "🔎", link: "/app/ingredients" },
-    ],
-  },
-  {
-    id: 2,
-    title: "Comer no dia a dia",
-    problem: "O que eu como?",
-    content: [
-      "Prato vegano simples e completo para todas as refeições",
-      "Combinações básicas para nutrição equilibrada",
-      "Substituições simples para ingredientes não-veganos",
-    ],
-    ctas: [
-      { text: "Ver receitas", icon: "📖", link: "/app/recipes" },
-      { text: "Salvar refeições base", icon: "💾", link: "/app/meal-plans" },
-    ],
-  },
-  {
-    id: 3,
-    title: "Comer fora",
-    problem: "Onde comer?",
-    content: [
-      "Como perguntar no restaurante sem constrangimento",
-      "O que evitar em cardápios aparentemente veganos",
-      "Restaurantes étnicos com mais opções naturais",
-    ],
-    ctas: [
-      {
-        text: "Ver restaurantes perto de mim",
-        icon: "🗺️",
-        link: "/app/restaurants",
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "Alimentação ok",
-    problem: "Tô fazendo certo?",
-    content: [
-      "Nutrientes-chave que precisam de atenção especial",
-      "Suplementação de B12: por que é essencial e como fazer",
-      "Fontes veganas de proteína, ferro e cálcio",
-    ],
-    ctas: [
-      { text: "Configurar Nutri Simples", icon: "📊", link: "/app/nutrition" },
-    ],
-  },
-  {
-    id: 5,
-    title: "Vida social",
-    problem: "Sou o único vegano?",
-    content: [
-      "Normalização: você não está sozinho nesta jornada",
-      "Como lidar com questionamentos de familiares e amigos",
-      "Encontrar apoio e inspiração em grupos veganos",
-    ],
-    ctas: [
-      { text: "Ver eventos", icon: "🎪", link: "/app/events" },
-      { text: "Entrar na comunidade", icon: "💬", link: "/app/community" },
-      { text: "Conhecer pessoas veganas", icon: "💕", link: "/app/meet" },
-    ],
-  },
-  {
-    id: 6,
-    title: "Saúde",
-    problem: "Preciso de ajuda profissional?",
-    content: [
-      "Quando procurar um profissional de saúde especializado",
-      "Que tipo de profissional procurar (nutricionista, médico)",
-      "Como encontrar profissionais que respeitam sua escolha vegana",
-    ],
-    ctas: [
-      {
-        text: "Encontrar profissionais veganos",
-        icon: "🩺",
-        link: "/app/professionals",
-      },
-    ],
-  },
+  { id: 1, title: "Decidir sem errar", problem: "Isso é vegano?", keywords: ["leite", "ovo", "mel", "ingrediente", "rótulo", "mercado", "comprar", "escane", "produto"], content: ["Erros comuns que iniciantes cometem ao ler rótulos", "Ingredientes armadilha que parecem veganos mas não são", "Como identificar derivados animais em listas de ingredientes"], ctas: [{ text: "Escanear produto", icon: "📷", link: "/app/scanner" }, { text: "Pesquisar ingrediente", icon: "🔎", link: "/app/ingredients" }] },
+  { id: 2, title: "Comer no dia a dia", problem: "O que eu como?", keywords: ["receita", "cozinha", "almoço", "jantar", "café", "comida", "preparar", "fácil", "rápido"], content: ["Prato vegano simples e completo para todas as refeições", "Combinações básicas para nutrição equilibrada", "Substituições simples para ingredientes não-veganos"], ctas: [{ text: "Ver receitas", icon: "📖", link: "/app/recipes" }, { text: "Salvar refeições base", icon: "💾", link: "/app/meal-plans" }] },
+  { id: 3, title: "Comer fora", problem: "Onde comer?", keywords: ["restaurante", "bar", "viagem", "rua", "lanche", "pizza", "hamburguer", "shopping", "fora"], content: ["Como perguntar no restaurante sem constrangimento", "O que evitar em cardápios aparentemente veganos", "Restaurantes étnicos com mais opções naturais"], ctas: [{ text: "Ver restaurantes perto de mim", icon: "🗺️", link: "/app/restaurants" }] },
+  { id: 4, title: "Alimentação ok", problem: "Tô fazendo certo?", keywords: ["saúde", "b12", "proteina", "ferro", "calcio", "exame", "vitamina", "nutri", "sangue"], content: ["Nutrientes-chave que precisam de atenção especial", "Suplementação de B12: por que é essencial e como fazer", "Fontes veganas de proteína, ferro e cálcio"], ctas: [{ text: "Configurar Nutri Simples", icon: "📊", link: "/app/nutrition" }] },
+  { id: 5, title: "Vida social", problem: "Sou o único vegano?", keywords: ["amigo", "familia", "festa", "natal", "churrasco", "conversa", "evento", "grupo", "comunidade"], content: ["Normalização: você não está sozinho nesta jornada", "Como lidar com questionamentos de familiares e amigos", "Encontrar apoio e inspiração em grupos veganos"], ctas: [{ text: "Ver eventos", icon: "🎪", link: "/app/events" }, { text: "Entrar na comunidade", icon: "💬", link: "/app/community" }, { text: "Conhecer pessoas veganas", icon: "💕", link: "/app/meet" }] },
+  { id: 6, title: "Saúde", problem: "Preciso de ajuda profissional?", keywords: ["médico", "nutricionista", "consulta", "ajuda", "profissional", "hospital", "clinica", "especialista"], content: ["Quando procurar um profissional de saúde especializado", "Que tipo de profissional procurar (nutricionista, médico)", "Como encontrar profissionais que respeitam sua escolha vegana"], ctas: [{ text: "Encontrar profissionais veganos", icon: "🩺", link: "/app/professionals" }] },
 ];
 
-// Componente Principal
 function VeganGuidePage() {
-  return (
-    <div
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        backgroundColor: tokens.colors.bg,
-        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-        color: tokens.colors.text,
-      }}
-    >
-      <IntroSection />
-      <QuestionsSection />
+  const [expandedIndices, setExpandedIndices] = useState<number[]>([0]);
+  const questionsRef = useRef<HTMLDivElement>(null);
 
-      {/* Estilos globais */}
+  const scrollToSolution = () => {
+    questionsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: tokens.colors.bg, fontFamily: "'Inter', sans-serif", color: tokens.colors.text }}>
+      <IntroSection onStartClick={scrollToSolution} />
+      <QuestionsSection
+        expandedIndices={expandedIndices}
+        setExpandedIndices={setExpandedIndices}
+        sectionRef={questionsRef}
+      />
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-            Roboto, sans-serif;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-          overflow-x: hidden;
-        }
-
-        button {
-          font-family: inherit;
-          outline: none;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { margin: 0; padding: 0; font-family: "Inter", sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        button { font-family: inherit; outline: none; }
       `}</style>
     </div>
   );
