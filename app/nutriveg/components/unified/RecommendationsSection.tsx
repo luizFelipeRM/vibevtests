@@ -1,80 +1,61 @@
 import React from "react";
-import { Zap } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { tokens } from "../../styles/tokens";
-import { nutritionRecommendations } from "../../data/recommendations";
+import { nutritionRecommendations as recommendations } from "../../data/recommendations";
 import { RecommendationCard } from "../basic/RecommendationCard";
 import { NutritionistPromo } from "../basic/NutritionistPromo";
 
 export const RecommendationsSection: React.FC = () => {
-  return (
-    <>
-      <div
-        style={{
-          background: "white",
-          borderRadius: tokens.radii.xl,
-          padding: tokens.space.xxl,
-          marginBottom: tokens.space.xxl,
-          boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: tokens.space.md,
-            marginBottom: tokens.space.xxl,
-          }}
-        >
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: tokens.radii.lg,
-              background: `linear-gradient(135deg, ${tokens.colors.primary}, ${tokens.colors.primaryDark})`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Zap size={24} color="white" strokeWidth={2.5} />
-          </div>
-          <div>
-            <h3
-              style={{
-                fontSize: 22,
-                fontWeight: 800,
-                color: tokens.colors.text,
-                margin: 0,
-              }}
-            >
-              Recomendações para Você
-            </h3>
-            <p
-              style={{
-                fontSize: 14,
-                color: tokens.colors.textMuted,
-                margin: 0,
-              }}
-            >
-              Baseadas na sua análise nutricional
-            </p>
-          </div>
-        </div>
+  // Pegar a de maior prioridade para ser destaque
+  const featured = recommendations.find(r => r.priority === "alta") || recommendations[0];
+  const others = recommendations.filter(r => r !== featured);
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: tokens.space.lg,
-          }}
-        >
-          {nutritionRecommendations.map((suggestion, i) => (
-            <RecommendationCard key={i} {...suggestion} index={i} />
-          ))}
+  // Type-safe icon component
+  const FeaturedIcon = featured.icon;
+
+  return (
+    <div
+      style={{
+        marginTop: tokens.space.xxl,
+        background: "white",
+        padding: `${tokens.space.xxl}px`,
+        borderRadius: tokens.radii.xl,
+        border: `1px solid ${tokens.colors.border}`,
+        boxShadow: "0 4px 24px rgba(0,0,0,0.02)",
+      }}
+    >
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        marginBottom: tokens.space.xl,
+        borderBottom: `1px solid ${tokens.colors.border}`,
+        paddingBottom: tokens.space.xl
+      }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: tokens.space.sm, marginBottom: 8 }}>
+            <span style={{ fontSize: 18 }}>✨</span>
+            <h3 style={{ fontSize: 24, fontWeight: 300, color: tokens.colors.text, margin: 0, letterSpacing: "-0.02em" }}>
+              NutriVeg <strong style={{ fontWeight: 800 }}>Insights</strong>
+            </h3>
+          </div>
+          <p style={{ fontSize: 13, color: tokens.colors.textMuted, margin: 0 }}>
+            Análise comportamental e recomendações para otimizar seus resultados.
+          </p>
         </div>
       </div>
 
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {recommendations.map((rec, idx) => (
+          <RecommendationCard
+            key={rec.title}
+            index={idx}
+            {...rec}
+          />
+        ))}
+      </div>
+
       <NutritionistPromo />
-    </>
+    </div>
   );
 };

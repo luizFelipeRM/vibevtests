@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Macros, MacroTarget } from "../../types";
+import { Macros, MacroTarget, Mode } from "../../types";
 import { tokens } from "../../styles/tokens";
 import { PieChart } from "../shared/PieChart";
 import {
@@ -10,14 +10,17 @@ import {
 import { CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 
 interface MacroDistributionProps {
+  mode: Mode;
   macros: Macros;
   targets: MacroTarget;
 }
 
 export const MacroDistribution: React.FC<MacroDistributionProps> = ({
+  mode,
   macros,
   targets,
 }) => {
+  const isFitness = mode === "fitness";
   const validation = useMemo(
     () => validateMacroDistribution(macros),
     [macros]
@@ -75,35 +78,37 @@ export const MacroDistribution: React.FC<MacroDistributionProps> = ({
       </h3>
 
       {/* Gráfico de Pizza */}
-      <div style={{ marginBottom: tokens.space.lg }}>
+      <div style={{ marginBottom: isFitness ? tokens.space.lg : 0 }}>
         <PieChart percentages={validation.percentages} />
       </div>
 
       {/* Badge de Status */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: tokens.space.sm,
-          padding: tokens.space.md,
-          background: status.bgColor,
-          border: `2px solid ${status.borderColor}`,
-          borderRadius: tokens.radii.md,
-          marginBottom: tokens.space.lg,
-        }}
-      >
-        <StatusIcon size={18} color={status.color} />
-        <span
+      {isFitness && (
+        <div
           style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: status.color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: tokens.space.sm,
+            padding: tokens.space.md,
+            background: status.bgColor,
+            border: `2px solid ${status.borderColor}`,
+            borderRadius: tokens.radii.md,
+            marginBottom: tokens.space.lg,
           }}
         >
-          {status.label}
-        </span>
-      </div>
+          <StatusIcon size={18} color={status.color} />
+          <span
+            style={{
+              fontSize: 14,
+              fontWeight: 700,
+              color: status.color,
+            }}
+          >
+            {status.label}
+          </span>
+        </div>
+      )}
 
       {/* Valores Atuais vs Ideais */}
       <div
@@ -123,7 +128,7 @@ export const MacroDistribution: React.FC<MacroDistributionProps> = ({
             textTransform: "uppercase",
           }}
         >
-          Distribuição Atual vs Ideal
+          {isFitness ? "Distribuição Atual vs Ideal" : "Distribuição Nutricional"}
         </div>
 
         {/* Proteína */}
@@ -152,11 +157,15 @@ export const MacroDistribution: React.FC<MacroDistributionProps> = ({
             <span style={{ fontSize: 13, fontWeight: 700, color: tokens.colors.text }}>
               {validation.percentages.protein.toFixed(1)}%
             </span>
-            <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>
-              (ideal: {idealRatios.protein.ideal}%)
-            </span>
-            {validation.evaluations.protein === "ideal" && (
-              <CheckCircle2 size={14} color={tokens.colors.green} />
+            {isFitness && (
+              <>
+                <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>
+                  (ideal: {idealRatios.protein.ideal}%)
+                </span>
+                {validation.evaluations.protein === "ideal" && (
+                  <CheckCircle2 size={14} color={tokens.colors.green} />
+                )}
+              </>
             )}
           </div>
         </div>
@@ -187,11 +196,15 @@ export const MacroDistribution: React.FC<MacroDistributionProps> = ({
             <span style={{ fontSize: 13, fontWeight: 700, color: tokens.colors.text }}>
               {validation.percentages.carbs.toFixed(1)}%
             </span>
-            <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>
-              (ideal: {idealRatios.carbs.ideal}%)
-            </span>
-            {validation.evaluations.carbs === "ideal" && (
-              <CheckCircle2 size={14} color={tokens.colors.green} />
+            {isFitness && (
+              <>
+                <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>
+                  (ideal: {idealRatios.carbs.ideal}%)
+                </span>
+                {validation.evaluations.carbs === "ideal" && (
+                  <CheckCircle2 size={14} color={tokens.colors.green} />
+                )}
+              </>
             )}
           </div>
         </div>
@@ -221,18 +234,22 @@ export const MacroDistribution: React.FC<MacroDistributionProps> = ({
             <span style={{ fontSize: 13, fontWeight: 700, color: tokens.colors.text }}>
               {validation.percentages.fats.toFixed(1)}%
             </span>
-            <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>
-              (ideal: {idealRatios.fats.ideal}%)
-            </span>
-            {validation.evaluations.fats === "ideal" && (
-              <CheckCircle2 size={14} color={tokens.colors.green} />
+            {isFitness && (
+              <>
+                <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>
+                  (ideal: {idealRatios.fats.ideal}%)
+                </span>
+                {validation.evaluations.fats === "ideal" && (
+                  <CheckCircle2 size={14} color={tokens.colors.green} />
+                )}
+              </>
             )}
           </div>
         </div>
       </div>
 
       {/* Feedback */}
-      {validation.feedback.length > 0 && (
+      {isFitness && validation.feedback.length > 0 && (
         <div
           style={{
             fontSize: 12,
@@ -279,32 +296,34 @@ export const MacroDistribution: React.FC<MacroDistributionProps> = ({
           {macros.calories}
         </div>
         <div style={{ fontSize: 14, color: tokens.colors.textMuted }}>
-          Meta: {targets.calories} kcal
+          {isFitness ? `Meta: ${targets.calories} kcal` : "Calorias consumidas"}
         </div>
-        <div
-          style={{
-            marginTop: tokens.space.md,
-            height: 8,
-            background: "rgba(0,0,0,0.1)",
-            borderRadius: tokens.radii.full,
-            overflow: "hidden",
-          }}
-        >
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{
-              width: `${Math.min(
-                (macros.calories / targets.calories) * 100,
-                100
-              )}%`,
-            }}
+        {isFitness && (
+          <div
             style={{
-              height: "100%",
-              background: tokens.colors.orange,
+              marginTop: tokens.space.md,
+              height: 8,
+              background: "rgba(0,0,0,0.1)",
               borderRadius: tokens.radii.full,
+              overflow: "hidden",
             }}
-          />
-        </div>
+          >
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{
+                width: `${Math.min(
+                  (macros.calories / targets.calories) * 100,
+                  100
+                )}%`,
+              }}
+              style={{
+                height: "100%",
+                background: tokens.colors.orange,
+                borderRadius: tokens.radii.full,
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -40,6 +40,9 @@ import {
   Info,
   Lightbulb,
   Tag,
+  Briefcase,
+  Flag,
+  AlertTriangle,
 } from "lucide-react";
 
 // Design Tokens com nova cor primária
@@ -86,6 +89,7 @@ const categories = [
   { id: "personal", name: "Personal Trainers", icon: Dumbbell },
   { id: "chef", name: "Chefs", icon: ChefHat },
   { id: "esteticista", name: "Esteticistas", icon: Scissors },
+  { id: "outros", name: "Outros", icon: Briefcase },
 ];
 
 // Dados mockados de profissionais
@@ -458,6 +462,104 @@ const professionalsData = [
       website: "www.econails.com.br",
     },
   },
+  {
+    id: 16,
+    name: "VeganDev - Desenvolvimento Web",
+    category: "outros",
+    specialty: "Desenvolvedor Full Stack",
+    location: "São Paulo, SP",
+    rating: 4.9,
+    reviews: 67,
+    experience: "5 anos",
+    price: "R$ 80-150/hora",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    verified: false,
+    isRemote: true,
+    bio: "Desenvolvedor vegano especializado em criar sites e aplicativos para negócios veganos. Ajudo empresas plant-based a terem presença digital profissional.",
+    address: "São Paulo, SP - Atendimento 100% Remoto",
+    services: ["Sites institucionais", "E-commerce", "Aplicativos mobile", "Manutenção e suporte"],
+    reviewsList: [],
+    portfolio: [],
+    contact: {
+      phone: "(11) 98888-7777",
+      email: "contato@vegandev.com.br",
+      instagram: "@vegandev",
+      website: "www.vegandev.com.br",
+    },
+  },
+  {
+    id: 17,
+    name: "Construveg - Reformas Conscientes",
+    category: "outros",
+    specialty: "Pedreiro e Reformador",
+    location: "Rio de Janeiro, RJ",
+    rating: 4.7,
+    reviews: 43,
+    experience: "12 anos",
+    price: "R$ 200-300/dia",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+    verified: true,
+    bio: "Pedreiro vegano com foco em reformas sustentáveis. Uso materiais ecológicos sempre que possível e apoio a comunidade vegana local.",
+    address: "Rua das Laranjeiras, 300 - Laranjeiras, Rio de Janeiro - RJ",
+    services: ["Reformas residenciais", "Acabamentos", "Pequenos reparos", "Consultoria em materiais sustentáveis"],
+    reviewsList: [],
+    portfolio: [],
+    contact: {
+      phone: "(21) 99777-6666",
+      email: "construveg@gmail.com",
+      instagram: "@construveg",
+      website: "",
+    },
+  },
+  {
+    id: 18,
+    name: "Green Clean - Limpeza Ecológica",
+    category: "outros",
+    specialty: "Serviços de Limpeza",
+    location: "Curitiba, PR",
+    rating: 4.8,
+    reviews: 89,
+    experience: "3 anos",
+    price: "R$ 120-200",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
+    verified: true,
+    bio: "Empresa de limpeza 100% vegana! Usamos apenas produtos cruelty-free e biodegradáveis. Equipe treinada e comprometida com o meio ambiente.",
+    address: "Curitiba, PR - Atendemos toda a região metropolitana",
+    services: ["Limpeza residencial", "Limpeza pós-obra", "Limpeza de escritórios", "Faxina profunda"],
+    reviewsList: [],
+    portfolio: [],
+    contact: {
+      phone: "(41) 98555-4444",
+      email: "contato@greenclean.com.br",
+      instagram: "@greenclean_cwb",
+      website: "www.greenclean.com.br",
+    },
+  },
+  {
+    id: 19,
+    name: "VeganLaw Advocacia",
+    category: "outros",
+    specialty: "Advogado",
+    location: "Brasília, DF",
+    rating: 5.0,
+    reviews: 34,
+    experience: "8 anos",
+    price: "R$ 300-500/consulta",
+    image: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&h=400&fit=crop",
+    verified: true,
+    isRemote: true,
+    bio: "Advogado vegano especializado em direito dos animais, direito do consumidor e consultoria para empresas veganas. Atendimento humanizado e comprometido com a causa.",
+    address: "Brasília, DF - Atendimento presencial e remoto",
+    services: ["Direito dos animais", "Direito do consumidor", "Consultoria empresarial", "Contratos"],
+    reviewsList: [],
+    portfolio: [],
+    contact: {
+      phone: "(61) 99444-3333",
+      email: "contato@veganlawadv.com.br",
+      instagram: "@veganlaw_adv",
+      website: "www.veganlawadv.com.br",
+    },
+  },
 ];
 
 // Notification Hook (can be extracted later)
@@ -515,7 +617,7 @@ const useNotifications = () => {
 };
 
 // Navbar Component
-function Navbar({ onOpenRegister, onOpenLogin, onOpenSignup }: { onOpenRegister: () => void; onOpenLogin: () => void; onOpenSignup: () => void }) {
+function Navbar() {
   const { notifications, unreadCount, markAllAsRead } = useNotifications();
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -776,9 +878,9 @@ function Navbar({ onOpenRegister, onOpenLogin, onOpenSignup }: { onOpenRegister:
             </AnimatePresence>
           </div>
 
-
+          {/* User Icon - Direct to Login */}
           <motion.button
-            onClick={onOpenLogin}
+            onClick={() => window.location.href = '/login'}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             style={{
@@ -792,6 +894,7 @@ function Navbar({ onOpenRegister, onOpenLogin, onOpenSignup }: { onOpenRegister:
               justifyContent: "center",
               cursor: "pointer",
             }}
+            title="Fazer Login"
           >
             <User size={20} color={tokens.colors.text} />
           </motion.button>
@@ -1003,11 +1106,230 @@ function ProfessionalCard({ professional, onOpenModal }: { professional: any; on
   );
 }
 
+// Report Modal Component
+function ReportModal({ onClose, professionalName }: { onClose: () => void; professionalName: string }) {
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [additionalInfo, setAdditionalInfo] = useState('');
+
+  const reportReasons = [
+    { id: 'fake', label: 'Perfil falso ou fraudulento' },
+    { id: 'inappropriate', label: 'Conteúdo inapropriado' },
+    { id: 'spam', label: 'Spam ou propaganda enganosa' },
+    { id: 'harassment', label: 'Assédio ou comportamento abusivo' },
+    { id: 'impersonation', label: 'Está se passando por outra pessoa' },
+    { id: 'other', label: 'Outro motivo' },
+  ];
+
+  const toggleReason = (reasonId: string) => {
+    if (selectedReasons.includes(reasonId)) {
+      setSelectedReasons(selectedReasons.filter(r => r !== reasonId));
+    } else {
+      setSelectedReasons([...selectedReasons, reasonId]);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedReasons.length === 0) {
+      alert('Por favor, selecione pelo menos um motivo para o reporte.');
+      return;
+    }
+    console.log('Report submitted:', { selectedReasons, additionalInfo });
+    alert('Obrigado! Seu reporte foi enviado e será analisado pela nossa equipe.');
+    onClose();
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        zIndex: 1100,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: tokens.space.xl,
+      }}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          backgroundColor: "white",
+          borderRadius: tokens.radii.xl,
+          maxWidth: 500,
+          width: "100%",
+          padding: tokens.space.xxl,
+          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+        }}
+      >
+        {/* Header */}
+        <div style={{ marginBottom: tokens.space.xl }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: tokens.space.md }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700, color: tokens.colors.text, margin: 0 }}>
+              Reportar Perfil
+            </h2>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={onClose}
+              style={{
+                backgroundColor: "#f3f4f6",
+                color: "#6b7280",
+                border: "none",
+                borderRadius: tokens.radii.full,
+                width: 32,
+                height: 32,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <X size={18} />
+            </motion.button>
+          </div>
+          <p style={{ fontSize: 14, color: tokens.colors.textMuted, margin: 0 }}>
+            Você está reportando o perfil de <strong>{professionalName}</strong>
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit}>
+          {/* Reasons */}
+          <div style={{ marginBottom: tokens.space.xl }}>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 600, marginBottom: tokens.space.md, color: tokens.colors.text }}>
+              Motivo do reporte *
+            </label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.space.sm }}>
+              {reportReasons.map((reason) => (
+                <motion.div
+                  key={reason.id}
+                  whileHover={{ backgroundColor: tokens.colors.bg }}
+                  onClick={() => toggleReason(reason.id)}
+                  style={{
+                    padding: tokens.space.md,
+                    border: `2px solid ${selectedReasons.includes(reason.id) ? tokens.colors.primary : tokens.colors.border}`,
+                    borderRadius: tokens.radii.md,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: tokens.space.md,
+                    backgroundColor: selectedReasons.includes(reason.id) ? tokens.colors.primaryLighter : 'transparent',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <div style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 4,
+                    border: `2px solid ${selectedReasons.includes(reason.id) ? tokens.colors.primary : tokens.colors.border}`,
+                    backgroundColor: selectedReasons.includes(reason.id) ? tokens.colors.primary : 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                    {selectedReasons.includes(reason.id) && <Check size={14} color="white" />}
+                  </div>
+                  <span style={{ fontSize: 14, color: tokens.colors.text, fontWeight: selectedReasons.includes(reason.id) ? 600 : 400 }}>
+                    {reason.label}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Additional Info */}
+          <div style={{ marginBottom: tokens.space.xl }}>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 600, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
+              Informações adicionais (opcional)
+            </label>
+            <textarea
+              value={additionalInfo}
+              onChange={(e) => setAdditionalInfo(e.target.value)}
+              placeholder="Descreva mais detalhes sobre o problema..."
+              rows={4}
+              style={{
+                width: '100%',
+                padding: tokens.space.md,
+                border: `2px solid ${tokens.colors.border}`,
+                borderRadius: tokens.radii.md,
+                fontSize: 14,
+                color: tokens.colors.text,
+                fontFamily: 'inherit',
+                resize: 'vertical',
+              }}
+            />
+          </div>
+
+          {/* Buttons */}
+          <div style={{ display: 'flex', gap: tokens.space.md }}>
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onClose}
+              style={{
+                flex: 1,
+                padding: `${tokens.space.md}px ${tokens.space.lg}px`,
+                backgroundColor: tokens.colors.bg,
+                color: tokens.colors.text,
+                border: `1px solid ${tokens.colors.border}`,
+                borderRadius: tokens.radii.md,
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              Cancelar
+            </motion.button>
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                flex: 1,
+                padding: `${tokens.space.md}px ${tokens.space.lg}px`,
+                background: '#dc2626',
+                color: 'white',
+                border: 'none',
+                borderRadius: tokens.radii.md,
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: tokens.space.sm,
+              }}
+            >
+              <Flag size={18} />
+              Enviar Reporte
+            </motion.button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // Modal Component
 function ProfessionalModal({ professional, onClose }: { professional: any; onClose: () => void }) {
   const [isReviewing, setIsReviewing] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
   const [localReviews, setLocalReviews] = useState(professional?.reviewsList || []);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   // Update local reviews if prop changes
   useEffect(() => {
@@ -1071,28 +1393,60 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
             position: "relative",
           }}
         >
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            style={{
-              position: "absolute",
-              top: tokens.space.lg,
-              right: tokens.space.lg,
-              backgroundColor: "#f3f4f6",
-              color: "#374151",
-              border: "none",
-              borderRadius: tokens.radii.full,
-              width: 40,
-              height: 40,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              zIndex: 10,
-            }}
-          >
-            <X size={24} />
-          </button>
+          {/* Action Buttons */}
+          <div style={{
+            position: "absolute",
+            top: tokens.space.lg,
+            right: tokens.space.lg,
+            display: "flex",
+            gap: tokens.space.sm,
+            zIndex: 10,
+          }}>
+            {/* Report Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowReportModal(true)}
+              style={{
+                backgroundColor: "#374151",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: tokens.radii.full,
+                width: 44,
+                height: 44,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+              }}
+              title="Reportar perfil"
+            >
+              <Flag size={20} />
+            </motion.button>
+
+            {/* Close Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onClose}
+              style={{
+                backgroundColor: "#374151",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: tokens.radii.full,
+                width: 44,
+                height: 44,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+              }}
+            >
+              <X size={22} />
+            </motion.button>
+          </div>
 
           {/* Header com Banner e Avatar */}
           <div style={{ position: "relative" }}>
@@ -1173,7 +1527,7 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
                 borderRadius: tokens.radii.md,
                 border: `1px solid ${tokens.colors.border}`
               }}>
-                <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: tokens.space.sm }}>Endereço</h3>
+                <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: tokens.space.sm, color: tokens.colors.text }}>Endereço</h3>
                 <p style={{ margin: 0, marginBottom: tokens.space.md, color: tokens.colors.text }}>{professional.address}</p>
                 <div style={{
                   height: 200,
@@ -1213,7 +1567,7 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
               >
                 <div style={{ display: "flex", alignItems: "center", gap: tokens.space.sm, marginBottom: tokens.space.xs }}>
                   <Star size={20} fill={tokens.colors.primary} color={tokens.colors.primary} />
-                  <span style={{ fontSize: 24, fontWeight: 700 }}>{professional.rating}</span>
+                  <span style={{ fontSize: 24, fontWeight: 700, color: tokens.colors.text }}>{professional.rating}</span>
                 </div>
                 <p style={{ fontSize: 14, color: tokens.colors.text, fontWeight: 600 }}>
                   {professional.reviews} avaliações
@@ -1231,7 +1585,7 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
               >
                 <div style={{ display: "flex", alignItems: "center", gap: tokens.space.sm, marginBottom: tokens.space.xs }}>
                   <Award size={20} color={tokens.colors.primary} />
-                  <span style={{ fontSize: 18, fontWeight: 700 }}>{professional.experience}</span>
+                  <span style={{ fontSize: 18, fontWeight: 700, color: tokens.colors.text }}>{professional.experience}</span>
                 </div>
                 <p style={{ fontSize: 14, color: tokens.colors.text, fontWeight: 600 }}>de experiência</p>
               </div>
@@ -1309,6 +1663,72 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
                     <span style={{ fontSize: 14, color: tokens.colors.text }}>{service}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Tabela de Preços */}
+            <div style={{ marginBottom: tokens.space.xxl }}>
+              <h3
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  marginBottom: tokens.space.lg,
+                  color: tokens.colors.text,
+                }}
+              >
+                Tabela de Preços
+              </h3>
+              <div
+                style={{
+                  padding: tokens.space.xl,
+                  backgroundColor: tokens.colors.bg,
+                  borderRadius: tokens.radii.lg,
+                  border: `1px solid ${tokens.colors.border}`,
+                }}
+              >
+                {/* Exemplo de tabela de preços - pode ser personalizado por cada profissional */}
+                <div style={{ display: 'grid', gap: tokens.space.lg }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: tokens.space.md, borderBottom: `1px solid ${tokens.colors.border}` }}>
+                    <div>
+                      <p style={{ fontSize: 16, fontWeight: 600, color: tokens.colors.text, marginBottom: 4 }}>Consulta Inicial</p>
+                      <p style={{ fontSize: 13, color: tokens.colors.textMuted }}>Primeira avaliação completa (60 min)</p>
+                    </div>
+                    <span style={{ fontSize: 18, fontWeight: 700, color: tokens.colors.primary }}>{professional.price}</span>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: tokens.space.md, borderBottom: `1px solid ${tokens.colors.border}` }}>
+                    <div>
+                      <p style={{ fontSize: 16, fontWeight: 600, color: tokens.colors.text, marginBottom: 4 }}>Consulta de Retorno</p>
+                      <p style={{ fontSize: 13, color: tokens.colors.textMuted }}>Acompanhamento e ajustes (40 min)</p>
+                    </div>
+                    <span style={{ fontSize: 18, fontWeight: 700, color: tokens.colors.primary }}>R$ 150-200</span>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <p style={{ fontSize: 16, fontWeight: 600, color: tokens.colors.text, marginBottom: 4 }}>Pacote Mensal</p>
+                      <p style={{ fontSize: 13, color: tokens.colors.textMuted }}>4 consultas + acompanhamento via WhatsApp</p>
+                    </div>
+                    <span style={{ fontSize: 18, fontWeight: 700, color: tokens.colors.primary }}>R$ 800-1200</span>
+                  </div>
+                </div>
+
+                {/* Área para imagem da tabela de preços (se o profissional preferir usar uma imagem) */}
+                {professional.priceTableImage && (
+                  <div style={{ marginTop: tokens.space.xl }}>
+                    <img
+                      src={professional.priceTableImage}
+                      alt="Tabela de preços"
+                      style={{
+                        width: '100%',
+                        maxWidth: 600,
+                        height: 'auto',
+                        borderRadius: tokens.radii.md,
+                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1394,35 +1814,39 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
                 <h3 style={{ fontSize: 20, fontWeight: 700, color: tokens.colors.text }}>
                   Avaliações
                 </h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      padding: '8px 16px',
-                      borderRadius: tokens.radii.pill,
-                      border: `1px solid ${tokens.colors.primary}`,
-                      backgroundColor: isReviewing ? tokens.colors.primary : 'transparent',
-                      color: isReviewing ? 'white' : tokens.colors.primary,
-                      fontSize: 13,
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      transition: 'all 0.2s'
-                    }}
-                    onClick={() => setIsReviewing(!isReviewing)}
-                  >
-                    <Star size={14} fill={isReviewing ? 'white' : 'none'} />
-                    {isReviewing ? 'Cancelar' : 'Avaliar'}
-                  </motion.button>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <Star size={16} fill={tokens.colors.primary} color={tokens.colors.primary} />
-                    <span style={{ fontWeight: 700, color: tokens.colors.text }}>{professional.rating}</span>
-                    <span style={{ color: tokens.colors.text }}>({professional.reviews})</span>
-                  </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Star size={16} fill={tokens.colors.primary} color={tokens.colors.primary} />
+                  <span style={{ fontWeight: 700, color: tokens.colors.text }}>{professional.rating}</span>
+                  <span style={{ color: tokens.colors.text }}>({professional.reviews})</span>
                 </div>
               </div>
+
+              {/* Botão Avaliar */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                style={{
+                  width: '100%',
+                  padding: '12px 20px',
+                  marginBottom: tokens.space.lg,
+                  borderRadius: tokens.radii.md,
+                  border: `1px solid ${tokens.colors.primary}`,
+                  backgroundColor: 'transparent',
+                  color: tokens.colors.primary,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  transition: 'all 0.2s'
+                }}
+                onClick={() => setIsReviewing(!isReviewing)}
+              >
+                <Star size={16} fill='none' />
+                Avaliar este profissional
+              </motion.button>
 
               {/* Review Form */}
               <AnimatePresence>
@@ -1469,10 +1893,27 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
                           fontSize: 14,
                           fontFamily: 'inherit',
                           resize: 'vertical',
-                          marginBottom: 12
+                          marginBottom: 12,
+                          color: tokens.colors.text
                         }}
+                        className="textarea-placeholder"
                       />
-                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 16 }}>
+                        <button
+                          type="button"
+                          onClick={() => setIsReviewing(false)}
+                          style={{
+                            backgroundColor: 'transparent',
+                            color: '#4b5563',
+                            border: 'none',
+                            padding: 0,
+                            fontWeight: 500,
+                            fontSize: 14,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Cancelar
+                        </button>
                         <button
                           type="submit"
                           style={{
@@ -1598,973 +2039,30 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <ReportModal
+          onClose={() => setShowReportModal(false)}
+          professionalName={professional.name}
+        />
+      )}
     </AnimatePresence>
   );
 }
 
-
-
-
-// AuthModal Component
-const AuthModal = ({ onClose, initialMode = 'login' }: { onClose: () => void; initialMode?: string }) => {
-  const [mode, setMode] = useState(initialMode);
-  const [userType, setUserType] = useState('client');
-
-  return (
-    <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
-      zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20
-    }} onClick={onClose}>
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        style={{
-          background: 'white', borderRadius: 16, padding: 32, width: '100%', maxWidth: 500,
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)', maxHeight: '90vh', overflowY: 'auto'
-        }} onClick={e => e.stopPropagation()}>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}><X size={20} color="#6b7280" /></button>
-        </div>
-        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24, textAlign: 'center', color: tokens.colors.text }}>
-          {mode === 'login' ? 'Bem-vindo de volta!' : (userType === 'client' ? 'Crie sua conta' : 'Cadastro Profissional')}
-        </h2>
-
-        {mode === 'signup' && (
-          <div style={{ display: 'flex', background: '#f3f4f6', padding: 4, borderRadius: 8, marginBottom: 24 }}>
-            {['client', 'professional'].map(t => (
-              <button
-                key={t}
-                onClick={() => setUserType(t)}
-                style={{
-                  flex: 1,
-                  padding: '8px',
-                  borderRadius: 6,
-                  border: 'none',
-                  background: userType === t ? 'white' : 'transparent',
-                  color: userType === t ? 'black' : '#6b7280',
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  boxShadow: userType === t ? '0 1px 2px rgba(0,0,0,0.1)' : 'none',
-                  transition: 'all 0.2s'
-                }}
-              >
-                {t === 'client' ? 'Cliente' : 'Profissional'}
-              </button>
-            ))}
-          </div>
-        )}
-
-        <form style={{ display: 'flex', flexDirection: 'column', gap: 16 }} onSubmit={(e) => { e.preventDefault(); onClose(); alert(mode === 'login' ? 'Login realizado!' : 'Conta criada!'); }}>
-          {mode === 'signup' && (
-            <>
-              <div style={{ display: 'flex', gap: 16 }}>
-                <input placeholder="Nome" style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-                <input placeholder="Sobrenome" style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-              </div>
-              <input placeholder="Telefone/WhatsApp" style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-
-              {userType === 'client' && (
-                <div style={{ border: `1px dashed ${tokens.colors.border}`, padding: 12, borderRadius: 8, textAlign: 'center', cursor: 'pointer', backgroundColor: '#f9fafb' }}>
-                  <Upload size={20} color={tokens.colors.textMuted} style={{ margin: '0 auto 4px' }} />
-                  <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>Sua Foto (Avatar)</span>
-                </div>
-              )}
-
-              {userType === 'professional' && (
-                <>
-                  <input placeholder="Categoria (ex: Nutricionista)" style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-                  <input placeholder="Especialidade (ex: Nutrição Esportiva Vegana)" style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-                  <input placeholder="Endereço Completo com CEP e Cidade" style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-                  <textarea placeholder="Bio/Sobre você (Fale sobre sua experiência e abordagem)" rows={3} style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', fontFamily: 'inherit', color: 'black', resize: 'vertical' }} />
-
-                  <div style={{ display: 'flex', gap: 16 }}>
-                    <div style={{ flex: 1 }}>
-                      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: tokens.colors.text }}>Foto de Perfil</label>
-                      <div style={{ border: `1px dashed ${tokens.colors.border}`, padding: 12, borderRadius: 8, textAlign: 'center', cursor: 'pointer', backgroundColor: '#f9fafb' }}>
-                        <Upload size={20} color={tokens.colors.textMuted} style={{ margin: '0 auto 4px' }} />
-                        <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>Upload Avatar</span>
-                      </div>
-                    </div>
-                    <div style={{ flex: 2 }}>
-                      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: tokens.colors.text }}>Foto de Capa</label>
-                      <div style={{ border: `1px dashed ${tokens.colors.border}`, padding: 12, borderRadius: 8, textAlign: 'center', cursor: 'pointer', backgroundColor: '#f9fafb' }}>
-                        <Upload size={20} color={tokens.colors.textMuted} style={{ margin: '0 auto 4px' }} />
-                        <span style={{ fontSize: 12, color: tokens.colors.textMuted }}>Upload Capa</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <input placeholder="Serviços (separados por vírgula)" style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-                  <input placeholder="Preço Médio" style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-                  <div style={{ display: 'flex', alignItems: 'center', gap: tokens.space.sm, marginTop: tokens.space.xs }}>
-                    <input type="checkbox" id="authRemote" style={{ width: 16, height: 16, cursor: 'pointer' }} />
-                    <label htmlFor="authRemote" style={{ fontSize: 14, color: tokens.colors.text, cursor: 'pointer' }}>Atende remotamente?</label>
-                  </div>
-                </>
-              )}
-            </>
-          )}
-
-          <input placeholder="Email" type="email" style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-          <input placeholder="Senha" type="password" style={{ padding: 12, borderRadius: 8, border: '1px solid #e5e7eb', color: 'black' }} />
-
-          <button type="submit" style={{
-            background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`, color: 'white', padding: 12, borderRadius: 8, border: 'none', fontWeight: 600, cursor: 'pointer', marginTop: 8
-          }}>
-            {mode === 'login' ? 'Entrar' : 'Cadastrar'}
-          </button>
-        </form>
-
-        <p style={{ textAlign: 'center', marginTop: 24, fontSize: 14, color: '#6b7280' }}>
-          {mode === 'login' ? 'Não tem uma conta? ' : 'Já tem uma conta? '}
-          <button type="button" onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} style={{ color: tokens.colors.primary, fontWeight: 600, border: 'none', background: 'none', cursor: 'pointer' }}>
-            {mode === 'login' ? 'Cadastre-se' : 'Entre'}
-          </button>
-        </p>
-      </motion.div>
-    </div>
-  );
-};
-
-// Register Modal Component
-function RegisterModal({ onClose }: { onClose: () => void }) {
-  const [formData, setFormData] = useState({
-    name: "",
-    category: "",
-    specialty: "",
-    location: "",
-    address: "",
-    experience: "",
-    price: "",
-    bio: "",
-    services: ["", "", "", ""],
-    portfolio: [] as string[],
-    phone: "",
-    email: "",
-    instagram: "",
-    website: "",
-    video: "",
-    isRemote: false,
-    profilePicture: null as File | null,
-    coverPicture: null as File | null,
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form data:", formData);
-    alert("Cadastro enviado com sucesso! Em breve entraremos em contato.");
-    onClose();
-  };
-
-  const updateService = (index: number, value: string) => {
-    const newServices = [...formData.services];
-    newServices[index] = value;
-    setFormData({ ...formData, services: newServices });
-  };
-
-  const addService = () => {
-    setFormData({ ...formData, services: [...formData.services, ""] });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'profilePicture' | 'coverPicture') => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, [field]: e.target.files[0] });
-    }
-  };
-
-  const handlePortfolioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map(file => URL.createObjectURL(file));
-      setFormData(prev => ({ ...prev, portfolio: [...prev.portfolio, ...filesArray] }));
-    }
-  };
-
-  const removePortfolioImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      portfolio: prev.portfolio.filter((_, i) => i !== index)
-    }));
-  };
-
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const profileInputRef = React.useRef<HTMLInputElement>(null);
-  const coverInputRef = React.useRef<HTMLInputElement>(null);
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-          zIndex: 1000,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: tokens.space.xl,
-          overflowY: "auto",
-        }}
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            backgroundColor: "white",
-            borderRadius: tokens.radii.xl,
-            maxWidth: 800,
-            width: "100%",
-            maxHeight: "90vh",
-            overflow: "auto",
-            position: "relative",
-          }}
-        >
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            style={{
-              position: "absolute",
-              top: tokens.space.lg,
-              right: tokens.space.lg,
-              backgroundColor: tokens.colors.primary,
-              color: "white",
-              border: "none",
-              borderRadius: tokens.radii.full,
-              width: 40,
-              height: 40,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              zIndex: 10,
-            }}
-          >
-            <X size={24} />
-          </button>
-
-          {/* Header */}
-          <div
-            style={{
-              padding: tokens.space.xxl,
-              borderBottom: `1px solid ${tokens.colors.border}`,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: tokens.space.md,
-                marginBottom: tokens.space.md,
-              }}
-            >
-              <div
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: tokens.radii.md,
-                  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <UserPlus size={28} color="white" strokeWidth={2.5} />
-              </div>
-              <div>
-                <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: tokens.space.xs }}>
-                  Cadastro de Profissional
-                </h2>
-                <p style={{ fontSize: 14, color: tokens.colors.textMuted, margin: 0 }}>
-                  Faça parte da nossa rede de profissionais veganos
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} style={{ padding: tokens.space.xxl }}>
-            {/* Informações Básicas */}
-            <div style={{ marginBottom: tokens.space.xxl }}>
-              <h3
-                style={{
-                  fontSize: 18,
-                  fontWeight: 700,
-                  marginBottom: tokens.space.lg,
-                  color: tokens.colors.text,
-                }}
-              >
-                Informações Básicas
-              </h3>
-
-              <div style={{ display: "grid", gap: tokens.space.lg }}>
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      marginBottom: tokens.space.sm,
-                      color: tokens.colors.text,
-                    }}
-                  >
-                    Nome Completo *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
-                    style={{
-                      width: "100%",
-                      padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                      border: `1px solid ${tokens.colors.border}`,
-                      borderRadius: tokens.radii.md,
-                      fontSize: 14,
-                      fontFamily: "inherit",
-                      outline: "none",
-                    }}
-                    placeholder="Ex: Dra. Ana Silva"
-                  />
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: tokens.space.lg }}>
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Categoria *
-                    </label>
-                    <select
-                      required
-                      value={formData.category}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({ ...formData, category: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                    >
-                      <option value="">Selecione...</option>
-                      {categories.filter((c) => c.id !== "todos").map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Especialidade *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.specialty}
-                      onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                      placeholder="Ex: Nutrição Clínica Vegana"
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: tokens.space.lg }}>
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Localização *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                      placeholder="São Paulo, SP"
-                    />
-                    <div style={{ display: 'flex', alignItems: 'center', gap: tokens.space.sm, marginTop: tokens.space.xs }}>
-                      <input
-                        type="checkbox"
-                        id="isRemote"
-                        checked={formData.isRemote}
-                        onChange={(e) => setFormData({ ...formData, isRemote: e.target.checked })}
-                        style={{ width: 16, height: 16, cursor: 'pointer' }}
-                      />
-                      <label htmlFor="isRemote" style={{ fontSize: 14, color: tokens.colors.text, cursor: 'pointer' }}>
-                        Atende remotamente?
-                      </label>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Endereço Completo (Opcional)
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.address}
-                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                      placeholder="Rua, Número, Bairro"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Experiência *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.experience}
-                      onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                      placeholder="8 anos"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Preço *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                      placeholder="R$ 200-300"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      marginBottom: tokens.space.sm,
-                      color: tokens.colors.text,
-                    }}
-                  >
-                    Bio / Apresentação *
-                  </label>
-                  <textarea
-                    required
-                    value={formData.bio}
-                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                    rows={4}
-                    style={{
-                      width: "100%",
-                      padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                      border: `1px solid ${tokens.colors.border}`,
-                      borderRadius: tokens.radii.md,
-                      fontSize: 14,
-                      fontFamily: "inherit",
-                      outline: "none",
-                      resize: "vertical",
-                    }}
-                    placeholder="Conte um pouco sobre você e sua atuação profissional..."
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Serviços */}
-            <div style={{ marginBottom: tokens.space.xxl }}>
-              <h3
-                style={{
-                  fontSize: 18,
-                  fontWeight: 700,
-                  marginBottom: tokens.space.lg,
-                  color: tokens.colors.text,
-                }}
-              >
-                Serviços Oferecidos
-              </h3>
-
-              <div style={{ display: "grid", gap: tokens.space.md }}>
-                {formData.services.map((service, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    value={service}
-                    onChange={(e) => updateService(index, e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                      border: `1px solid ${tokens.colors.border}`,
-                      borderRadius: tokens.radii.md,
-                      fontSize: 14,
-                      fontFamily: "inherit",
-                      outline: "none",
-                    }}
-                    placeholder={`Serviço ${index + 1}`}
-                  />
-                ))}
-              </div>
-
-              <motion.button
-                type="button"
-                onClick={addService}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                style={{
-                  marginTop: tokens.space.md,
-                  padding: `${tokens.space.sm}px ${tokens.space.lg}px`,
-                  backgroundColor: tokens.colors.primaryLighter,
-                  color: tokens.colors.primary,
-                  border: `1px solid ${tokens.colors.primary}`,
-                  borderRadius: tokens.radii.md,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: tokens.space.sm,
-                }}
-              >
-                <Plus size={16} />
-                Adicionar Serviço
-              </motion.button>
-            </div>
-
-            {/* Contato */}
-            <div style={{ marginBottom: tokens.space.xxl }}>
-              <h3
-                style={{
-                  fontSize: 18,
-                  fontWeight: 700,
-                  marginBottom: tokens.space.lg,
-                  color: tokens.colors.text,
-                }}
-              >
-                Informações de Contato
-              </h3>
-
-              <div style={{ display: "grid", gap: tokens.space.lg }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: tokens.space.lg }}>
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Telefone *
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                      placeholder="(11) 98765-4321"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      E-mail *
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                      placeholder="seuemail@exemplo.com"
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: tokens.space.lg }}>
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Instagram
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.instagram}
-                      onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        outline: "none",
-                      }}
-                      placeholder="@seuperfil"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        marginBottom: tokens.space.sm,
-                        color: tokens.colors.text,
-                      }}
-                    >
-                      Website
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.website}
-                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `1px solid ${tokens.colors.border}`,
-                      }}
-                      placeholder="www.seusite.com.br"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      marginBottom: tokens.space.sm,
-                      color: tokens.colors.text,
-                    }}
-                  >
-                    Link do Vídeo de Apresentação (YouTube)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.video}
-                    onChange={(e) => setFormData({ ...formData, video: e.target.value })}
-                    style={{
-                      width: "100%",
-                      padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                      border: `1px solid ${tokens.colors.border}`,
-                      borderRadius: tokens.radii.md,
-                      fontSize: 14,
-                      fontFamily: "inherit",
-                      outline: "none",
-                    }}
-                    placeholder="https://www.youtube.com/watch?v=..."
-                  />
-                  <p style={{ fontSize: 12, color: tokens.colors.textMuted, marginTop: 4 }}>
-                    Cole o link do seu vídeo de apresentação no YouTube. Ele será exibido em destaque no seu perfil.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Foto e Portfólio */}
-            <div style={{ marginBottom: tokens.space.xxl }}>
-              <h3
-                style={{
-                  fontSize: 18,
-                  fontWeight: 700,
-                  marginBottom: tokens.space.lg,
-                  color: tokens.colors.text,
-                }}
-              >
-                Imagens e Portfólio
-              </h3>
-
-              <div style={{ display: "grid", gap: tokens.space.lg }}>
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      marginBottom: tokens.space.sm,
-                      color: tokens.colors.text,
-                    }}
-                  >
-                    Foto de Perfil *
-                  </label>
-                  <div
-                    onClick={() => profileInputRef.current?.click()}
-                    style={{
-                      border: `2px dashed ${tokens.colors.border}`,
-                      borderRadius: tokens.radii.md,
-                      padding: tokens.space.xl,
-                      textAlign: "center",
-                      cursor: "pointer",
-                      transition: "all 0.3s ease",
-                      backgroundColor: "#f9fafb",
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    <input
-                      type="file"
-                      hidden
-                      ref={profileInputRef}
-                      onChange={(e) => handleFileChange(e, 'profilePicture')}
-                      accept="image/*"
-                    />
-                    {formData.profilePicture ? (
-                      <img
-                        src={URL.createObjectURL(formData.profilePicture)}
-                        alt="Profile Preview"
-                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                    ) : (
-                      <>
-                        <Upload size={32} color={tokens.colors.textMuted} style={{ marginBottom: tokens.space.md }} />
-                        <p style={{ fontSize: 14, color: tokens.colors.textMuted, margin: 0 }}>
-                          Clique para fazer upload da sua foto principal
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      marginBottom: tokens.space.sm,
-                      color: tokens.colors.text,
-                    }}
-                  >
-                    Fotos do seu Trabalho / Portfólio
-                  </label>
-
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 12, marginTop: 8 }}>
-                    {formData.portfolio.map((img, idx) => (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        key={idx}
-                        style={{ position: 'relative', width: 100, height: 100, borderRadius: tokens.radii.md, overflow: 'hidden', border: `1px solid ${tokens.colors.border}`, boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
-                      >
-                        <img src={img} alt="Portfolio" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        <button
-                          onClick={() => removePortfolioImage(idx)}
-                          type="button"
-                          style={{
-                            position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 14, backdropFilter: "blur(2px)"
-                          }}
-                        >
-                          <X size={14} />
-                        </button>
-                      </motion.div>
-                    ))}
-
-                    {formData.portfolio.length < 5 && (
-                      <motion.button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        whileHover={{ borderColor: tokens.colors.primary, backgroundColor: tokens.colors.primaryLighter }}
-                        style={{
-                          width: 100, height: 100, borderRadius: tokens.radii.md, border: `2px dashed ${tokens.colors.border}`, background: '#f9fafb', color: tokens.colors.textMuted, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 12, gap: 4, transition: 'all 0.2s ease'
-                        }}
-                      >
-                        <input
-                          type="file"
-                          hidden
-                          multiple
-                          ref={fileInputRef}
-                          onChange={handlePortfolioUpload}
-                          accept="image/*"
-                        />
-                        <Plus size={24} />
-                        Adicionar
-                      </motion.button>
-                    )}
-                  </div>
-
-                  <p style={{ fontSize: 12, color: tokens.colors.textMuted, marginTop: tokens.space.xs }}>
-                    {formData.portfolio.length >= 5
-                      ? "Limite de 5 imagens atingido. Contas verificadas podem enviar até 10."
-                      : `Você pode adicionar mais ${5 - formData.portfolio.length} fotos (limite de 5 para contas não verificadas).`}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              style={{
-                width: "100%",
-                padding: `${tokens.space.lg}px`,
-                background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
-                color: "white",
-                border: "none",
-                borderRadius: tokens.radii.md,
-                fontSize: 16,
-                fontWeight: 700,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: tokens.space.md,
-                boxShadow: `0 4px 12px ${tokens.colors.primary}40`,
-              }}
-            >
-              <Check size={20} />
-              Enviar Cadastro
-            </motion.button>
-          </form>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-}
+// ============================================================
+// MODAIS LEGADOS REMOVIDOS
+// ============================================================
+// AuthModal e RegisterModal foram substituídos por rotas dedicadas:
+// - Cadastro: /profissionais/cadastro (wizard step-by-step)
+// - Dashboard: /profissionais/dashboard (painel do profissional)
+// ============================================================
 
 // Main Component
 export default function ProfessionalsPage() {
   const [selectedCategory, setSelectedCategory] = useState("todos");
   const [selectedProfessional, setSelectedProfessional] = useState(null);
-  const [showRegister, setShowRegister] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
-
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
 
   const filteredProfessionals = React.useMemo(() => {
@@ -2586,11 +2084,7 @@ export default function ProfessionalsPage() {
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
     >
-      <Navbar
-        onOpenRegister={() => { setAuthMode('signup'); setAuthOpen(true); }}
-        onOpenLogin={() => { setAuthMode('login'); setAuthOpen(true); }}
-        onOpenSignup={() => { setAuthMode('signup'); setAuthOpen(true); }}
-      />
+      <Navbar />
       <CategoryFilter
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
@@ -2683,16 +2177,10 @@ export default function ProfessionalsPage() {
         />
       )}
 
-      {/* Register Modal (Legacy/Direct) - Keeping if needed, but linking to Auth first usually.
-          If the user wants direct professional registration, we can keep showRegister logic or integrate.
-          For now, 'Cadastrar-se' in Navbar opens Auth.
+      {/* Modals removidos - usando rotas dedicadas:
+          - Cadastro: /profissionais/cadastro
+          - Dashboard: /profissionais/dashboard
       */}
-      {/* {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />} */}
-      {/* Keeping explicit RegisterModal for testing "Professional Registration" flow if distinct from Auth */}
-      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
-
-      {/* Auth Modal */}
-      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} initialMode={authMode} />}
 
       {/* Global Styles */}
       <style jsx global>{`
@@ -2715,6 +2203,23 @@ export default function ProfessionalsPage() {
 
         button {
           font-family: inherit;
+        }
+
+        .textarea-placeholder::placeholder {
+          color: #6b7280;
+          opacity: 1;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+          outline: 2px solid ${tokens.colors.primary};
+          outline-offset: 2px;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+          color: #9ca3af;
         }
       `}</style>
     </div>

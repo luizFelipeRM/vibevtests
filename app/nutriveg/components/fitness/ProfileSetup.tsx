@@ -78,6 +78,8 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                 type="number"
                 value={profile.height}
                 onChange={(e) => onChange({ height: e.target.value })}
+                onFocus={(e) => (e.currentTarget.style.borderColor = tokens.colors.primary)}
+                onBlur={(e) => (e.currentTarget.style.borderColor = tokens.colors.border)}
                 style={{
                   width: "100%",
                   padding: `${tokens.space.md}px`,
@@ -87,6 +89,7 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                   fontWeight: 600,
                   outline: "none",
                   background: "white",
+                  transition: "border-color 0.2s",
                 }}
                 placeholder="175"
               />
@@ -107,6 +110,8 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                 type="number"
                 value={profile.weight}
                 onChange={(e) => onChange({ weight: e.target.value })}
+                onFocus={(e) => (e.currentTarget.style.borderColor = tokens.colors.primary)}
+                onBlur={(e) => (e.currentTarget.style.borderColor = tokens.colors.border)}
                 style={{
                   width: "100%",
                   padding: `${tokens.space.md}px`,
@@ -116,6 +121,7 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                   fontWeight: 600,
                   outline: "none",
                   background: "white",
+                  transition: "border-color 0.2s",
                 }}
                 placeholder="70"
               />
@@ -136,6 +142,8 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                 type="number"
                 value={profile.age}
                 onChange={(e) => onChange({ age: e.target.value })}
+                onFocus={(e) => (e.currentTarget.style.borderColor = tokens.colors.primary)}
+                onBlur={(e) => (e.currentTarget.style.borderColor = tokens.colors.border)}
                 style={{
                   width: "100%",
                   padding: `${tokens.space.md}px`,
@@ -145,6 +153,7 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                   fontWeight: 600,
                   outline: "none",
                   background: "white",
+                  transition: "border-color 0.2s",
                 }}
                 placeholder="25"
               />
@@ -176,37 +185,29 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                   value: "lose" as const,
                   label: "Perder Peso",
                   icon: TrendingDown,
-                  color: tokens.colors.red,
                 },
                 {
                   value: "maintain" as const,
                   label: "Manter",
                   icon: Target,
-                  color: tokens.colors.blue,
                 },
                 {
                   value: "gain" as const,
                   label: "Ganhar Massa",
                   icon: TrendingUp,
-                  color: tokens.colors.primary,
                 },
               ].map((goal) => {
                 const Icon = goal.icon;
+                const isSelected = profile.goal === goal.value;
                 return (
                   <button
                     key={goal.value}
                     onClick={() => onChange({ goal: goal.value })}
                     style={{
                       padding: tokens.space.lg,
-                      background:
-                        profile.goal === goal.value ? goal.color : "white",
-                      color:
-                        profile.goal === goal.value
-                          ? "white"
-                          : tokens.colors.text,
-                      border: `2px solid ${
-                        profile.goal === goal.value ? goal.color : tokens.colors.border
-                      }`,
+                      background: isSelected ? tokens.colors.primaryLight : "white",
+                      color: tokens.colors.text,
+                      border: `1.5px solid ${isSelected ? tokens.colors.primary + "66" : tokens.colors.border}`,
                       borderRadius: tokens.radii.md,
                       fontSize: 14,
                       fontWeight: 700,
@@ -216,9 +217,10 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                       alignItems: "center",
                       gap: tokens.space.sm,
                       transition: "all 0.2s",
+                      boxShadow: isSelected ? `0 4px 12px ${tokens.colors.primary}20` : "none",
                     }}
                   >
-                    <Icon size={24} />
+                    <Icon size={24} color={isSelected ? tokens.colors.primary : tokens.colors.textMuted} />
                     {goal.label}
                   </button>
                 );
@@ -289,25 +291,16 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                 { value: "cardio" as const, label: "Cardio", icon: Activity },
               ].map((type) => {
                 const Icon = type.icon;
+                const isSelected = profile.workoutType === type.value;
                 return (
                   <button
                     key={type.value}
                     onClick={() => onChange({ workoutType: type.value })}
                     style={{
                       padding: tokens.space.lg,
-                      background:
-                        profile.workoutType === type.value
-                          ? tokens.colors.primary
-                          : "white",
-                      color:
-                        profile.workoutType === type.value
-                          ? "white"
-                          : tokens.colors.text,
-                      border: `2px solid ${
-                        profile.workoutType === type.value
-                          ? tokens.colors.primary
-                          : tokens.colors.border
-                      }`,
+                      background: isSelected ? tokens.colors.primaryLight : "white",
+                      color: tokens.colors.text,
+                      border: `1.5px solid ${isSelected ? tokens.colors.primary + "66" : tokens.colors.border}`,
                       borderRadius: tokens.radii.md,
                       fontSize: 15,
                       fontWeight: 700,
@@ -316,9 +309,11 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                       alignItems: "center",
                       justifyContent: "center",
                       gap: tokens.space.md,
+                      transition: "all 0.2s",
+                      boxShadow: isSelected ? `0 4px 12px ${tokens.colors.primary}20` : "none",
                     }}
                   >
-                    <Icon size={20} />
+                    <Icon size={20} color={isSelected ? tokens.colors.primary : tokens.colors.textMuted} />
                     {type.label}
                   </button>
                 );
@@ -329,18 +324,27 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
 
         <button
           onClick={onComplete}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = tokens.colors.primaryDark;
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = tokens.colors.primary;
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
           style={{
             width: "100%",
             marginTop: tokens.space.xxl,
             padding: `${tokens.space.xl}px`,
-            background: `linear-gradient(135deg, ${tokens.colors.blue}, #1d4ed8)`,
+            background: tokens.colors.primary,
             color: "white",
             border: "none",
             borderRadius: tokens.radii.lg,
             fontSize: 18,
             fontWeight: 800,
             cursor: "pointer",
-            boxShadow: "0 8px 24px rgba(59, 130, 246, 0.4)",
+            boxShadow: `0 8px 24px ${tokens.colors.primary}30`,
+            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
           Começar Tracking →

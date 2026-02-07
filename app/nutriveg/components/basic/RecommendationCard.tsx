@@ -26,12 +26,12 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
       style={{
-        background: `linear-gradient(135deg, ${color}08, ${color}03)`,
+        background: "white",
         padding: tokens.space.xl,
         borderRadius: tokens.radii.lg,
-        border: `2px solid ${color}20`,
+        border: `1px solid ${tokens.colors.border}`,
         position: "relative",
-        overflow: "hidden",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
       }}
     >
       <div
@@ -39,13 +39,14 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
       >
         <span
           style={{
-            fontSize: 11,
+            fontSize: 10,
             fontWeight: 800,
-            color,
-            background: `${color}20`,
-            padding: `${tokens.space.xs}px ${tokens.space.sm}px`,
-            borderRadius: tokens.radii.pill,
+            color: tokens.colors.textMuted,
+            background: tokens.colors.bg,
+            padding: `2px 8px`,
+            borderRadius: tokens.radii.full,
             textTransform: "uppercase",
+            border: `1px solid ${tokens.colors.border}`,
           }}
         >
           {priority}
@@ -57,24 +58,23 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
           display: "flex",
           alignItems: "center",
           gap: tokens.space.md,
-          marginBottom: tokens.space.lg,
+          marginBottom: tokens.space.md,
         }}
       >
         <div
           style={{
-            width: 56,
-            height: 56,
+            width: 42,
+            height: 42,
             borderRadius: tokens.radii.md,
-            background: color,
+            background: `${color}10`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: `0 4px 16px ${color}40`,
           }}
         >
-          <Icon size={28} color="white" strokeWidth={2.5} />
+          <Icon size={22} color={color} strokeWidth={2} />
         </div>
-        <h4 style={{ fontSize: 18, fontWeight: 800, color: tokens.colors.text, margin: 0 }}>
+        <h4 style={{ fontSize: 16, fontWeight: 800, color: tokens.colors.text, margin: 0 }}>
           {title}
         </h4>
       </div>

@@ -24,6 +24,10 @@ import {
   ChevronRight,
   User,
   Bell,
+  Send,
+  Image,
+  ThumbsUp,
+  Share2,
 } from "lucide-react";
 
 // Tokens de Design
@@ -1299,28 +1303,42 @@ function CaseDetailModal({ caseData, onClose }: { caseData: any, onClose: () => 
                     display: "flex",
                     gap: tokens.space.lg,
                     background: "white",
+                    overflowX: "auto",
                   }}
                 >
-                  {["detalhes", "timeline", "comentarios"].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      style={{
-                        padding: `${tokens.space.lg}px 0`,
-                        background: "none",
-                        border: "none",
-                        borderBottom: activeTab === tab ? `3px solid ${tokens.colors.primary}` : "3px solid transparent",
-                        color: activeTab === tab ? tokens.colors.primary : tokens.colors.textMuted,
-                        fontSize: 15,
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        transition: "all 0.2s ease",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {tab}
-                    </button>
-                  ))}
+                  {[
+                    { id: "detalhes", label: "Detalhes", icon: null },
+                    { id: "timeline", label: "Timeline", icon: null },
+                    { id: "chat", label: "Chat Grupo", icon: MessageCircle },
+                    { id: "feed", label: "Publicações", icon: Image },
+                    { id: "comentarios", label: "Comentários", icon: null },
+                  ].map((tab) => {
+                    const TabIcon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        style={{
+                          padding: `${tokens.space.lg}px 0`,
+                          background: "none",
+                          border: "none",
+                          borderBottom: activeTab === tab.id ? `3px solid ${tokens.colors.primary}` : "3px solid transparent",
+                          color: activeTab === tab.id ? tokens.colors.primary : tokens.colors.textMuted,
+                          fontSize: 15,
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                          whiteSpace: "nowrap",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: tokens.space.xs,
+                        }}
+                      >
+                        {TabIcon && <TabIcon size={16} />}
+                        {tab.label}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Tab Content */}
@@ -1593,6 +1611,428 @@ function CaseDetailModal({ caseData, onClose }: { caseData: any, onClose: () => 
                               </div>
                               <div style={{ fontSize: 14, color: tokens.colors.textMuted, lineHeight: 1.6 }}>
                                 {comment.text}
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activeTab === "chat" && (
+                      <motion.div
+                        key="chat"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        style={{ display: "flex", flexDirection: "column", height: "100%", maxHeight: "calc(90vh - 300px)" }}
+                      >
+                        <h3
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 700,
+                            marginBottom: tokens.space.xl,
+                            color: tokens.colors.text,
+                          }}
+                        >
+                          💬 Chat do Grupo
+                        </h3>
+
+                        {/* Chat Messages */}
+                        <div
+                          style={{
+                            flex: 1,
+                            overflow: "auto",
+                            background: tokens.colors.bg,
+                            borderRadius: tokens.radii.md,
+                            padding: tokens.space.lg,
+                            marginBottom: tokens.space.lg,
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: tokens.space.md,
+                          }}
+                        >
+                          {/* Mock chat messages */}
+                          {[
+                            { author: "Maria Silva", message: "Oi pessoal! Atualizações sobre o Rex: ele está se adaptando muito bem!", time: "10:30", isOwn: false },
+                            { author: "João Pedro", message: "Que ótima notícia! Conseguiu encontrar lar temporário?", time: "10:32", isOwn: false },
+                            { author: "Você", message: "Ainda procurando, mas ele está bem cuidado por enquanto", time: "10:35", isOwn: true },
+                            { author: "Ana Clara", message: "Posso ajudar! Tenho um quintal grande e experiência com cachorros", time: "10:37", isOwn: false },
+                            { author: "Maria Silva", message: "Que maravilha Ana! Vou te chamar no privado para conversarmos melhor", time: "10:40", isOwn: false },
+                          ].map((msg, index) => (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0, x: msg.isOwn ? 20 : -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              style={{
+                                display: "flex",
+                                flexDirection: msg.isOwn ? "row-reverse" : "row",
+                                gap: tokens.space.sm,
+                                alignItems: "flex-end",
+                              }}
+                            >
+                              {/* Avatar */}
+                              {!msg.isOwn && (
+                                <div
+                                  style={{
+                                    width: 36,
+                                    height: 36,
+                                    borderRadius: tokens.radii.full,
+                                    background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "white",
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  {msg.author.charAt(0)}
+                                </div>
+                              )}
+
+                              {/* Message Bubble */}
+                              <div style={{ maxWidth: "70%" }}>
+                                {!msg.isOwn && (
+                                  <div
+                                    style={{
+                                      fontSize: 12,
+                                      fontWeight: 600,
+                                      color: tokens.colors.primary,
+                                      marginBottom: tokens.space.xs,
+                                      marginLeft: tokens.space.sm,
+                                    }}
+                                  >
+                                    {msg.author}
+                                  </div>
+                                )}
+                                <div
+                                  style={{
+                                    background: msg.isOwn ? tokens.colors.primary : "white",
+                                    color: msg.isOwn ? "white" : tokens.colors.text,
+                                    padding: `${tokens.space.sm}px ${tokens.space.md}px`,
+                                    borderRadius: tokens.radii.md,
+                                    fontSize: 14,
+                                    lineHeight: 1.5,
+                                    boxShadow: msg.isOwn ? "0 2px 8px rgba(4, 128, 3, 0.2)" : "0 2px 8px rgba(0,0,0,0.08)",
+                                    border: msg.isOwn ? "none" : `1px solid ${tokens.colors.border}`,
+                                  }}
+                                >
+                                  {msg.message}
+                                </div>
+                                <div
+                                  style={{
+                                    fontSize: 11,
+                                    color: tokens.colors.textMuted,
+                                    marginTop: tokens.space.xs,
+                                    textAlign: msg.isOwn ? "right" : "left",
+                                    marginLeft: msg.isOwn ? 0 : tokens.space.sm,
+                                    marginRight: msg.isOwn ? tokens.space.sm : 0,
+                                  }}
+                                >
+                                  {msg.time}
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+
+                        {/* Message Input */}
+                        <div
+                          style={{
+                            background: "white",
+                            padding: tokens.space.lg,
+                            borderRadius: tokens.radii.md,
+                            border: `1px solid ${tokens.colors.border}`,
+                            display: "flex",
+                            gap: tokens.space.md,
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <input
+                            type="text"
+                            placeholder="Digite sua mensagem..."
+                            style={{
+                              flex: 1,
+                              padding: tokens.space.md,
+                              border: `1px solid ${tokens.colors.border}`,
+                              borderRadius: tokens.radii.sm,
+                              fontSize: 14,
+                              fontFamily: "inherit",
+                              outline: "none",
+                            }}
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            style={{
+                              padding: tokens.space.md,
+                              background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
+                              color: "white",
+                              border: "none",
+                              borderRadius: tokens.radii.sm,
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 44,
+                              height: 44,
+                            }}
+                          >
+                            <Send size={18} />
+                          </motion.button>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activeTab === "feed" && (
+                      <motion.div
+                        key="feed"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <h3
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 700,
+                            marginBottom: tokens.space.xl,
+                            color: tokens.colors.text,
+                          }}
+                        >
+                          📸 Feed de Publicações
+                        </h3>
+
+                        {/* New Post Creator */}
+                        <div
+                          style={{
+                            background: "white",
+                            padding: tokens.space.lg,
+                            borderRadius: tokens.radii.md,
+                            border: `1px solid ${tokens.colors.border}`,
+                            marginBottom: tokens.space.xl,
+                          }}
+                        >
+                          <textarea
+                            placeholder="Compartilhe uma atualização, foto ou novidade sobre o caso..."
+                            style={{
+                              width: "100%",
+                              minHeight: 80,
+                              padding: tokens.space.md,
+                              border: `1px solid ${tokens.colors.border}`,
+                              borderRadius: tokens.radii.sm,
+                              fontSize: 14,
+                              fontFamily: "inherit",
+                              resize: "vertical",
+                              outline: "none",
+                              marginBottom: tokens.space.md,
+                            }}
+                          />
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              style={{
+                                padding: `${tokens.space.sm}px ${tokens.space.md}px`,
+                                background: tokens.colors.bg,
+                                color: tokens.colors.text,
+                                border: `1px solid ${tokens.colors.border}`,
+                                borderRadius: tokens.radii.sm,
+                                fontSize: 13,
+                                fontWeight: 600,
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: tokens.space.xs,
+                              }}
+                            >
+                              <Image size={16} />
+                              Adicionar Foto
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              style={{
+                                padding: `${tokens.space.md}px ${tokens.space.xl}px`,
+                                background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
+                                color: "white",
+                                border: "none",
+                                borderRadius: tokens.radii.md,
+                                fontSize: 14,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
+                            >
+                              Publicar
+                            </motion.button>
+                          </div>
+                        </div>
+
+                        {/* Feed Posts */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: tokens.space.lg }}>
+                          {/* Mock posts */}
+                          {[
+                            {
+                              author: "Maria Silva",
+                              time: "Há 2 horas",
+                              content: "Pessoal, o Rex está cada dia mais feliz! Olhem como ele está brincando no quintal 🐕❤️",
+                              image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop",
+                              likes: 24,
+                              comments: 5,
+                            },
+                            {
+                              author: "Dr. Carlos Mendes",
+                              time: "Há 5 horas",
+                              content: "Fiz a consulta do Rex hoje. Ele está muito saudável e pronto para adoção! Quem puder ajudar a divulgar, agradeço muito.",
+                              image: null,
+                              likes: 18,
+                              comments: 3,
+                            },
+                            {
+                              author: "Ana Clara",
+                              time: "Há 1 dia",
+                              content: "Conseguimos arrecadar R$ 500 para os cuidados! Muito obrigada a todos que contribuíram 💚",
+                              image: null,
+                              likes: 42,
+                              comments: 8,
+                            },
+                          ].map((post, index) => (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              style={{
+                                background: "white",
+                                padding: tokens.space.lg,
+                                borderRadius: tokens.radii.md,
+                                border: `1px solid ${tokens.colors.border}`,
+                              }}
+                            >
+                              {/* Post Header */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: tokens.space.md,
+                                  marginBottom: tokens.space.md,
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: tokens.radii.full,
+                                    background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "white",
+                                    fontSize: 16,
+                                    fontWeight: 700,
+                                  }}
+                                >
+                                  {post.author.charAt(0)}
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ fontSize: 14, fontWeight: 700, color: tokens.colors.text }}>
+                                    {post.author}
+                                  </div>
+                                  <div style={{ fontSize: 12, color: tokens.colors.textMuted }}>
+                                    {post.time}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Post Content */}
+                              <p style={{ fontSize: 14, color: tokens.colors.text, lineHeight: 1.6, marginBottom: post.image ? tokens.space.md : tokens.space.lg }}>
+                                {post.content}
+                              </p>
+
+                              {/* Post Image */}
+                              {post.image && (
+                                <img
+                                  src={post.image}
+                                  alt="Post"
+                                  style={{
+                                    width: "100%",
+                                    borderRadius: tokens.radii.md,
+                                    marginBottom: tokens.space.lg,
+                                  }}
+                                />
+                              )}
+
+                              {/* Post Actions */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: tokens.space.lg,
+                                  paddingTop: tokens.space.md,
+                                  borderTop: `1px solid ${tokens.colors.border}`,
+                                }}
+                              >
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: tokens.space.xs,
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    color: tokens.colors.textMuted,
+                                  }}
+                                >
+                                  <ThumbsUp size={16} />
+                                  {post.likes}
+                                </motion.button>
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: tokens.space.xs,
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    color: tokens.colors.textMuted,
+                                  }}
+                                >
+                                  <MessageCircle size={16} />
+                                  {post.comments}
+                                </motion.button>
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: tokens.space.xs,
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    color: tokens.colors.textMuted,
+                                  }}
+                                >
+                                  <Share2 size={16} />
+                                  Compartilhar
+                                </motion.button>
                               </div>
                             </motion.div>
                           ))}

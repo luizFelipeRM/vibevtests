@@ -106,7 +106,7 @@ function IntroSection() {
     <div
       style={{
         background: "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%)",
-        padding: `${tokens.space.massive}px ${tokens.space.xl}px`,
+        padding: `${tokens.space.xl}px ${tokens.space.xl}px`, // Reduced from massive
         position: "relative",
         overflow: "hidden",
       }}
@@ -161,31 +161,31 @@ function IntroSection() {
           variants={itemVariants}
           whileHover={{ scale: 1.05, rotate: 5 }}
           style={{
-            width: 120,
-            height: 120,
+            width: 80, // Reduced from 120
+            height: 80, // Reduced from 120
             borderRadius: tokens.radii.full,
             background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             margin: "0 auto",
-            marginBottom: tokens.space.xxl,
+            marginBottom: tokens.space.lg, // Reduced from xxl
             boxShadow: "0 10px 30px rgba(16, 185, 129, 0.3)",
-            border: "6px solid white",
+            border: "4px solid white", // Reduced from 6px
           }}
         >
-          <Leaf size={56} color="white" strokeWidth={2.5} />
+          <Leaf size={40} color="white" strokeWidth={2.5} />
         </motion.div>
 
         {/* Título */}
         <motion.h1
           variants={itemVariants}
           style={{
-            fontSize: 48,
+            fontSize: 32, // Reduced from 48
             fontWeight: 800,
             color: tokens.colors.text,
             lineHeight: 1.2,
-            marginBottom: tokens.space.xl,
+            marginBottom: tokens.space.lg, // Reduced from xl
             letterSpacing: "-0.02em",
           }}
         >
@@ -198,7 +198,7 @@ function IntroSection() {
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
               display: "inline-block",
-              marginTop: tokens.space.md,
+              marginTop: tokens.space.sm, // Reduced from md
             }}
           >
             O difícil é viver num mundo que não foi feito pra isso.
@@ -212,13 +212,13 @@ function IntroSection() {
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
             backdropFilter: "blur(20px)",
-            padding: tokens.space.xxl,
+            padding: `${tokens.space.lg}px ${tokens.space.xl}px`, // Reduced padding
             borderRadius: tokens.radii.xl,
             border: "1px solid rgba(16, 185, 129, 0.2)",
             maxWidth: 700,
             margin: "0 auto",
-            marginBottom: tokens.space.xxl,
-            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.12)",
+            marginBottom: tokens.space.lg, // Reduced margin
+            boxShadow: "0 10px 20px rgba(0, 0, 0, 0.08)", // Softer shadow
           }}
         >
           <div
@@ -227,13 +227,13 @@ function IntroSection() {
               alignItems: "center",
               justifyContent: "center",
               gap: tokens.space.sm,
-              marginBottom: tokens.space.xl,
+              marginBottom: tokens.space.lg, // Reduced from xl
             }}
           >
-            <Sparkles size={24} color={tokens.colors.primary} />
+            <Sparkles size={20} color={tokens.colors.primary} />
             <p
               style={{
-                fontSize: 20,
+                fontSize: 18, // Reduced from 20
                 fontWeight: 600,
                 color: tokens.colors.text,
                 margin: 0,
@@ -247,7 +247,7 @@ function IntroSection() {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: tokens.space.lg,
+              gap: tokens.space.md, // Reduced from lg
             }}
           >
             {benefits.map((benefit, index) => (
@@ -256,12 +256,12 @@ function IntroSection() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 + index * 0.1 }}
-                whileHover={{ x: 5, scale: 1.02 }}
+                whileHover={{ x: 5, scale: 1.01 }}
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: tokens.space.lg,
-                  padding: tokens.space.lg,
+                  gap: tokens.space.md, // Reduced from lg
+                  padding: tokens.space.md, // Reduced from lg
                   borderRadius: tokens.radii.md,
                   background: "linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)",
                   border: `1px solid ${tokens.colors.border}`,
@@ -271,22 +271,21 @@ function IntroSection() {
               >
                 <div
                   style={{
-                    width: 48,
-                    height: 48,
+                    width: 36, // Reduced from 48
+                    height: 36, // Reduced from 48
                     borderRadius: tokens.radii.md,
                     background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                   }}
                 >
-                  <benefit.icon size={24} color="white" strokeWidth={2.5} />
+                  <benefit.icon size={18} color="white" strokeWidth={2.5} />
                 </div>
                 <span
                   style={{
-                    fontSize: 18,
+                    fontSize: 16, // Reduced from 18
                     color: tokens.colors.text,
                     fontWeight: 500,
                   }}
@@ -302,7 +301,7 @@ function IntroSection() {
         <motion.div
           variants={itemVariants}
           style={{
-            padding: tokens.space.xl,
+            padding: tokens.space.lg,
             maxWidth: 600,
             margin: "0 auto",
           }}
@@ -311,18 +310,19 @@ function IntroSection() {
             style={{
               height: 2,
               background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-              marginBottom: tokens.space.xl,
+              marginBottom: tokens.space.lg,
               borderRadius: tokens.radii.full,
+              opacity: 0.3,
             }}
           />
           <p
             style={{
-              fontSize: 24,
+              fontSize: 20, // Reduced from 24
               fontStyle: "italic",
               color: tokens.colors.primaryDark,
               fontWeight: 500,
               margin: 0,
-              lineHeight: 1.6,
+              lineHeight: 1.4,
             }}
           >
             A gente cuida da parte chata.

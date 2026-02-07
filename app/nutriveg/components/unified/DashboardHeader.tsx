@@ -33,11 +33,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     <div
       style={{
         background: "white",
-        padding: tokens.space.xl,
-        borderRadius: tokens.radii.lg,
-        border: `2px solid ${tokens.colors.border}`,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-        marginBottom: tokens.space.xxl,
+        padding: `${tokens.space.lg}px ${tokens.space.xl}px`,
+        borderRadius: tokens.radii.xl,
+        border: `1px solid ${tokens.colors.border}`,
+        boxShadow: "0 4px 20px rgba(0,0,0,0.03)",
+        marginBottom: tokens.space.xl,
       }}
     >
       {/* Linha superior: Título + Controles */}
@@ -45,23 +45,38 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: tokens.space.md,
+          alignItems: "flex-start",
+          marginBottom: tokens.space.lg,
         }}
       >
-        {/* Título */}
-        <h2
-          style={{
-            fontSize: 28,
-            fontWeight: 800,
-            color: tokens.colors.text,
-            margin: 0,
-          }}
-        >
-          {isFitness ? "Dashboard Fitness" : "Análise Rápida"}
-        </h2>
+        {/* Lado Esquerdo: Título e Descrição */}
+        <div>
+          <h2
+            style={{
+              fontSize: 32,
+              fontWeight: 800,
+              color: tokens.colors.text,
+              margin: 0,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {isFitness ? "Dashboard Fitness" : "Análise Rápida"}
+          </h2>
+          <p
+            style={{
+              fontSize: 14,
+              color: tokens.colors.textMuted,
+              marginTop: tokens.space.xs,
+              marginRight: tokens.space.md,
+            }}
+          >
+            {isFitness
+              ? "Acompanhe seus macros diariamente"
+              : "Insira o que você costuma comer em um dia típico"}
+          </p>
+        </div>
 
-        {/* Controles à direita */}
+        {/* Lado Direito: Controles */}
         <div
           style={{
             display: "flex",
@@ -69,6 +84,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             gap: tokens.space.md,
           }}
         >
+          {/* Mode Toggle integrated here */}
+          <div style={{ marginRight: tokens.space.sm }}>
+            <ModeToggle currentMode={mode} onModeChange={onModeChange} />
+          </div>
+
           {/* Calendário (apenas em fitness) */}
           {isFitness && (
             <CalendarWidget
@@ -85,51 +105,33 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <button
               onClick={onSettingsClick}
               style={{
-                padding: tokens.space.md,
+                width: 42,
+                height: 42,
                 background: "white",
-                border: `2px solid ${tokens.colors.border}`,
+                border: `1px solid ${tokens.colors.border}`,
                 borderRadius: tokens.radii.md,
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = tokens.colors.bg)
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "white")
-              }
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = tokens.colors.bg;
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.05)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "white";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.02)";
+              }}
             >
-              <Settings size={18} color={tokens.colors.text} />
+              <Settings size={20} color={tokens.colors.text} />
             </button>
           )}
         </div>
-      </div>
-
-      {/* Linha inferior: Descrição + Toggle de Modo */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {/* Descrição */}
-        <p
-          style={{
-            fontSize: 14,
-            color: tokens.colors.textMuted,
-            margin: 0,
-          }}
-        >
-          {isFitness
-            ? "Acompanhe seus macros diariamente"
-            : "Insira o que você costuma comer em um dia típico"}
-        </p>
-
-        {/* Mode Toggle */}
-        <ModeToggle currentMode={mode} onModeChange={onModeChange} />
       </div>
     </div>
   );

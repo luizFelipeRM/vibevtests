@@ -6,68 +6,50 @@ export const NutritionistPromo: React.FC = () => {
   return (
     <div
       style={{
-        background: `linear-gradient(135deg, ${tokens.colors.blue}15, ${tokens.colors.purple}15)`,
-        padding: tokens.space.xxl,
-        borderRadius: tokens.radii.xl,
-        border: `2px solid ${tokens.colors.blue}30`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingTop: tokens.space.xl,
+        marginTop: tokens.space.sm,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: tokens.space.md,
-              marginBottom: tokens.space.md,
-            }}
-          >
-            <Users size={28} color={tokens.colors.blue} />
-            <h3
-              style={{
-                fontSize: 24,
-                fontWeight: 800,
-                color: tokens.colors.text,
-                margin: 0,
-              }}
-            >
-              Quer um Plano Personalizado?
-            </h3>
-          </div>
-          <p
-            style={{
-              fontSize: 16,
-              color: tokens.colors.textMuted,
-              marginBottom: 0,
-            }}
-          >
-            Consulte um nutricionista vegano para um acompanhamento profissional
-            completo
-          </p>
-        </div>
-        <button
+      <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md }}>
+        <div
           style={{
-            padding: `${tokens.space.lg}px ${tokens.space.xxl}px`,
-            background: tokens.colors.blue,
-            color: "white",
-            border: "none",
-            borderRadius: tokens.radii.lg,
-            fontSize: 16,
-            fontWeight: 700,
-            cursor: "pointer",
-            boxShadow: `0 8px 24px ${tokens.colors.blue}40`,
-            whiteSpace: "nowrap",
+            width: 36,
+            height: 36,
+            background: tokens.colors.bg,
+            borderRadius: tokens.radii.md,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          Ver Profissionais →
-        </button>
+          <Users size={18} color={tokens.colors.textMuted} />
+        </div>
+        <p style={{ fontSize: 13, color: tokens.colors.textMuted, margin: 0, fontWeight: 500 }}>
+          Precisa de um plano profissional e individualizado?
+        </p>
       </div>
+      <button
+        style={{
+          padding: `${tokens.space.sm}px ${tokens.space.lg}px`,
+          background: tokens.colors.text,
+          color: "white",
+          border: "none",
+          borderRadius: tokens.radii.md,
+          fontSize: 12,
+          fontWeight: 800,
+          cursor: "pointer",
+          transition: "all 0.2s",
+          letterSpacing: "0.02em",
+          textTransform: "uppercase"
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+        onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+      >
+        Consultar Nutricionistas
+      </button>
     </div>
   );
 };

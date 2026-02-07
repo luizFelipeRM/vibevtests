@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { useNutriVegMode } from "../hooks/useNutriVegMode";
 import { useFitnessTracking } from "../hooks/useFitnessTracking";
 import { useDateNavigation } from "../hooks/useDateNavigation";
@@ -8,8 +7,10 @@ import { FoodInputSection } from "./unified/FoodInputSection";
 import { MacroSummarySection } from "./unified/MacroSummarySection";
 import { ChartsSection } from "./unified/ChartsSection";
 import { RecommendationsSection } from "./unified/RecommendationsSection";
+import { SocialHypeSection } from "./unified/SocialHypeSection";
 import { ProfileSetup } from "./fitness/ProfileSetup";
 import { useProfileSetup } from "../hooks/useProfileSetup";
+import { NutritionalStatusBanner } from "./unified/NutritionalStatusBanner";
 import { DashboardHeader } from "./unified/DashboardHeader";
 
 export const UnifiedNutriVegContainer: React.FC = () => {
@@ -19,8 +20,11 @@ export const UnifiedNutriVegContainer: React.FC = () => {
 
   const {
     currentMacros,
+    currentItems,
     dailyLogs,
     addFoodToDate,
+    removeFoodFromDate,
+    updateFoodQuantity,
     loadDateData,
   } = useFitnessTracking();
 
@@ -32,10 +36,13 @@ export const UnifiedNutriVegContainer: React.FC = () => {
     dateLabel,
   } = useDateNavigation();
 
-  // Load data when date changes (only for fitness mode)
+  // Load data when date or mode changes
   useEffect(() => {
     if (isFitness) {
       loadDateData(selectedDate);
+    } else {
+      // Basic mode: load a special "typical routine" data
+      loadDateData(new Date(1970, 0, 1));
     }
   }, [selectedDate, isFitness, loadDateData]);
 
@@ -84,14 +91,22 @@ export const UnifiedNutriVegContainer: React.FC = () => {
         onSettingsClick={() => setShowProfileSetup(true)}
       />
 
+      {/* Nutritional Status Feedback */}
+      {isFitness && (
+        <NutritionalStatusBanner
+          daysInStreak={5}
+          isPositive={true}
+        />
+      )}
+
       {/* Macro Summary Cards */}
-      <MacroSummarySection currentMacros={currentMacros} />
+      <MacroSummarySection mode={mode} currentMacros={currentMacros} />
 
       {/* Main Content Grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1.2fr 1fr",
+          gridTemplateColumns: "1fr 1fr",
           gap: tokens.space.xl,
           marginBottom: tokens.space.xxl,
         }}
@@ -99,17 +114,24 @@ export const UnifiedNutriVegContainer: React.FC = () => {
         {/* Left: Food Input */}
         <FoodInputSection
           mode={mode}
-          selectedDate={selectedDate}
+          selectedDate={isBasic ? new Date(1970, 0, 1) : selectedDate}
           onAddFood={addFoodToDate}
+          foodItems={currentItems}
+          onRemoveFood={removeFoodFromDate}
+          onUpdateQuantity={updateFoodQuantity}
         />
 
         {/* Right: Charts */}
         <ChartsSection
+          mode={mode}
           currentMacros={currentMacros}
           dailyLogs={dailyLogs}
           currentDate={selectedDate}
         />
       </div>
+
+      {/* Social & Gamification */}
+      {isFitness && <SocialHypeSection />}
 
       {/* Recommendations */}
       {isBasic && <RecommendationsSection />}

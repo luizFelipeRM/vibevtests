@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Flame, Dumbbell, Wheat, Droplet } from "lucide-react";
+import { Flame, Dumbbell, Wheat, Droplet, Share2 } from "lucide-react";
 import { Macros, MacroTarget } from "../../types";
 import { tokens } from "../../styles/tokens";
 import { calculateMacroPercentage, calculateRemaining } from "../../utils/macroCalculations";
@@ -70,87 +70,139 @@ export const MacroSummaryCards: React.FC<MacroSummaryCardsProps> = ({
         const remaining = calculateRemaining(macro.current, macro.target);
 
         return (
-          <div
+          <motion.div
             key={macro.label}
+            whileHover={{ translateY: -4 }}
             style={{
               background: "white",
-              padding: tokens.space.lg,
-              borderRadius: tokens.radii.lg,
-              border: `2px solid ${tokens.colors.border}`,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+              padding: tokens.space.xl,
+              borderRadius: tokens.radii.xl,
+              border: `1px solid ${tokens.colors.border}`,
+              boxShadow: "0 2px 10px rgba(0,0,0,0.02)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              transition: "box-shadow 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.06)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = "0 2px 10px rgba(0,0,0,0.02)";
             }}
           >
-            <MacroTooltip
-              label={macro.label}
-              brief={macroExplanations[macro.explanationKey].brief}
-              detailed={macroExplanations[macro.explanationKey].detailed}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: tokens.space.sm,
-                  marginBottom: tokens.space.md,
-                  cursor: "help",
-                }}
+            <div>
+              <MacroTooltip
+                label={macro.label}
+                brief={macroExplanations[macro.explanationKey].brief}
+                detailed={macroExplanations[macro.explanationKey].detailed}
               >
-                <Icon size={18} color={macro.color} />
-                <span
+                <div
                   style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: tokens.colors.textMuted,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: tokens.space.sm,
+                    marginBottom: tokens.space.md,
+                    cursor: "help",
                   }}
                 >
-                  {macro.label}
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: tokens.radii.md,
+                      background: `${macro.color}10`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <Icon size={16} color={macro.color} />
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: tokens.colors.textMuted,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    {macro.label}
+                  </span>
+                  {percentage >= 100 && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      style={{
+                        background: tokens.colors.primary,
+                        color: "white",
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        fontSize: 8,
+                        fontWeight: 900,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                        cursor: "pointer"
+                      }}
+                      whileHover={{ scale: 1.1 }}
+                      title="Compartilhar Conquista!"
+                    >
+                      <Share2 size={10} /> SHARE
+                    </motion.div>
+                  )}
+                </div>
+              </MacroTooltip>
+              <div
+                style={{
+                  fontSize: 32,
+                  fontWeight: 800,
+                  color: tokens.colors.text,
+                  marginBottom: tokens.space.xs,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {macro.unit === "kcal"
+                  ? macro.current
+                  : parseFloat(macro.current.toFixed(1))}
+                <span style={{ fontSize: 16, fontWeight: 500, color: tokens.colors.textMuted, marginLeft: 4 }}>
+                  {macro.unit}
                 </span>
               </div>
-            </MacroTooltip>
-            <div
-              style={{
-                fontSize: 28,
-                fontWeight: 800,
-                color: tokens.colors.text,
-                marginBottom: tokens.space.xs,
-              }}
-            >
-              {macro.unit === "kcal"
-                ? macro.current
-                : parseFloat(macro.current.toFixed(1))}
+              <div
+                style={{
+                  fontSize: 12,
+                  color: tokens.colors.textMuted,
+                  marginBottom: tokens.space.lg,
+                  fontWeight: 500,
+                }}
+              >
+                Meta: {macro.target} {macro.unit} • <span style={{ color: remaining > 0 ? tokens.colors.orange : tokens.colors.green }}>Falta: {macro.unit === "kcal" ? remaining : parseFloat(remaining.toFixed(1))} {macro.unit}</span>
+              </div>
             </div>
+
             <div
               style={{
-                fontSize: 12,
-                color: tokens.colors.textMuted,
-                marginBottom: tokens.space.sm,
-              }}
-            >
-              de {macro.target} {macro.unit} • Falta:{" "}
-              {macro.unit === "kcal"
-                ? remaining
-                : parseFloat(remaining.toFixed(1))}{" "}
-              {macro.unit}
-            </div>
-            <div
-              style={{
-                height: 6,
+                height: 8,
                 background: tokens.colors.bg,
                 borderRadius: tokens.radii.full,
                 overflow: "hidden",
+                position: "relative",
               }}
             >
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: `${percentage}%` }}
+                animate={{ width: `${Math.min(percentage, 100)}%` }}
                 style={{
                   height: "100%",
                   background: macro.color,
                   borderRadius: tokens.radii.full,
-                  transition: "width 0.5s ease",
+                  transition: "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
               />
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>
