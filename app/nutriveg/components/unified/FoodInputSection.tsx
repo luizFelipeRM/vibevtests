@@ -10,7 +10,7 @@ import { Trash2, Plus, Edit2, Check, X, Coffee, Salad, Soup, Moon } from "lucide
 interface FoodInputSectionProps {
   mode: Mode;
   selectedDate: Date;
-  onAddFood: (date: Date, name: string, macros: Macros, quantity: number, meal?: MealType) => void;
+  onAddFood: (date: Date, name: string, macros: Macros, quantity: number, unit: string, meal?: MealType) => void;
   foodItems: LogEntry[];
   onRemoveFood: (date: Date, id: string) => void;
   onUpdateQuantity: (date: Date, id: string, newQuantity: number) => void;
@@ -26,6 +26,7 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
 }) => {
   const [foodName, setFoodName] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("porção");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editQty, setEditQty] = useState("");
   const [selectedMeal, setSelectedMeal] = useState<MealType>("breakfast");
@@ -41,13 +42,14 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
     const multiplier = parseFloat(quantity) || 1;
     const macrosToAdd = multiplyMacros(food, multiplier);
 
-    onAddFood(selectedDate, foodName, macrosToAdd, multiplier, mode === "basic" ? selectedMeal : undefined);
+    onAddFood(selectedDate, foodName, macrosToAdd, multiplier, unit, mode === "basic" ? selectedMeal : undefined);
 
     // Adicionar aos alimentos recentes
     addRecentFood(foodName);
 
     setFoodName("");
     setQuantity("");
+    setUnit("porção");
   };
 
   const handleQuickSelect = (food: string) => {
@@ -121,7 +123,7 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
               style={{ cursor: "pointer", borderBottom: `1px dashed ${tokens.colors.textMuted}` }}
               title="Clique para editar"
             >
-              {item.quantity} {foodDatabase[item.name]?.unit || "unit"}
+              {item.quantity} {item.unit}
             </span>
           )}
           <span>• {item.calories} kcal</span>
@@ -217,7 +219,7 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 100px auto",
+            gridTemplateColumns: "1fr 100px 140px auto",
             gap: tokens.space.md,
             alignItems: "flex-end",
             marginBottom: tokens.space.lg,
@@ -249,6 +251,29 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
               onFocus={(e) => (e.currentTarget.style.borderColor = tokens.colors.primary)}
               onBlur={(e) => (e.currentTarget.style.borderColor = tokens.colors.border)}
             />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Unidade</label>
+            <select
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              style={inputStyle}
+              onFocus={(e) => (e.currentTarget.style.borderColor = tokens.colors.primary)}
+              onBlur={(e) => (e.currentTarget.style.borderColor = tokens.colors.border)}
+            >
+              <option value="porção">Porção</option>
+              <option value="g">Gramas (g)</option>
+              <option value="kg">Quilos (kg)</option>
+              <option value="ml">Mililitros (ml)</option>
+              <option value="L">Litros (L)</option>
+              <option value="unidade">Unidade</option>
+              <option value="xícara">Xícara</option>
+              <option value="colher sopa">Colher de sopa</option>
+              <option value="colher chá">Colher de chá</option>
+              <option value="fatia">Fatia</option>
+              <option value="pedaço">Pedaço</option>
+            </select>
           </div>
 
           <button onClick={handleAddFood} style={buttonStyle} onMouseEnter={btnHover} onMouseLeave={btnLeave}>

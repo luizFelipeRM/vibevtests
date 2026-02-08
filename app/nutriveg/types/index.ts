@@ -14,6 +14,7 @@ export interface LogEntry {
   fats: number;
   calories: number;
   quantity: number;
+  unit: string;
   meal?: MealType;
 }
 

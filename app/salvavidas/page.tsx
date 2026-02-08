@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { CaseDetailModal } from "./_components/CaseDetailModal";
 import {
   Heart,
   Search,
@@ -80,6 +80,50 @@ const caseTypes = [
   { id: "transporte", name: "Transporte", icon: Car, color: tokens.colors.orange },
   { id: "denuncia", name: "Denúncias", icon: AlertTriangle, color: tokens.colors.red },
   { id: "finais-felizes", name: "Finais Felizes", icon: PartyPopper, color: tokens.colors.green },
+];
+
+// Dados de finais felizes para o carousel
+const happyEndingsCarousel = [
+  {
+    id: 1,
+    name: "Thor",
+    beforeImage: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&h=600&fit=crop",
+    afterImage: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&h=600&fit=crop",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    story: "De acorrentado e desnutrido a livre e feliz em um sítio",
+    timelineText: "Transformação em 3 meses",
+    location: "São Paulo, SP",
+  },
+  {
+    id: 2,
+    name: "Luna",
+    beforeImage: "https://images.unsplash.com/photo-1573865526739-10c1de0a6f39?w=800&h=600&fit=crop",
+    afterImage: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=600&fit=crop",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    story: "De pata fraturada a correndo e brincando novamente",
+    timelineText: "Recuperação em 2 meses",
+    location: "Campinas, SP",
+  },
+  {
+    id: 3,
+    name: "Mel",
+    beforeImage: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=600&fit=crop",
+    afterImage: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&h=600&fit=crop",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    story: "De doente e sozinha a saudável com família amorosa",
+    timelineText: "Adotada após 1 mês",
+    location: "Santos, SP",
+  },
+  {
+    id: 4,
+    name: "Bob",
+    beforeImage: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&h=600&fit=crop",
+    afterImage: "https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=800&h=600&fit=crop",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    story: "Das ruas ao lar dos sonhos com quintal gigante",
+    timelineText: "Nova família em 2 semanas",
+    location: "Guarulhos, SP",
+  },
 ];
 
 // Dados mockados de casos
@@ -308,6 +352,355 @@ const mockCases = [
     ],
   },
 ];
+
+// Hero Carousel Component
+function HeroCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const current = happyEndingsCarousel[currentIndex];
+
+  const next = () => {
+    setCurrentIndex((prev) => (prev + 1) % happyEndingsCarousel.length);
+    setShowVideo(false);
+  };
+
+  const prev = () => {
+    setCurrentIndex((prev) => (prev - 1 + happyEndingsCarousel.length) % happyEndingsCarousel.length);
+    setShowVideo(false);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      style={{
+        position: "relative",
+        height: 600,
+        overflow: "hidden",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+      }}
+    >
+      {/* Antes/Depois Images */}
+      <div style={{ display: "flex", height: "100%", position: "relative" }}>
+        {/* Antes */}
+        <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={`before-${currentIndex}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              src={current.beforeImage}
+              alt="Antes"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                filter: "grayscale(40%) brightness(0.85)",
+              }}
+            />
+          </AnimatePresence>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to right, transparent 30%, rgba(0,0,0,0.3))",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: tokens.space.xl,
+              left: tokens.space.xl,
+              background: "rgba(0, 0, 0, 0.6)",
+              backdropFilter: "blur(10px)",
+              color: "white",
+              padding: `${tokens.space.xs}px ${tokens.space.md}px`,
+              borderRadius: tokens.radii.md,
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: "0.5px",
+            }}
+          >
+            ANTES
+          </div>
+        </div>
+
+        {/* Depois */}
+        <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={`after-${currentIndex}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              src={current.afterImage}
+              alt="Depois"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </AnimatePresence>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to left, transparent 30%, rgba(0,0,0,0.3))",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: tokens.space.xl,
+              right: tokens.space.xl,
+              background: "rgba(16, 185, 129, 0.9)",
+              backdropFilter: "blur(10px)",
+              color: "white",
+              padding: `${tokens.space.xs}px ${tokens.space.md}px`,
+              borderRadius: tokens.radii.md,
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: "0.5px",
+            }}
+          >
+            DEPOIS
+          </div>
+        </div>
+      </div>
+
+      {/* Content Overlay */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 60%, transparent 100%)",
+          padding: `${tokens.space.giant}px ${tokens.space.xxl}px ${tokens.space.xxl}px`,
+        }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2
+              style={{
+                fontSize: 48,
+                fontWeight: 800,
+                color: "white",
+                marginBottom: tokens.space.md,
+                textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+              }}
+            >
+              {current.name}
+            </h2>
+
+            <p
+              style={{
+                fontSize: 20,
+                color: "rgba(255,255,255,0.95)",
+                lineHeight: 1.6,
+                marginBottom: tokens.space.lg,
+                maxWidth: 800,
+                textShadow: "0 1px 10px rgba(0,0,0,0.5)",
+              }}
+            >
+              {current.story}
+            </p>
+
+            <div style={{ display: "flex", alignItems: "center", gap: tokens.space.xl }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: tokens.space.sm,
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.9)",
+                }}
+              >
+                <Clock size={16} />
+                {current.timelineText}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: tokens.space.sm,
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.9)",
+                }}
+              >
+                <MapPin size={16} />
+                {current.location}
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowVideo(!showVideo)}
+                style={{
+                  background: "white",
+                  color: tokens.colors.text,
+                  border: "none",
+                  padding: `${tokens.space.sm}px ${tokens.space.lg}px`,
+                  borderRadius: tokens.radii.md,
+                  fontSize: 14,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: tokens.space.xs,
+                  marginLeft: "auto",
+                }}
+              >
+                ▶ Ver vídeo
+              </motion.button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={prev}
+        style={{
+          position: "absolute",
+          left: tokens.space.lg,
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: 56,
+          height: 56,
+          borderRadius: tokens.radii.full,
+          background: "rgba(255,255,255,0.15)",
+          backdropFilter: "blur(10px)",
+          border: "1px solid rgba(255,255,255,0.2)",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 24,
+          color: "white",
+          zIndex: 10,
+          transition: "all 0.2s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+        }}
+      >
+        ←
+      </button>
+      <button
+        onClick={next}
+        style={{
+          position: "absolute",
+          right: tokens.space.lg,
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: 56,
+          height: 56,
+          borderRadius: tokens.radii.full,
+          background: "rgba(255,255,255,0.15)",
+          backdropFilter: "blur(10px)",
+          border: "1px solid rgba(255,255,255,0.2)",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 24,
+          color: "white",
+          zIndex: 10,
+          transition: "all 0.2s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+        }}
+      >
+        →
+      </button>
+
+      {/* Dots Indicator */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: tokens.space.lg,
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: tokens.space.xs,
+          zIndex: 10,
+        }}
+      >
+        {happyEndingsCarousel.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              setCurrentIndex(index);
+              setShowVideo(false);
+            }}
+            style={{
+              width: index === currentIndex ? 24 : 8,
+              height: 8,
+              borderRadius: tokens.radii.full,
+              background: index === currentIndex ? "white" : "rgba(255,255,255,0.4)",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Video Overlay */}
+      <AnimatePresence>
+        {showVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowVideo(false)}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(0,0,0,0.95)",
+              zIndex: 50,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <video
+              src={current.videoUrl}
+              controls
+              autoPlay
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                maxWidth: "90%",
+                maxHeight: "90%",
+                borderRadius: tokens.radii.lg,
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
 
 // Header Component
 function Header({ onOpenNewCase, selectedCategory, setSelectedCategory }) {
@@ -772,8 +1165,8 @@ function HappyCard({ caseData, onClick }) {
 
 // Main Component
 export default function SalvaVidasPage() {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("todos");
-  const [selectedCase, setSelectedCase] = useState<any>(null);
   const [showNewCaseModal, setShowNewCaseModal] = useState(false);
 
   const filteredCases =
@@ -802,64 +1195,10 @@ export default function SalvaVidasPage() {
         setSelectedCategory={setSelectedCategory}
       />
 
+      {/* Hero Carousel - Happy Endings - Full Width */}
+      {selectedCategory === "todos" && <HeroCarousel />}
+
       <main style={{ maxWidth: "1400px", margin: "0 auto", padding: `${tokens.space.xxl}px ${tokens.space.xl}px` }}>
-        {/* Stats */}
-        {selectedCategory === "todos" && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: tokens.space.lg, marginBottom: tokens.space.xxl }}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{
-                background: "white",
-                borderRadius: tokens.radii.lg,
-                padding: tokens.space.xl,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                border: `2px solid ${tokens.colors.border}`,
-              }}
-            >
-              <div style={{ fontSize: 36, fontWeight: 800, color: tokens.colors.primary, marginBottom: tokens.space.xs }}>
-                {stats.total}
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: tokens.colors.textMuted }}>Total de Casos</div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              style={{
-                background: "white",
-                borderRadius: tokens.radii.lg,
-                padding: tokens.space.xl,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                border: `2px solid ${tokens.colors.blue}20`,
-              }}
-            >
-              <div style={{ fontSize: 36, fontWeight: 800, color: tokens.colors.blue, marginBottom: tokens.space.xs }}>
-                {stats.emAndamento}
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: tokens.colors.textMuted }}>Em Andamento</div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              style={{
-                background: "white",
-                borderRadius: tokens.radii.lg,
-                padding: tokens.space.xl,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                border: `2px solid ${tokens.colors.green}20`,
-              }}
-            >
-              <div style={{ fontSize: 36, fontWeight: 800, color: tokens.colors.green, marginBottom: tokens.space.xs }}>
-                {stats.finaisFelizes}
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: tokens.colors.textMuted }}>🎉 Finais Felizes</div>
-            </motion.div>
-          </div>
-        )}
 
         {/* Happy Endings Section */}
         {selectedCategory === "finais-felizes" && (
@@ -875,7 +1214,7 @@ export default function SalvaVidasPage() {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(450px, 1fr))", gap: tokens.space.xl }}>
               {happyCases.map((caseData) => (
-                <HappyCard key={caseData.id} caseData={caseData} onClick={() => setSelectedCase(caseData)} />
+                <HappyCard key={caseData.id} caseData={caseData} onClick={() => router.push(`/salvavidas/caso/${caseData.id}`)} />
               ))}
             </div>
           </>
@@ -895,7 +1234,7 @@ export default function SalvaVidasPage() {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))", gap: tokens.space.xl }}>
               {filteredCases.map((caseData) => (
-                <CaseCard key={caseData.id} caseData={caseData} onClick={() => setSelectedCase(caseData)} />
+                <CaseCard key={caseData.id} caseData={caseData} onClick={() => router.push(`/salvavidas/caso/${caseData.id}`)} />
               ))}
             </div>
 
@@ -913,9 +1252,6 @@ export default function SalvaVidasPage() {
           </>
         )}
       </main>
-
-      {/* Detail Modal */}
-      {selectedCase && <CaseDetailModal caseData={selectedCase} onClose={() => setSelectedCase(null)} />}
 
       {/* Global Styles */}
       <style jsx global>{`

@@ -106,7 +106,7 @@ export const UnifiedNutriVegContainer: React.FC = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "2fr 1fr",
           gap: tokens.space.xl,
           marginBottom: tokens.space.xxl,
         }}

@@ -28,7 +28,7 @@ export const useFitnessTracking = () => {
             calories: Math.floor(Math.random() * 500) + 2000,
           },
           items: [
-            { id: "mock-1", name: "Mock Meal", quantity: 1, protein: 50, carbs: 100, fats: 25, calories: 1000, meal: "lunch" }
+            { id: "mock-1", name: "Mock Meal", quantity: 1, unit: "porção", protein: 50, carbs: 100, fats: 25, calories: 1000, meal: "lunch" }
           ]
         };
       }
@@ -79,7 +79,7 @@ export const useFitnessTracking = () => {
     }));
   }, []);
 
-  const addFoodToDate = useCallback((date: Date, foodName: string, macrosToAdd: Macros, quantity: number, meal?: MealType) => {
+  const addFoodToDate = useCallback((date: Date, foodName: string, macrosToAdd: Macros, quantity: number, unit: string, meal?: MealType) => {
     const dateKey = formatDate(date);
     const log = dailyLogs[dateKey] || { totals: emptyMacros(), items: [] };
 
@@ -87,6 +87,7 @@ export const useFitnessTracking = () => {
       id: crypto.randomUUID(),
       name: foodName,
       quantity,
+      unit,
       meal,
       ...macrosToAdd
     };
