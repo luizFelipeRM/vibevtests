@@ -880,7 +880,7 @@ function Navbar() {
 
           {/* User Icon - Direct to Login */}
           <motion.button
-            onClick={() => window.location.href = '/login'}
+            onClick={() => window.location.href = '/profissionais/login'}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             style={{

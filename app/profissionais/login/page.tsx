@@ -430,7 +430,7 @@ export default function LoginPage() {
             <p style={{ fontSize: 14, color: tokens.colors.text, margin: 0 }}>
               Não tem uma conta?{' '}
               <a
-                href="/cadastro"
+                href="/profissionais/cadastro"
                 style={{
                   color: tokens.colors.primary,
                   fontWeight: 600,
