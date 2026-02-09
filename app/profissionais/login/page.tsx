@@ -7,9 +7,7 @@ import {
   Eye,
   EyeOff,
   Leaf,
-  ArrowRight,
-  AlertCircle,
-  CheckCircle
+  ArrowRight
 } from "lucide-react";
 
 const tokens = {
@@ -47,28 +45,6 @@ export default function LoginPage() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    // Simular verificação de login
-    setTimeout(() => {
-      // TODO: Integrar com API real de autenticação
-      console.log("Login:", formData);
-
-      // Simular: se email contém "prof", vai para dashboard profissional
-      if (formData.email.includes("prof")) {
-        window.location.href = "/profissionais/dashboard";
-      } else {
-        // Cliente normal volta para a lista
-        window.location.href = "/profissionais";
-      }
-    }, 1000);
-  };
 
   return (
     <div style={{
@@ -226,29 +202,9 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{
-                padding: tokens.space.md,
-                backgroundColor: '#fee2e2',
-                border: '1px solid #fecaca',
-                borderRadius: tokens.radii.md,
-                marginBottom: tokens.space.lg,
-                display: 'flex',
-                alignItems: 'center',
-                gap: tokens.space.sm
-              }}
-            >
-              <AlertCircle size={18} color="#dc2626" />
-              <span style={{ fontSize: 14, color: '#dc2626' }}>{error}</span>
-            </motion.div>
-          )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: tokens.space.lg }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.space.lg }}>
             {/* Email */}
             <div>
               <label style={{
@@ -375,37 +331,33 @@ export default function LoginPage() {
             </div>
 
             {/* Submit Button */}
-            <motion.button
-              type="submit"
-              disabled={loading}
-              whileHover={{ scale: loading ? 1 : 1.02 }}
-              whileTap={{ scale: loading ? 1 : 0.98 }}
+            <motion.a
+              href="/profissionais/dashboard"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               style={{
                 width: '100%',
                 padding: `${tokens.space.lg}px`,
-                background: loading ? tokens.colors.textMuted : `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
+                background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
                 color: 'white',
                 border: 'none',
                 borderRadius: tokens.radii.md,
                 fontSize: 16,
                 fontWeight: 700,
-                cursor: loading ? 'not-allowed' : 'pointer',
+                cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: tokens.space.sm,
-                boxShadow: loading ? 'none' : `0 4px 16px ${tokens.colors.primary}40`,
-                marginTop: tokens.space.md
+                boxShadow: `0 4px 16px ${tokens.colors.primary}40`,
+                marginTop: tokens.space.md,
+                textDecoration: 'none'
               }}
             >
-              {loading ? 'Entrando...' : (
-                <>
-                  Entrar
-                  <ArrowRight size={20} />
-                </>
-              )}
-            </motion.button>
-          </form>
+              Entrar
+              <ArrowRight size={20} />
+            </motion.a>
+          </div>
 
           {/* Divider */}
           <div style={{

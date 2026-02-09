@@ -76,6 +76,7 @@ export default function UnifiedRegistration() {
 
   const [clientData, setClientData] = useState({
     name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -86,6 +87,7 @@ export default function UnifiedRegistration() {
 
   const [professionalData, setProfessionalData] = useState({
     name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -485,6 +487,60 @@ export default function UnifiedRegistration() {
                             }}
                           />
                         </div>
+                      </div>
+
+                      <div>
+                        <label
+                          style={{
+                            display: "block",
+                            fontSize: 14,
+                            fontWeight: 600,
+                            marginBottom: tokens.space.sm,
+                            color: tokens.colors.text,
+                          }}
+                        >
+                          Nome de Usuário * <span style={{ fontSize: 12, fontWeight: 400, color: tokens.colors.textMuted }}>(seu identificador único)</span>
+                        </label>
+                        <div style={{ position: "relative" }}>
+                          <User
+                            size={18}
+                            color={tokens.colors.textMuted}
+                            style={{
+                              position: "absolute",
+                              left: 12,
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                            }}
+                          />
+                          <input
+                            type="text"
+                            required
+                            value={clientData.username}
+                            onChange={(e) => {
+                              // Remove caracteres especiais e converte para minúsculas
+                              const username = e.target.value
+                                .toLowerCase()
+                                .replace(/[^a-z0-9-_]/g, '-')
+                                .replace(/-+/g, '-')
+                                .replace(/^-|-$/g, '');
+                              setClientData({ ...clientData, username });
+                            }}
+                            placeholder="seu-usuario"
+                            style={{
+                              width: "100%",
+                              padding: `${tokens.space.md}px ${tokens.space.lg}px ${tokens.space.md}px 40px`,
+                              border: `2px solid ${tokens.colors.border}`,
+                              borderRadius: tokens.radii.md,
+                              fontSize: 15,
+                              color: tokens.colors.text,
+                            }}
+                          />
+                        </div>
+                        {clientData.username && (
+                          <p style={{ fontSize: 12, color: tokens.colors.textMuted, marginTop: 4, marginLeft: 2 }}>
+                            Seu usuário: <strong>@{clientData.username}</strong>
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -904,6 +960,40 @@ export default function UnifiedRegistration() {
                             color: tokens.colors.text,
                           }}
                         />
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: 14, fontWeight: 600, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
+                          Nome de Usuário * <span style={{ fontSize: 12, fontWeight: 400, color: tokens.colors.textMuted }}>(será sua URL: /profissionais/seu-usuario)</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={professionalData.username}
+                          onChange={(e) => {
+                            // Remove caracteres especiais e converte para minúsculas
+                            const username = e.target.value
+                              .toLowerCase()
+                              .replace(/[^a-z0-9-]/g, '-')
+                              .replace(/-+/g, '-')
+                              .replace(/^-|-$/g, '');
+                            setProfessionalData({ ...professionalData, username });
+                          }}
+                          placeholder="seu-usuario-profissional"
+                          style={{
+                            width: "100%",
+                            padding: `${tokens.space.md}px ${tokens.space.lg}px`,
+                            border: `2px solid ${tokens.colors.border}`,
+                            borderRadius: tokens.radii.md,
+                            fontSize: 15,
+                            color: tokens.colors.text,
+                          }}
+                        />
+                        {professionalData.username && (
+                          <p style={{ fontSize: 12, color: tokens.colors.textMuted, marginTop: 4 }}>
+                            Sua URL será: <strong>/profissionais/{professionalData.username}</strong>
+                          </p>
+                        )}
                       </div>
 
                       <div>

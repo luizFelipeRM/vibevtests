@@ -55,28 +55,7 @@ export const MacroDistribution: React.FC<MacroDistributionProps> = ({
   const StatusIcon = status.icon;
 
   return (
-    <div
-      style={{
-        background: "white",
-        padding: tokens.space.xl,
-        borderRadius: tokens.radii.lg,
-        border: `2px solid ${tokens.colors.border}`,
-        marginBottom: tokens.space.xl,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-      }}
-    >
-      <h3
-        style={{
-          fontSize: 16,
-          fontWeight: 700,
-          marginBottom: tokens.space.xl,
-          color: tokens.colors.text,
-          textAlign: "center",
-        }}
-      >
-        Distribuição de Macros
-      </h3>
-
+    <div>
       {/* Gráfico de Pizza */}
       <div style={{ marginBottom: isFitness ? tokens.space.lg : 0 }}>
         <PieChart percentages={validation.percentages} />

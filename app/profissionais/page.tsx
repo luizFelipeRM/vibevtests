@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import {
   Leaf,
   Search,
@@ -96,6 +97,7 @@ const categories = [
 const professionalsData = [
   {
     id: 1,
+    username: "dra-ana-silva",
     name: "Dra. Ana Silva",
     category: "nutricionista",
     specialty: "Nutrição Clínica Vegana",
@@ -105,6 +107,7 @@ const professionalsData = [
     experience: "8 anos",
     price: "R$ 300-400",
     image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1200&h=400&fit=crop",
     verified: true,
     bio: "Especialista em nutrição esportiva para atletas veganos. Foco em performance e ganho de massa muscular.",
     address: "Av. Paulista, 1000 - Bela Vista, São Paulo - SP",
@@ -124,6 +127,7 @@ const professionalsData = [
   },
   {
     id: 2,
+    username: "dr-carlos-mendes",
     name: "Dr. Carlos Mendes",
     category: "medico",
     specialty: "Clínico Geral",
@@ -133,6 +137,7 @@ const professionalsData = [
     experience: "12 anos",
     price: "R$ 250-350",
     image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&h=400&fit=crop",
     verified: true,
     bio: "Médico vegano há 10 anos. Atendimento humanizado com foco em medicina preventiva e lifestyle vegano. Experiência em orientação nutricional e acompanhamento de pacientes em transição.",
     address: "Rua Visconde de Pirajá, 550 - Ipanema, Rio de Janeiro - RJ",
@@ -150,6 +155,7 @@ const professionalsData = [
   },
   {
     id: 3,
+    username: "dra-mariana-costa",
     name: "Dra. Mariana Costa",
     category: "psicologo",
     specialty: "Psicologia Clínica",
@@ -159,6 +165,7 @@ const professionalsData = [
     experience: "6 anos",
     price: "R$ 150-200",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&h=400&fit=crop",
     verified: true,
     isRemote: true,
     bio: "Psicóloga especializada em ansiedade e transição para o veganismo. Atendimento online e presencial com abordagem acolhedora e humanizada.",
@@ -175,6 +182,7 @@ const professionalsData = [
   },
   {
     id: 4,
+    username: "ink-vegan-tattoo",
     name: "Ink Vegan Tattoo - Rafael",
     category: "tatuador",
     specialty: "Tatuagem Vegana",
@@ -184,6 +192,7 @@ const professionalsData = [
     experience: "10 anos",
     price: "R$ 300-800",
     image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1590246814883-57c511a83d6b?w=1200&h=400&fit=crop",
     verified: true,
     bio: "Estúdio 100% vegano. Tintas veganas, luvas sem látex, aftercare cruelty-free. Especialidade em blackwork e minimalismo.",
     address: "Rua XV de Novembro, 123 - Centro, Curitiba - PR",
@@ -203,6 +212,7 @@ const professionalsData = [
   },
   {
     id: 5,
+    username: "dra-paula-oliveira",
     name: "Dra. Paula Oliveira",
     category: "pediatra",
     specialty: "Pediatria Vegana",
@@ -212,6 +222,7 @@ const professionalsData = [
     experience: "9 anos",
     price: "R$ 280-380",
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=1200&h=400&fit=crop",
     verified: true,
     bio: "Pediatra especializada em nutrição infantil vegana. Mãe vegana e apoiadora da criação consciente. Acompanhamento completo do desenvolvimento infantil.",
     services: ["Consulta pediátrica", "Orientação nutricional infantil", "Acompanhamento do desenvolvimento", "Puericultura"],
@@ -225,6 +236,7 @@ const professionalsData = [
   },
   {
     id: 6,
+    username: "lucas-fitness-vegan",
     name: "Lucas Fitness Vegan",
     category: "personal",
     specialty: "Personal Trainer Vegano",
@@ -234,6 +246,7 @@ const professionalsData = [
     experience: "7 anos",
     price: "R$ 120-180/aula",
     image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=400&fit=crop",
     verified: true,
     isRemote: true,
     bio: "Personal trainer vegano há 7 anos. Especialista em ganho de massa muscular e performance com dieta plant-based.",
@@ -251,6 +264,7 @@ const professionalsData = [
   },
   {
     id: 7,
+    username: "chef-bianca-almeida",
     name: "Chef Bianca Almeida",
     category: "chef",
     specialty: "Gastronomia Vegana",
@@ -260,6 +274,7 @@ const professionalsData = [
     experience: "11 anos",
     price: "R$ 500-1500/evento",
     image: "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=400&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200&h=400&fit=crop",
     verified: true,
     bio: "Chef vegana especializada em alta gastronomia plant-based. Eventos, aulas de culinária e consultoria para restaurantes.",
     services: ["Eventos privados", "Aulas de culinária", "Consultoria gastronômica", "Menu personalizado"],
@@ -277,6 +292,7 @@ const professionalsData = [
   },
   {
     id: 8,
+    username: "dr-vegan-pet",
     name: "Dr. Vegan Pet - Ricardo",
     category: "veterinario",
     specialty: "Veterinária Vegana",
@@ -286,6 +302,7 @@ const professionalsData = [
     experience: "8 anos",
     price: "R$ 180-280",
     image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=1200&h=400&fit=crop",
     verified: true,
     isRemote: true,
     bio: "Veterinário especializado em dietas plant-based para cães. Atendimento ético e compassivo para todos os animais.",
@@ -962,27 +979,28 @@ function CategoryFilter({ selectedCategory, onSelectCategory }: { selectedCatego
 }
 
 // Professional Card (tamanho fixo)
-function ProfessionalCard({ professional, onOpenModal }: { professional: any; onOpenModal: (p: any) => void }) {
+function ProfessionalCard({ professional }: { professional: any }) {
   const CategoryIcon = categories.find((c) => c.id === professional.category)?.icon || Sparkles;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      whileHover={{ y: -5 }}
-      style={{
-        backgroundColor: "white",
-        borderRadius: tokens.radii.lg,
-        overflow: "hidden",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-        transition: "all 0.3s ease",
-        border: `1px solid ${tokens.colors.border}`,
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-      }}
-    >
+    <Link href={`/profissionais/${professional.username}`} style={{ textDecoration: "none" }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        whileHover={{ y: -5 }}
+        style={{
+          backgroundColor: "white",
+          borderRadius: tokens.radii.lg,
+          overflow: "hidden",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+          transition: "all 0.3s ease",
+          border: `1px solid ${tokens.colors.border}`,
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
       {/* Imagem - altura fixa */}
       <div
         style={{
@@ -1076,10 +1094,7 @@ function ProfessionalCard({ professional, onOpenModal }: { professional: any; on
 
         {/* Footer Button */}
         <div style={{ marginTop: "auto", paddingTop: 8 }}>
-          <motion.button
-            onClick={() => onOpenModal(professional)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <div
             style={{
               width: "100%",
               padding: "10px",
@@ -1099,10 +1114,11 @@ function ProfessionalCard({ professional, onOpenModal }: { professional: any; on
           >
             Ver Perfil Completo
             <ExternalLink size={16} />
-          </motion.button>
+          </div>
         </div>
       </div>
-    </motion.div >
+    </motion.div>
+    </Link>
   );
 }
 
@@ -1454,7 +1470,9 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
             <div
               style={{
                 height: 150,
-                background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
+                background: professional.coverImage
+                  ? `url(${professional.coverImage}) center/cover`
+                  : `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
                 borderRadius: `${tokens.radii.xl}px ${tokens.radii.xl}px 0 0`,
               }}
             />
@@ -2062,7 +2080,6 @@ function ProfessionalModal({ professional, onClose }: { professional: any; onClo
 // Main Component
 export default function ProfessionalsPage() {
   const [selectedCategory, setSelectedCategory] = useState("todos");
-  const [selectedProfessional, setSelectedProfessional] = useState(null);
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
 
   const filteredProfessionals = React.useMemo(() => {
@@ -2163,19 +2180,10 @@ export default function ProfessionalsPage() {
             <ProfessionalCard
               key={professional.id}
               professional={professional}
-              onOpenModal={setSelectedProfessional}
             />
           ))}
         </div>
       </div>
-
-      {/* Modal */}
-      {selectedProfessional && (
-        <ProfessionalModal
-          professional={selectedProfessional}
-          onClose={() => setSelectedProfessional(null)}
-        />
-      )}
 
       {/* Modals removidos - usando rotas dedicadas:
           - Cadastro: /profissionais/cadastro

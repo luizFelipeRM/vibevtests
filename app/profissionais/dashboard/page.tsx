@@ -1,1164 +1,1193 @@
 "use client";
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  User,
-  Star,
-  Eye,
-  MessageCircle,
-  Calendar,
-  TrendingUp,
-  Edit,
-  Image,
-  Briefcase,
-  Phone,
-  Mail,
-  Instagram,
-  Globe,
-  MapPin,
-  DollarSign,
-  Award,
-  Settings,
-  LogOut,
-  BarChart3,
-  Users,
-  Clock,
-  CheckCircle,
-  Upload,
-  Plus,
-  Camera,
-  Heart,
-  Bell,
-  Search,
-  ChevronRight,
-  Leaf,
-  Home,
-  FileText,
-  Sparkles,
-  ArrowUpRight,
-  TrendingDown,
-} from "lucide-react";
+import { useState } from "react";
 
-const tokens = {
-  colors: {
-    bg: "#fafafa",
-    surface: "#ffffff",
-    primary: "#048003",
-    primaryDark: "#036002",
-    primaryLight: "#d4f4d3",
-    primaryLighter: "#e8f9e8",
-    text: "#111827",
-    textMuted: "#6b7280",
-    border: "#e5e7eb",
-  },
-  space: {
-    xs: 4,
-    sm: 8,
-    md: 12,
-    lg: 16,
-    xl: 24,
-    xxl: 32,
-  },
-  radii: {
-    sm: 4,
-    md: 8,
-    lg: 12,
-    xl: 16,
-    full: 9999,
-  },
-};
+export default function DashboardCompleto() {
+  const [userType] = useState<"professional" | "client">("professional");
+  const [activeTab, setActiveTab] = useState("perfil");
+  const [editMode, setEditMode] = useState(false);
 
-// Mock data
-const professionalData = {
-  name: "Dra. Ana Silva",
-  specialty: "Nutrição Clínica Vegana",
-  category: "Nutricionista",
-  location: "São Paulo, SP",
-  image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop",
-  coverImage: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1200&h=400&fit=crop",
-  rating: 4.9,
-  totalReviews: 127,
-  profileViews: 1234,
-  messagesCount: 23,
-  verified: true,
-  bio: "Especialista em nutrição esportiva para atletas veganos. Foco em performance e ganho de massa muscular.",
-  experience: "8 anos",
-  price: "R$ 300-400",
-  phone: "(11) 99999-8888",
-  email: "dra.ana@email.com",
-  instagram: "@dra.anasilva",
-  website: "www.draanasilva.com.br",
-  stats: {
-    weekViews: 234,
-    monthViews: 892,
-    weekMessages: 12,
-    monthMessages: 45,
-    avgResponseTime: "2h",
-    conversionRate: 23,
-    totalClients: 156,
-    activeClients: 42,
-  },
-};
+  // DADOS COMPLETOS DO PROFISSIONAL (todos os campos do cadastro)
+  const [professionalData, setProfessionalData] = useState({
+    // Básico
+    name: "Dra. Ana Silva",
+    username: "dra-ana-silva",
+    email: "dra.ana@email.com",
 
-const chartData = [
-  { day: "Seg", views: 45 },
-  { day: "Ter", views: 62 },
-  { day: "Qua", views: 38 },
-  { day: "Qui", views: 75 },
-  { day: "Sex", views: 58 },
-  { day: "Sáb", views: 42 },
-  { day: "Dom", views: 34 },
-];
+    // Categoria e especialização
+    category: "Nutricionista",
+    customCategory: "",
+    specialty: "Nutrição Clínica Vegana",
 
-export default function ProfessionalDashboard() {
-  const [activeTab, setActiveTab] = useState<"overview" | "profile" | "analytics" | "messages">("overview");
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
+    // Localização
+    city: "São Paulo, SP",
+    address: "Av. Paulista, 1000 - Bela Vista, São Paulo - SP",
+    remote: true,
 
-  // Modern Metric Card
-  const MetricCard = ({ icon: Icon, title, value, change, trend, color, subtitle }: any) => (
-    <motion.div
-      whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }}
-      transition={{ duration: 0.2 }}
-      style={{
-        backgroundColor: tokens.colors.surface,
-        padding: tokens.space.xl,
-        borderRadius: tokens.radii.xl,
-        border: `1px solid ${tokens.colors.border}`,
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Background gradient */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          width: 120,
-          height: 120,
-          background: `radial-gradient(circle, ${color}15 0%, transparent 70%)`,
-          pointerEvents: "none",
-        }}
-      />
+    // Experiência e valores
+    experience: "8 anos",
+    priceRange: "R$ 300-400",
 
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: tokens.space.md }}>
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: tokens.radii.lg,
-              background: `linear-gradient(135deg, ${color}20 0%, ${color}10 100%)`,
+    // Bio
+    bio: "Especialista em nutrição esportiva para atletas veganos. Foco em performance e ganho de massa muscular. Atendimento personalizado com acompanhamento completo.",
+
+    // Contatos
+    phone: "(11) 99999-8888",
+    contactEmail: "dra.ana@email.com",
+    instagram: "@dra.anasilva",
+    website: "www.draanasilva.com.br",
+
+    // Mídia
+    profilePicture: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400",
+    coverPicture: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1200",
+    portfolio: [
+      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600",
+      "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=600",
+    ],
+
+    // Serviços
+    services: ["Consulta Online", "Plano Alimentar", "Suplementação", "Acompanhamento Mensal"],
+
+    // Tabela de preços
+    priceTable: [
+      { service: "Consulta inicial", price: "R$ 350", description: "Primeira avaliação completa" },
+      { service: "Retorno", price: "R$ 250", description: "Consultas de acompanhamento" },
+      { service: "Plano alimentar", price: "R$ 400", description: "Plano personalizado com receitas" },
+    ],
+
+    // Status
+    verified: true,
+    rating: 4.9,
+    totalReviews: 127,
+    profileViews: 2847,
+    messagesCount: 23,
+    consultasAgendadas: 18,
+    memberSince: "Janeiro 2024",
+
+    // Avaliações recebidas
+    receivedReviews: [
+      {
+        id: 1,
+        clientName: "Carlos Oliveira",
+        clientImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos",
+        rating: 5,
+        comment: "Excelente profissional! Mudou minha performance nos treinos. Plano alimentar muito bem estruturado.",
+        date: "15 Mai 2024",
+      },
+      {
+        id: 2,
+        clientName: "Fernanda Lima",
+        clientImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fernanda",
+        rating: 5,
+        comment: "Muito atenciosa e profissional. Me ajudou muito na transição para o veganismo.",
+        date: "10 Jun 2024",
+      },
+      {
+        id: 3,
+        clientName: "João Silva",
+        clientImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao",
+        rating: 4,
+        comment: "Ótima consulta, mas a agenda é um pouco cheia. Recomendo!",
+        date: "05 Jul 2024",
+      },
+    ],
+
+    // Mensagens
+    messages: [
+      {
+        id: 1,
+        senderName: "Carlos Oliveira",
+        senderImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos",
+        message: "Olá Dra. Ana! Gostaria de agendar uma consulta para a próxima semana. Você tem disponibilidade?",
+        time: "Há 2 horas",
+        unread: true,
+      },
+      {
+        id: 2,
+        senderName: "Fernanda Lima",
+        senderImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fernanda",
+        message: "Obrigada pelo plano alimentar! Já estou vendo resultados incríveis!",
+        time: "Há 5 horas",
+        unread: true,
+      },
+      {
+        id: 3,
+        senderName: "João Silva",
+        senderImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao",
+        message: "Oi! Preciso fazer uma pequena alteração no meu plano. Podemos conversar?",
+        time: "Ontem",
+        unread: false,
+      },
+    ],
+  });
+
+  const [clientData, setClientData] = useState({
+    name: "João Silva",
+    username: "joao-silva",
+    email: "joao@email.com",
+    phone: "(11) 98888-7777",
+    city: "São Paulo, SP",
+    instagram: "@joaosilva",
+    memberSince: "Janeiro 2024",
+    favoriteProfessionals: 12,
+    totalReviews: 5,
+    consultationsCompleted: 8,
+    messagesCount: 3,
+    favorites: [
+      {
+        id: 1,
+        name: "Dra. Ana Silva",
+        username: "dra-ana-silva",
+        specialty: "Nutrição Clínica Vegana",
+        location: "São Paulo, SP",
+        rating: 4.9,
+        image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400",
+        verified: true,
+      },
+      {
+        id: 2,
+        name: "Dr. Carlos Mendes",
+        username: "dr-carlos-mendes",
+        specialty: "Clínico Geral",
+        location: "Rio de Janeiro, RJ",
+        rating: 4.8,
+        image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400",
+        verified: true,
+      },
+    ],
+    myReviews: [
+      {
+        id: 1,
+        professionalName: "Dra. Ana Silva",
+        professionalUsername: "dra-ana-silva",
+        rating: 5,
+        comment: "Excelente profissional! Mudou completamente minha relação com a alimentação vegana.",
+        date: "15 Mai 2024",
+        professionalImage: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400",
+      },
+      {
+        id: 2,
+        professionalName: "Dr. Carlos Mendes",
+        professionalUsername: "dr-carlos-mendes",
+        rating: 4,
+        comment: "Muito atencioso e bem informado sobre nutrição vegana. Recomendo!",
+        date: "10 Jun 2024",
+        professionalImage: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400",
+      },
+    ],
+    messages: [
+      {
+        id: 1,
+        senderName: "Dra. Ana Silva",
+        senderImage: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400",
+        message: "Olá João! Seu plano alimentar está pronto. Vamos agendar um retorno para avaliar os resultados?",
+        time: "Há 1 hora",
+        unread: true,
+      },
+      {
+        id: 2,
+        senderName: "Dr. Carlos Mendes",
+        senderImage: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400",
+        message: "Parabéns pelos resultados dos seus exames! Continue assim.",
+        time: "Há 3 horas",
+        unread: false,
+      },
+      {
+        id: 3,
+        senderName: "GuiaVegano",
+        senderImage: "https://api.dicebear.com/7.x/shapes/svg?seed=guiavegano",
+        message: "Você tem uma consulta agendada para amanhã às 14h com Dra. Ana Silva.",
+        time: "Ontem",
+        unread: false,
+      },
+    ],
+  });
+
+  const currentData = userType === "professional" ? professionalData : clientData;
+  const setCurrentData = userType === "professional" ? setProfessionalData : setClientData;
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      backgroundColor: "#f8fafc",
+      display: "flex",
+      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    }}>
+      {/* SIDEBAR */}
+      <aside style={{
+        width: 280,
+        backgroundColor: "white",
+        borderRight: "1px solid #e2e8f0",
+        display: "flex",
+        flexDirection: "column",
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        overflowY: "auto",
+      }}>
+        <div style={{ padding: "24px 20px", borderBottom: "1px solid #e2e8f0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{
+              width: 44,
+              height: 44,
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              borderRadius: 12,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}
-          >
-            <Icon size={24} color={color} strokeWidth={2.5} />
-          </div>
-          {change !== undefined && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-                padding: "4px 10px",
-                borderRadius: tokens.radii.full,
-                backgroundColor: trend === "up" ? "#d1fae520" : "#fee2e220",
-                border: `1px solid ${trend === "up" ? "#10b98130" : "#ef444430"}`,
-              }}
-            >
-              {trend === "up" ? (
-                <ArrowUpRight size={14} color="#10b981" strokeWidth={3} />
-              ) : (
-                <TrendingDown size={14} color="#ef4444" strokeWidth={3} />
-              )}
-              <span style={{ fontSize: 12, fontWeight: 700, color: trend === "up" ? "#10b981" : "#ef4444" }}>
-                {change}%
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div style={{ fontSize: 32, fontWeight: 800, color: tokens.colors.text, marginBottom: 4, letterSpacing: "-0.02em" }}>
-          {value}
-        </div>
-        <div style={{ fontSize: 14, color: tokens.colors.textMuted, fontWeight: 500, marginBottom: 4 }}>{title}</div>
-        {subtitle && <div style={{ fontSize: 12, color: tokens.colors.textMuted, fontWeight: 400 }}>{subtitle}</div>}
-      </div>
-    </motion.div>
-  );
-
-  // Mini Chart Component
-  const MiniChart = () => {
-    const maxValue = Math.max(...chartData.map((d) => d.views));
-    return (
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 80 }}>
-        {chartData.map((data, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ height: 0 }}
-            animate={{ height: `${(data.views / maxValue) * 100}%` }}
-            transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
-            style={{
-              flex: 1,
-              backgroundColor: tokens.colors.primary,
-              borderRadius: "6px 6px 0 0",
-              minHeight: 8,
-              position: "relative",
-              cursor: "pointer",
-              opacity: 0.7,
-            }}
-            whileHover={{ opacity: 1, scale: 1.05 }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                bottom: -20,
-                left: "50%",
-                transform: "translateX(-50%)",
-                fontSize: 10,
-                fontWeight: 600,
-                color: tokens.colors.textMuted,
-                whiteSpace: "nowrap",
-              }}
-            >
-              {data.day}
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    );
-  };
-
-  // Sidebar Item
-  const SidebarItem = ({ icon: Icon, label, active, badge, onClick }: any) => (
-    <motion.button
-      whileHover={{ x: 4, backgroundColor: tokens.colors.primaryLighter }}
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      style={{
-        width: "100%",
-        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-        backgroundColor: active ? tokens.colors.primaryLighter : "transparent",
-        border: "none",
-        borderLeft: `3px solid ${active ? tokens.colors.primary : "transparent"}`,
-        borderRadius: `0 ${tokens.radii.md}px ${tokens.radii.md}px 0`,
-        display: "flex",
-        alignItems: "center",
-        gap: tokens.space.md,
-        cursor: "pointer",
-        transition: "all 0.2s",
-        position: "relative",
-      }}
-    >
-      <Icon size={20} color={active ? tokens.colors.primary : tokens.colors.textMuted} strokeWidth={active ? 2.5 : 2} />
-      <span
-        style={{
-          fontSize: 15,
-          fontWeight: active ? 700 : 500,
-          color: active ? tokens.colors.primary : tokens.colors.text,
-          flex: 1,
-          textAlign: "left",
-        }}
-      >
-        {label}
-      </span>
-      {badge && (
-        <span
-          style={{
-            backgroundColor: "#ef4444",
-            color: "white",
-            fontSize: 11,
-            fontWeight: 700,
-            padding: "2px 8px",
-            borderRadius: tokens.radii.full,
-            minWidth: 20,
-            textAlign: "center",
-          }}
-        >
-          {badge}
-        </span>
-      )}
-    </motion.button>
-  );
-
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: tokens.colors.bg,
-        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-        display: "flex",
-      }}
-    >
-      {/* Sidebar */}
-      <motion.aside
-        initial={{ x: -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        style={{
-          width: 280,
-          backgroundColor: tokens.colors.surface,
-          borderRight: `1px solid ${tokens.colors.border}`,
-          display: "flex",
-          flexDirection: "column",
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-        }}
-      >
-        {/* Logo */}
-        <div style={{ padding: tokens.space.xl, borderBottom: `1px solid ${tokens.colors.border}` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: tokens.radii.md,
-                background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Leaf size={24} color="white" strokeWidth={2.5} />
-            </div>
+              fontSize: 24,
+            }}>🌱</div>
             <div>
-              <h1 style={{ fontSize: 18, fontWeight: 800, color: tokens.colors.text, margin: 0, letterSpacing: "-0.01em" }}>
-                GuiaVegano
-              </h1>
-              <p style={{ fontSize: 12, color: tokens.colors.textMuted, margin: 0, fontWeight: 500 }}>Dashboard Pro</p>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#0f172a" }}>GuiaVegano</div>
+              <div style={{ fontSize: 11, color: "#64748b", fontWeight: 500 }}>
+                {userType === "professional" ? "PAINEL PROFISSIONAL" : "PAINEL CLIENTE"}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Profile Summary */}
-        <div style={{ padding: tokens.space.xl, borderBottom: `1px solid ${tokens.colors.border}` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md }}>
+        <div style={{ padding: 20, borderBottom: "1px solid #e2e8f0" }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
             <div style={{ position: "relative" }}>
               <img
-                src={professionalData.image}
-                alt={professionalData.name}
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: tokens.radii.full,
-                  objectFit: "cover",
-                  border: `3px solid ${tokens.colors.primary}`,
-                }}
+                src={userType === "professional" ? professionalData.profilePicture : "https://api.dicebear.com/7.x/avataaars/svg?seed=client"}
+                alt={currentData.name}
+                style={{ width: 56, height: 56, borderRadius: "50%", border: "3px solid #10b981", objectFit: "cover" }}
               />
-              {professionalData.verified && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: -2,
-                    right: -2,
-                    width: 20,
-                    height: 20,
-                    borderRadius: tokens.radii.full,
-                    backgroundColor: tokens.colors.primary,
-                    border: "2px solid white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CheckCircle size={12} color="white" fill="white" />
-                </div>
+              {userType === "professional" && professionalData.verified && (
+                <div style={{
+                  position: "absolute",
+                  bottom: -2,
+                  right: -2,
+                  width: 20,
+                  height: 20,
+                  backgroundColor: "#10b981",
+                  borderRadius: "50%",
+                  border: "2px solid white",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 10,
+                }}>✓</div>
               )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <h3
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: tokens.colors.text,
-                  margin: 0,
-                  marginBottom: 2,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {professionalData.name}
-              </h3>
-              <p
-                style={{
-                  fontSize: 12,
-                  color: tokens.colors.textMuted,
-                  margin: 0,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {professionalData.specialty}
-              </p>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {currentData.name}
+              </div>
+              <div style={{ fontSize: 12, color: "#64748b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                @{currentData.username}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav style={{ flex: 1, padding: `${tokens.space.lg}px 0`, overflowY: "auto" }}>
-          <div style={{ marginBottom: tokens.space.lg }}>
-            <p
+        <nav style={{ padding: "16px 12px", flex: 1 }}>
+          {(userType === "professional" ? [
+            { id: "overview", label: "Visão Geral", icon: "📊" },
+            { id: "perfil", label: "Editar Perfil", icon: "✏️" },
+            { id: "midia", label: "Fotos & Mídia", icon: "📸" },
+            { id: "servicos", label: "Serviços & Preços", icon: "💼" },
+            { id: "consultas", label: "Consultas", icon: "📅", badge: professionalData.consultasAgendadas },
+            { id: "avaliacoes", label: "Avaliações", icon: "⭐", badge: professionalData.totalReviews },
+            { id: "mensagens", label: "Mensagens", icon: "💬", badge: professionalData.messagesCount },
+            { id: "financeiro", label: "Financeiro", icon: "💰" },
+            { id: "configuracoes", label: "Configurações", icon: "⚙️" },
+          ] : [
+            { id: "overview", label: "Visão Geral", icon: "📊" },
+            { id: "perfil", label: "Meu Perfil", icon: "👤" },
+            { id: "favoritos", label: "Profissionais Favoritos", icon: "❤️", badge: clientData.favoriteProfessionals },
+            { id: "minhas-avaliacoes", label: "Minhas Avaliações", icon: "⭐", badge: clientData.totalReviews },
+            { id: "consultas", label: "Minhas Consultas", icon: "📅", badge: clientData.consultationsCompleted },
+            { id: "mensagens", label: "Mensagens", icon: "💬" },
+            { id: "configuracoes", label: "Configurações", icon: "⚙️" },
+          ]).map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
               style={{
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                color: tokens.colors.textMuted,
-                margin: 0,
-                marginBottom: tokens.space.md,
-                paddingLeft: tokens.space.lg,
+                width: "100%",
+                padding: "12px 16px",
+                marginBottom: 4,
+                backgroundColor: activeTab === item.id ? "#f0fdf4" : "transparent",
+                border: "none",
+                borderRadius: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                cursor: "pointer",
+                transition: "all 0.2s",
+                fontWeight: activeTab === item.id ? 600 : 500,
+                color: activeTab === item.id ? "#10b981" : "#475569",
+                fontSize: 14,
               }}
             >
-              Menu Principal
-            </p>
-            <SidebarItem icon={Home} label="Visão Geral" active={activeTab === "overview"} onClick={() => setActiveTab("overview")} />
-            <SidebarItem icon={User} label="Meu Perfil" active={activeTab === "profile"} onClick={() => setActiveTab("profile")} />
-            <SidebarItem icon={BarChart3} label="Analytics" active={activeTab === "analytics"} onClick={() => setActiveTab("analytics")} />
-            <SidebarItem
-              icon={MessageCircle}
-              label="Mensagens"
-              active={activeTab === "messages"}
-              badge={professionalData.messagesCount}
-              onClick={() => setActiveTab("messages")}
-            />
-          </div>
-
-          <div>
-            <p
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                color: tokens.colors.textMuted,
-                margin: 0,
-                marginBottom: tokens.space.md,
-                paddingLeft: tokens.space.lg,
-              }}
-            >
-              Configurações
-            </p>
-            <SidebarItem icon={Settings} label="Preferências" active={false} onClick={() => {}} />
-            <SidebarItem icon={Bell} label="Notificações" active={false} onClick={() => {}} />
-          </div>
+              <span style={{ fontSize: 18 }}>{item.icon}</span>
+              <span style={{ flex: 1, textAlign: "left" }}>{item.label}</span>
+              {item.badge && (
+                <span style={{
+                  backgroundColor: "#ef4444",
+                  color: "white",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  padding: "2px 8px",
+                  borderRadius: 12,
+                  minWidth: 20,
+                  textAlign: "center",
+                }}>{item.badge}</span>
+              )}
+            </button>
+          ))}
         </nav>
 
-        {/* Logout */}
-        <div style={{ padding: tokens.space.lg, borderTop: `1px solid ${tokens.colors.border}` }}>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              if (confirm("Deseja realmente sair?")) {
-                window.location.href = "/profissionais";
-              }
-            }}
+        <div style={{ padding: "16px 12px", borderTop: "1px solid #e2e8f0" }}>
+          <a
+            href="/profissionais/login"
             style={{
               width: "100%",
-              padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-              backgroundColor: "#fee2e2",
-              color: "#dc2626",
+              padding: "12px 16px",
+              backgroundColor: "#fef2f2",
               border: "1px solid #fecaca",
-              borderRadius: tokens.radii.md,
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: "pointer",
+              borderRadius: 10,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: tokens.space.sm,
+              gap: 8,
+              cursor: "pointer",
+              color: "#dc2626",
+              fontWeight: 600,
+              fontSize: 14,
+              textDecoration: "none",
             }}
           >
-            <LogOut size={16} />
-            Sair
-          </motion.button>
+            🚪 Sair da Conta
+          </a>
         </div>
-      </motion.aside>
+      </aside>
 
-      {/* Main Content */}
-      <div style={{ flex: 1, overflowY: "auto" }}>
-        {/* Top Bar */}
-        <header
-          style={{
-            backgroundColor: tokens.colors.surface,
-            borderBottom: `1px solid ${tokens.colors.border}`,
-            padding: `${tokens.space.lg}px ${tokens.space.xxl}px`,
-            position: "sticky",
-            top: 0,
-            zIndex: 10,
-            backdropFilter: "blur(10px)",
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
-          }}
-        >
+      {/* CONTEÚDO PRINCIPAL */}
+      <main style={{ flex: 1, overflowY: "auto", backgroundColor: "#f8fafc" }}>
+        {/* SEPARADOR DE MODO */}
+        <div style={{
+          backgroundColor: userType === "professional" ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+          background: userType === "professional" ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+          padding: "16px 32px",
+          borderBottom: "3px solid " + (userType === "professional" ? "#059669" : "#2563eb"),
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{
+              width: 40,
+              height: 40,
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 20,
+            }}>
+              {userType === "professional" ? "💼" : "👤"}
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "white", textTransform: "uppercase", letterSpacing: 1 }}>
+                {userType === "professional" ? "🌟 MODO PROFISSIONAL" : "👥 MODO CLIENTE"}
+              </div>
+              <div style={{ fontSize: 12, color: "rgba(255, 255, 255, 0.9)", fontWeight: 500 }}>
+                {userType === "professional"
+                  ? "Gerencie seu perfil, consultas e avaliações recebidas"
+                  : "Acesse seus favoritos, avaliações e consultas agendadas"}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <header style={{
+          backgroundColor: "white",
+          borderBottom: "1px solid #e2e8f0",
+          padding: "20px 32px",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <h2 style={{ fontSize: 24, fontWeight: 800, color: tokens.colors.text, margin: 0, marginBottom: 4, letterSpacing: "-0.02em" }}>
+              <h1 style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", margin: 0, marginBottom: 4 }}>
                 {activeTab === "overview" && "Visão Geral"}
-                {activeTab === "profile" && "Meu Perfil"}
-                {activeTab === "analytics" && "Analytics"}
-                {activeTab === "messages" && "Mensagens"}
-              </h2>
-              <p style={{ fontSize: 14, color: tokens.colors.textMuted, margin: 0 }}>
-                Bem-vinda de volta, {professionalData.name.split(" ")[1]}! 👋
+                {activeTab === "perfil" && (userType === "professional" ? "Editar Perfil" : "Meu Perfil")}
+                {activeTab === "midia" && "Fotos & Mídia"}
+                {activeTab === "servicos" && "Serviços & Preços"}
+                {activeTab === "consultas" && "Consultas"}
+                {activeTab === "avaliacoes" && "Avaliações Recebidas"}
+                {activeTab === "mensagens" && "Mensagens"}
+                {activeTab === "financeiro" && "Financeiro"}
+                {activeTab === "configuracoes" && "Configurações"}
+                {activeTab === "favoritos" && "Profissionais Favoritos"}
+                {activeTab === "minhas-avaliacoes" && "Minhas Avaliações"}
+              </h1>
+              <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
+                {activeTab === "perfil" && "Mantenha suas informações sempre atualizadas"}
+                {activeTab === "overview" && "Resumo das suas atividades"}
+                {activeTab === "avaliacoes" && "Veja o que seus clientes estão dizendo sobre você"}
+                {activeTab === "mensagens" && "Converse com seus clientes e profissionais"}
               </p>
             </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md }}>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => (window.location.href = "/profissionais")}
+            <div style={{ display: "flex", gap: 12 }}>
+              <a
+                href={`/profissionais/${professionalData.username}`}
+                target="_blank"
                 style={{
-                  padding: `${tokens.space.sm}px ${tokens.space.lg}px`,
-                  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
-                  color: "white",
-                  border: "none",
-                  borderRadius: tokens.radii.md,
-                  fontSize: 14,
+                  padding: "10px 20px",
+                  backgroundColor: "#f1f5f9",
+                  color: "#0f172a",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 10,
                   fontWeight: 600,
+                  fontSize: 14,
                   cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: tokens.space.sm,
-                  boxShadow: `0 4px 12px ${tokens.colors.primary}30`,
+                  textDecoration: "none",
+                  display: "inline-block",
                 }}
               >
-                <Eye size={16} />
-                Ver Perfil Público
-              </motion.button>
+                👁️ Ver Perfil Público
+              </a>
+              {activeTab === "perfil" && (
+                <button
+                  onClick={() => setEditMode(!editMode)}
+                  style={{
+                    padding: "10px 20px",
+                    background: editMode ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" : "#f1f5f9",
+                    color: editMode ? "white" : "#0f172a",
+                    border: editMode ? "none" : "1px solid #e2e8f0",
+                    borderRadius: 10,
+                    fontWeight: 600,
+                    fontSize: 14,
+                    cursor: "pointer",
+                    boxShadow: editMode ? "0 4px 12px rgba(16, 185, 129, 0.3)" : "none",
+                  }}
+                >
+                  {editMode ? "✓ Salvar Alterações" : "✏️ Editar"}
+                </button>
+              )}
             </div>
           </div>
         </header>
 
-        {/* Content */}
-        <main style={{ padding: tokens.space.xxl }}>
-          <AnimatePresence mode="wait">
-            {/* Overview Tab */}
-            {activeTab === "overview" && (
-              <motion.div
-                key="overview"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {/* Welcome Banner */}
-                <motion.div
-                  initial={{ scale: 0.95, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                  style={{
-                    background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`,
-                    padding: tokens.space.xxl,
-                    borderRadius: tokens.radii.xl,
-                    marginBottom: tokens.space.xxl,
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                >
-                  {/* Decorative circles */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      width: 300,
-                      height: 300,
-                      borderRadius: "50%",
-                      backgroundColor: "rgba(255,255,255,0.1)",
-                      top: -100,
-                      right: -100,
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      width: 200,
-                      height: 200,
-                      borderRadius: "50%",
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      bottom: -50,
-                      left: -50,
-                    }}
-                  />
+        <div style={{ padding: 32 }}>
+          {activeTab === "overview" && <OverviewTab data={userType === "professional" ? professionalData : clientData} userType={userType} />}
+          {activeTab === "perfil" && userType === "professional" && <PerfilTab data={professionalData} setData={setProfessionalData} editMode={editMode} />}
+          {activeTab === "perfil" && userType === "client" && <PerfilClienteTab data={clientData} setData={setClientData} />}
+          {activeTab === "midia" && <MidiaTab data={professionalData} setData={setProfessionalData} />}
+          {activeTab === "servicos" && <ServicosTab data={professionalData} setData={setProfessionalData} />}
+          {activeTab === "avaliacoes" && <AvaliacoesRecebidasTab data={professionalData} />}
+          {activeTab === "mensagens" && <MensagensTab data={userType === "professional" ? professionalData : clientData} userType={userType} />}
+          {activeTab === "favoritos" && <FavoritosTab data={clientData} />}
+          {activeTab === "minhas-avaliacoes" && <MinhasAvaliacoesTab data={clientData} />}
+        </div>
+      </main>
+    </div>
+  );
+}
 
-                  <div style={{ position: "relative", zIndex: 1 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <div>
-                        <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md, marginBottom: tokens.space.md }}>
-                          <Sparkles size={32} color="white" />
-                          <h3 style={{ fontSize: 36, fontWeight: 800, color: "white", margin: 0, letterSpacing: "-0.02em" }}>
-                            Seu mês está incrível!
-                          </h3>
-                        </div>
-                        <p style={{ fontSize: 16, color: "rgba(255,255,255,0.9)", margin: 0, fontWeight: 500 }}>
-                          {professionalData.stats.monthViews} visualizações • {professionalData.stats.monthMessages} mensagens •{" "}
-                          {professionalData.totalReviews} avaliações
-                        </p>
-                      </div>
-
-                      {professionalData.verified && (
-                        <div
-                          style={{
-                            padding: `${tokens.space.md}px ${tokens.space.xl}px`,
-                            backgroundColor: "rgba(255,255,255,0.2)",
-                            borderRadius: tokens.radii.lg,
-                            backdropFilter: "blur(10px)",
-                            border: "1px solid rgba(255,255,255,0.3)",
-                          }}
-                        >
-                          <div style={{ display: "flex", alignItems: "center", gap: tokens.space.sm }}>
-                            <CheckCircle size={24} color="white" fill="white" />
-                            <span style={{ fontSize: 16, fontWeight: 700, color: "white" }}>Perfil Verificado</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Metrics Grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: tokens.space.lg, marginBottom: tokens.space.xxl }}>
-                  <MetricCard
-                    icon={Eye}
-                    title="Visualizações (30 dias)"
-                    value={professionalData.stats.monthViews}
-                    change={15}
-                    trend="up"
-                    color={tokens.colors.primary}
-                    subtitle={`+${professionalData.stats.weekViews} esta semana`}
-                  />
-                  <MetricCard
-                    icon={Star}
-                    title="Avaliação Média"
-                    value={professionalData.rating}
-                    color="#f59e0b"
-                    subtitle={`${professionalData.totalReviews} avaliações totais`}
-                  />
-                  <MetricCard
-                    icon={MessageCircle}
-                    title="Mensagens (30 dias)"
-                    value={professionalData.stats.monthMessages}
-                    change={8}
-                    trend="up"
-                    color="#3b82f6"
-                    subtitle={`Responde em ${professionalData.stats.avgResponseTime}`}
-                  />
-                  <MetricCard
-                    icon={Users}
-                    title="Taxa de Conversão"
-                    value={`${professionalData.stats.conversionRate}%`}
-                    change={5}
-                    trend="up"
-                    color="#8b5cf6"
-                    subtitle="Visitantes → Clientes"
-                  />
-                </div>
-
-                {/* Charts & Activity */}
-                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: tokens.space.lg, marginBottom: tokens.space.xxl }}>
-                  {/* Chart */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    style={{
-                      backgroundColor: tokens.colors.surface,
-                      padding: tokens.space.xxl,
-                      borderRadius: tokens.radii.xl,
-                      border: `1px solid ${tokens.colors.border}`,
-                    }}
-                  >
-                    <div style={{ marginBottom: tokens.space.xl }}>
-                      <h3 style={{ fontSize: 18, fontWeight: 700, color: tokens.colors.text, margin: 0, marginBottom: 4 }}>
-                        Visualizações da Semana
-                      </h3>
-                      <p style={{ fontSize: 14, color: tokens.colors.textMuted, margin: 0 }}>Seu desempenho nos últimos 7 dias</p>
-                    </div>
-                    <div style={{ paddingBottom: tokens.space.lg }}>
-                      <MiniChart />
-                    </div>
-                  </motion.div>
-
-                  {/* Recent Activity */}
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                    style={{
-                      backgroundColor: tokens.colors.surface,
-                      padding: tokens.space.xl,
-                      borderRadius: tokens.radii.xl,
-                      border: `1px solid ${tokens.colors.border}`,
-                    }}
-                  >
-                    <h3 style={{ fontSize: 16, fontWeight: 700, color: tokens.colors.text, margin: 0, marginBottom: tokens.space.lg }}>
-                      Atividade Recente
-                    </h3>
-                    <div style={{ display: "flex", flexDirection: "column", gap: tokens.space.md }}>
-                      {[
-                        { icon: Star, text: "Nova avaliação 5⭐", time: "2h atrás", color: "#f59e0b" },
-                        { icon: MessageCircle, text: "3 novas mensagens", time: "4h atrás", color: "#3b82f6" },
-                        { icon: Eye, text: "42 visualizações hoje", time: "6h atrás", color: tokens.colors.primary },
-                        { icon: Heart, text: "Adicionado aos favoritos", time: "1d atrás", color: "#ef4444" },
-                      ].map((activity, idx) => (
-                        <motion.div
-                          key={idx}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.4 + idx * 0.1 }}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: tokens.space.md,
-                            padding: tokens.space.md,
-                            backgroundColor: tokens.colors.bg,
-                            borderRadius: tokens.radii.md,
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: 36,
-                              height: 36,
-                              borderRadius: tokens.radii.md,
-                              backgroundColor: `${activity.color}15`,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              flexShrink: 0,
-                            }}
-                          >
-                            <activity.icon size={18} color={activity.color} />
-                          </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ fontSize: 13, fontWeight: 600, color: tokens.colors.text, margin: 0, marginBottom: 2 }}>{activity.text}</p>
-                            <p style={{ fontSize: 11, color: tokens.colors.textMuted, margin: 0 }}>{activity.time}</p>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                </div>
-
-                {/* Quick Actions */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  style={{
-                    backgroundColor: tokens.colors.surface,
-                    padding: tokens.space.xxl,
-                    borderRadius: tokens.radii.xl,
-                    border: `1px solid ${tokens.colors.border}`,
-                  }}
-                >
-                  <h3 style={{ fontSize: 18, fontWeight: 700, color: tokens.colors.text, margin: 0, marginBottom: tokens.space.xl }}>Ações Rápidas</h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: tokens.space.md }}>
-                    {[
-                      { icon: Edit, label: "Editar Perfil", color: tokens.colors.primary, action: () => setActiveTab("profile") },
-                      { icon: Image, label: "Gerenciar Portfólio", color: "#8b5cf6", action: () => {} },
-                      { icon: Calendar, label: "Disponibilidade", color: "#3b82f6", action: () => {} },
-                      { icon: DollarSign, label: "Preços & Serviços", color: "#10b981", action: () => {} },
-                    ].map((action, idx) => (
-                      <motion.button
-                        key={idx}
-                        whileHover={{ scale: 1.03, boxShadow: `0 8px 24px ${action.color}20` }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={action.action}
-                        style={{
-                          padding: `${tokens.space.lg}px ${tokens.space.xl}px`,
-                          background: `linear-gradient(135deg, ${action.color}15 0%, ${action.color}05 100%)`,
-                          border: `1px solid ${action.color}30`,
-                          borderRadius: tokens.radii.lg,
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: tokens.space.md,
-                          transition: "all 0.2s",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: tokens.radii.md,
-                            backgroundColor: `${action.color}20`,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <action.icon size={20} color={action.color} strokeWidth={2.5} />
-                        </div>
-                        <div style={{ flex: 1, textAlign: "left" }}>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: tokens.colors.text }}>{action.label}</div>
-                        </div>
-                        <ChevronRight size={18} color={tokens.colors.textMuted} />
-                      </motion.button>
-                    ))}
-                  </div>
-                </motion.div>
-              </motion.div>
-            )}
-
-            {/* Profile Tab */}
-            {activeTab === "profile" && (
-              <motion.div
-                key="profile"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                  backgroundColor: tokens.colors.surface,
-                  padding: tokens.space.xxl,
-                  borderRadius: tokens.radii.xl,
-                  border: `1px solid ${tokens.colors.border}`,
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: tokens.space.xxl }}>
-                  <div>
-                    <h3 style={{ fontSize: 24, fontWeight: 800, color: tokens.colors.text, margin: 0, marginBottom: 4 }}>Editar Perfil</h3>
-                    <p style={{ fontSize: 14, color: tokens.colors.textMuted, margin: 0 }}>Mantenha suas informações sempre atualizadas</p>
-                  </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsEditingProfile(!isEditingProfile)}
-                    style={{
-                      padding: `${tokens.space.md}px ${tokens.space.xl}px`,
-                      background: isEditingProfile
-                        ? `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryDark} 100%)`
-                        : tokens.colors.bg,
-                      color: isEditingProfile ? "white" : tokens.colors.text,
-                      border: `1px solid ${isEditingProfile ? tokens.colors.primary : tokens.colors.border}`,
-                      borderRadius: tokens.radii.md,
-                      fontSize: 15,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: tokens.space.sm,
-                      boxShadow: isEditingProfile ? `0 4px 12px ${tokens.colors.primary}30` : "none",
-                    }}
-                  >
-                    {isEditingProfile ? <CheckCircle size={18} /> : <Edit size={18} />}
-                    {isEditingProfile ? "Salvar Alterações" : "Editar Perfil"}
-                  </motion.button>
-                </div>
-
-                {/* Cover & Avatar */}
-                <div style={{ position: "relative", marginBottom: tokens.space.xxl }}>
-                  <div
-                    style={{
-                      height: 200,
-                      borderRadius: tokens.radii.xl,
-                      backgroundImage: `url(${professionalData.coverImage})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      position: "relative",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {isEditingProfile && (
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        style={{
-                          position: "absolute",
-                          top: tokens.space.lg,
-                          right: tokens.space.lg,
-                          width: 48,
-                          height: 48,
-                          borderRadius: tokens.radii.full,
-                          backgroundColor: "rgba(0,0,0,0.7)",
-                          border: "2px solid rgba(255,255,255,0.3)",
-                          color: "white",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          backdropFilter: "blur(10px)",
-                        }}
-                      >
-                        <Camera size={20} />
-                      </motion.button>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: -60,
-                      left: tokens.space.xxl,
-                      width: 140,
-                      height: 140,
-                      borderRadius: tokens.radii.full,
-                      border: "6px solid white",
-                      overflow: "hidden",
-                      backgroundColor: "white",
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-                    }}
-                  >
-                    <img src={professionalData.image} alt={professionalData.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    {isEditingProfile && (
-                      <motion.div
-                        whileHover={{ opacity: 1 }}
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          backgroundColor: "rgba(0,0,0,0.7)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          opacity: 0,
-                          transition: "opacity 0.2s",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <Camera size={28} color="white" />
-                      </motion.div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Form Fields */}
-                <div style={{ marginTop: 80 }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: tokens.space.lg, marginBottom: tokens.space.lg }}>
-                    <div>
-                      <label style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
-                        Nome Completo *
-                      </label>
-                      <input
-                        type="text"
-                        value={professionalData.name}
-                        disabled={!isEditingProfile}
-                        style={{
-                          width: "100%",
-                          padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                          border: `2px solid ${tokens.colors.border}`,
-                          borderRadius: tokens.radii.md,
-                          fontSize: 15,
-                          backgroundColor: isEditingProfile ? "white" : tokens.colors.bg,
-                          color: tokens.colors.text,
-                          fontWeight: 500,
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
-                        Especialidade *
-                      </label>
-                      <input
-                        type="text"
-                        value={professionalData.specialty}
-                        disabled={!isEditingProfile}
-                        style={{
-                          width: "100%",
-                          padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                          border: `2px solid ${tokens.colors.border}`,
-                          borderRadius: tokens.radii.md,
-                          fontSize: 15,
-                          backgroundColor: isEditingProfile ? "white" : tokens.colors.bg,
-                          color: tokens.colors.text,
-                          fontWeight: 500,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: tokens.space.lg }}>
-                    <label style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
-                      Sobre Você *
-                    </label>
-                    <textarea
-                      value={professionalData.bio}
-                      disabled={!isEditingProfile}
-                      rows={4}
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                        border: `2px solid ${tokens.colors.border}`,
-                        borderRadius: tokens.radii.md,
-                        fontSize: 15,
-                        fontFamily: "inherit",
-                        resize: "vertical",
-                        backgroundColor: isEditingProfile ? "white" : tokens.colors.bg,
-                        color: tokens.colors.text,
-                        fontWeight: 500,
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: tokens.space.lg, marginBottom: tokens.space.lg }}>
-                    <div>
-                      <label style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
-                        Telefone
-                      </label>
-                      <input
-                        type="tel"
-                        value={professionalData.phone}
-                        disabled={!isEditingProfile}
-                        style={{
-                          width: "100%",
-                          padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                          border: `2px solid ${tokens.colors.border}`,
-                          borderRadius: tokens.radii.md,
-                          fontSize: 15,
-                          backgroundColor: isEditingProfile ? "white" : tokens.colors.bg,
-                          color: tokens.colors.text,
-                          fontWeight: 500,
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        value={professionalData.email}
-                        disabled={!isEditingProfile}
-                        style={{
-                          width: "100%",
-                          padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                          border: `2px solid ${tokens.colors.border}`,
-                          borderRadius: tokens.radii.md,
-                          fontSize: 15,
-                          backgroundColor: isEditingProfile ? "white" : tokens.colors.bg,
-                          color: tokens.colors.text,
-                          fontWeight: 500,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: tokens.space.lg }}>
-                    <div>
-                      <label style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
-                        Instagram
-                      </label>
-                      <input
-                        type="text"
-                        value={professionalData.instagram}
-                        disabled={!isEditingProfile}
-                        style={{
-                          width: "100%",
-                          padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                          border: `2px solid ${tokens.colors.border}`,
-                          borderRadius: tokens.radii.md,
-                          fontSize: 15,
-                          backgroundColor: isEditingProfile ? "white" : tokens.colors.bg,
-                          color: tokens.colors.text,
-                          fontWeight: 500,
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: tokens.space.sm, color: tokens.colors.text }}>
-                        Website
-                      </label>
-                      <input
-                        type="text"
-                        value={professionalData.website}
-                        disabled={!isEditingProfile}
-                        style={{
-                          width: "100%",
-                          padding: `${tokens.space.md}px ${tokens.space.lg}px`,
-                          border: `2px solid ${tokens.colors.border}`,
-                          borderRadius: tokens.radii.md,
-                          fontSize: 15,
-                          backgroundColor: isEditingProfile ? "white" : tokens.colors.bg,
-                          color: tokens.colors.text,
-                          fontWeight: 500,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Analytics Tab */}
-            {activeTab === "analytics" && (
-              <motion.div
-                key="analytics"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                  backgroundColor: tokens.colors.surface,
-                  padding: tokens.space.xxl,
-                  borderRadius: tokens.radii.xl,
-                  border: `1px solid ${tokens.colors.border}`,
-                  textAlign: "center",
-                }}
-              >
-                <BarChart3 size={64} color={tokens.colors.textMuted} style={{ margin: "0 auto", marginBottom: tokens.space.lg }} />
-                <h3 style={{ fontSize: 24, fontWeight: 800, color: tokens.colors.text, margin: 0, marginBottom: tokens.space.sm }}>
-                  Analytics Detalhado
-                </h3>
-                <p style={{ fontSize: 15, color: tokens.colors.textMuted, margin: 0 }}>
-                  Em breve: gráficos detalhados, métricas avançadas e insights sobre seu desempenho!
-                </p>
-              </motion.div>
-            )}
-
-            {/* Messages Tab */}
-            {activeTab === "messages" && (
-              <motion.div
-                key="messages"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                  backgroundColor: tokens.colors.surface,
-                  padding: tokens.space.xxl,
-                  borderRadius: tokens.radii.xl,
-                  border: `1px solid ${tokens.colors.border}`,
-                  textAlign: "center",
-                }}
-              >
-                <MessageCircle size={64} color={tokens.colors.textMuted} style={{ margin: "0 auto", marginBottom: tokens.space.lg }} />
-                <h3 style={{ fontSize: 24, fontWeight: 800, color: tokens.colors.text, margin: 0, marginBottom: tokens.space.sm }}>Sistema de Mensagens</h3>
-                <p style={{ fontSize: 15, color: tokens.colors.textMuted, margin: 0 }}>
-                  Em breve: chat em tempo real, notificações e histórico de conversas!
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </main>
+// ABA: Visão Geral
+function OverviewTab({ data, userType }: any) {
+  return (
+    <>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gap: 20,
+        marginBottom: 32,
+      }}>
+        {userType === "professional" ? (
+          <>
+            <StatCard icon="👁️" title="Visualizações (30d)" value={data.profileViews?.toLocaleString() || "0"} change="+23%" color="#3b82f6" />
+            <StatCard icon="⭐" title="Avaliação Média" value={data.rating || "0"} subtitle={`${data.totalReviews || 0} avaliações`} color="#f59e0b" />
+            <StatCard icon="📅" title="Consultas Agendadas" value={data.consultasAgendadas || 0} change="+12%" color="#8b5cf6" />
+            <StatCard icon="💬" title="Mensagens" value={data.messagesCount || 0} subtitle="Responde em 2h" color="#10b981" />
+          </>
+        ) : (
+          <>
+            <StatCard icon="❤️" title="Profissionais Favoritos" value={data.favoriteProfessionals || 0} color="#ef4444" />
+            <StatCard icon="⭐" title="Avaliações Feitas" value={data.totalReviews || 0} color="#f59e0b" />
+            <StatCard icon="📅" title="Consultas Realizadas" value={data.consultationsCompleted || 0} color="#8b5cf6" />
+            <StatCard icon="💬" title="Mensagens" value={data.messagesCount || 0} color="#10b981" />
+          </>
+        )}
       </div>
 
-      {/* Global Styles */}
-      <style jsx global>{`
-        input::placeholder,
-        textarea::placeholder {
-          color: #9ca3af !important;
-          opacity: 1;
-        }
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 24 }}>🎯 Ações Rápidas</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
+          {(userType === "professional"
+            ? ["Editar Perfil", "Atualizar Fotos", "Gerenciar Serviços", "Ver Mensagens"]
+            : ["Buscar Profissionais", "Meus Favoritos", "Minhas Avaliações", "Ver Mensagens"]
+          ).map((action, idx) => (
+            <button
+              key={idx}
+              style={{
+                padding: "16px 20px",
+                backgroundColor: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                borderRadius: 12,
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+                textAlign: "left",
+              }}
+            >
+              {action}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
 
-        input,
-        textarea {
-          color: #111827 !important;
-        }
+// ABA: Editar Perfil (TODOS OS CAMPOS)
+function PerfilTab({ data, setData, editMode }: any) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* Informações Básicas */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: "#0f172a" }}>📝 Informações Básicas</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <Field label="Nome Completo" value={data.name} editMode={editMode} onChange={(v) => setData({...data, name: v})} />
+          <Field label="Username" value={data.username} editMode={editMode} onChange={(v) => setData({...data, username: v})} prefix="@" />
+          <Field label="E-mail" value={data.email} editMode={editMode} type="email" disabled />
+          <Field label="Categoria" value={data.category} editMode={editMode} onChange={(v) => setData({...data, category: v})} />
+          <Field label="Especialidade" value={data.specialty} editMode={editMode} onChange={(v) => setData({...data, specialty: v})} fullWidth />
+        </div>
+      </div>
 
-        input:focus,
-        textarea:focus {
-          outline: 2px solid ${tokens.colors.primary};
-          outline-offset: 2px;
-          border-color: ${tokens.colors.primary} !important;
-        }
+      {/* Localização */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: "#0f172a" }}>📍 Localização</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <Field label="Cidade/Estado" value={data.city} editMode={editMode} onChange={(v) => setData({...data, city: v})} />
+          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 28 }}>
+            <input
+              type="checkbox"
+              checked={data.remote}
+              disabled={!editMode}
+              onChange={(e) => setData({...data, remote: e.target.checked})}
+              style={{ width: 20, height: 20 }}
+            />
+            <label style={{ fontSize: 14, fontWeight: 500, color: "#0f172a" }}>Atendimento remoto</label>
+          </div>
+          <Field label="Endereço Completo" value={data.address} editMode={editMode} onChange={(v) => setData({...data, address: v})} fullWidth style={{ gridColumn: "1 / -1" }} />
+        </div>
+      </div>
 
-        input:disabled,
-        textarea:disabled {
-          cursor: not-allowed;
-          opacity: 0.7;
-        }
-      `}</style>
+      {/* Experiência e Valores */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: "#0f172a" }}>💼 Experiência & Valores</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <Field label="Tempo de Experiência" value={data.experience} editMode={editMode} onChange={(v) => setData({...data, experience: v})} placeholder="Ex: 8 anos" />
+          <Field label="Faixa de Preço" value={data.priceRange} editMode={editMode} onChange={(v) => setData({...data, priceRange: v})} placeholder="Ex: R$ 300-400" />
+        </div>
+      </div>
+
+      {/* Bio */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: "#0f172a" }}>✍️ Sobre Você</h2>
+        <textarea
+          value={data.bio}
+          disabled={!editMode}
+          onChange={(e) => setData({...data, bio: e.target.value})}
+          placeholder="Conte sobre sua experiência, especialidades e diferenciais..."
+          rows={5}
+          style={{
+            width: "100%",
+            padding: "14px 16px",
+            border: "2px solid #e2e8f0",
+            borderRadius: 10,
+            fontSize: 14,
+            fontFamily: "inherit",
+            resize: "vertical",
+            backgroundColor: editMode ? "white" : "#f8fafc",
+          }}
+        />
+      </div>
+
+      {/* Contatos */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: "#0f172a" }}>📞 Contatos</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <Field label="Telefone/WhatsApp" value={data.phone} editMode={editMode} onChange={(v) => setData({...data, phone: v})} placeholder="(11) 99999-9999" />
+          <Field label="E-mail de Contato" value={data.contactEmail} editMode={editMode} onChange={(v) => setData({...data, contactEmail: v})} />
+          <Field label="Instagram" value={data.instagram} editMode={editMode} onChange={(v) => setData({...data, instagram: v})} placeholder="@seu_usuario" />
+          <Field label="Website" value={data.website} editMode={editMode} onChange={(v) => setData({...data, website: v})} placeholder="www.seusite.com" />
+        </div>
+      </div>
+
+      {/* Status */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: "#0f172a" }}>🎖️ Status da Conta</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
+          <InfoBox label="Status" value={data.verified ? "✅ Verificado" : "⏳ Pendente"} color={data.verified ? "#10b981" : "#f59e0b"} />
+          <InfoBox label="Avaliação" value={`⭐ ${data.rating}`} color="#f59e0b" />
+          <InfoBox label="Membro desde" value={data.memberSince} color="#64748b" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ABA: Fotos & Mídia
+function MidiaTab({ data, setData }: any) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* Foto de Perfil */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>📸 Foto de Perfil</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <img src={data.profilePicture} alt="Perfil" style={{ width: 120, height: 120, borderRadius: "50%", objectFit: "cover", border: "4px solid #e2e8f0" }} />
+          <div>
+            <button style={{
+              padding: "12px 24px",
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              color: "white",
+              border: "none",
+              borderRadius: 10,
+              fontWeight: 600,
+              cursor: "pointer",
+              marginBottom: 12,
+            }}>
+              📤 Upload Nova Foto
+            </button>
+            <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>Recomendado: 400x400px, JPG ou PNG</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Foto de Capa */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>🖼️ Foto de Capa</h2>
+        <div style={{ marginBottom: 16 }}>
+          <img src={data.coverPicture} alt="Capa" style={{ width: "100%", height: 200, objectFit: "cover", borderRadius: 12 }} />
+        </div>
+        <button style={{
+          padding: "12px 24px",
+          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+          color: "white",
+          border: "none",
+          borderRadius: 10,
+          fontWeight: 600,
+          cursor: "pointer",
+        }}>
+          📤 Upload Nova Capa
+        </button>
+        <p style={{ fontSize: 13, color: "#64748b", marginTop: 12 }}>Recomendado: 1200x400px, JPG ou PNG</p>
+      </div>
+
+      {/* Portfólio */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>🎨 Portfólio</h2>
+          <button style={{
+            padding: "10px 20px",
+            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: 10,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontSize: 14,
+          }}>
+            ➕ Adicionar Fotos
+          </button>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+          {data.portfolio.map((img: string, idx: number) => (
+            <div key={idx} style={{ position: "relative", paddingTop: "75%", borderRadius: 12, overflow: "hidden" }}>
+              <img src={img} alt={`Portfolio ${idx + 1}`} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+              <button style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                width: 32,
+                height: 32,
+                borderRadius: "50%",
+                backgroundColor: "rgba(0,0,0,0.7)",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+                fontSize: 18,
+              }}>×</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ABA: Serviços & Preços
+function ServicosTab({ data, setData }: any) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* Serviços */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>💼 Serviços Oferecidos</h2>
+          <button style={{
+            padding: "10px 20px",
+            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: 10,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontSize: 14,
+          }}>
+            ➕ Adicionar Serviço
+          </button>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {data.services.map((service: string, idx: number) => (
+            <div key={idx} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", backgroundColor: "#f8fafc", borderRadius: 10, border: "1px solid #e2e8f0" }}>
+              <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>{service}</span>
+              <button style={{ padding: "6px 12px", backgroundColor: "white", border: "1px solid #e2e8f0", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>✏️</button>
+              <button style={{ padding: "6px 12px", backgroundColor: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>🗑️</button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tabela de Preços */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>💰 Tabela de Preços</h2>
+          <button style={{
+            padding: "10px 20px",
+            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: 10,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontSize: 14,
+          }}>
+            ➕ Adicionar Preço
+          </button>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {data.priceTable.map((item: any, idx: number) => (
+            <div key={idx} style={{ padding: 20, backgroundColor: "#f8fafc", borderRadius: 12, border: "1px solid #e2e8f0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 8 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: "#0f172a", marginBottom: 4 }}>{item.service}</div>
+                  <div style={{ fontSize: 14, color: "#64748b" }}>{item.description}</div>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#10b981", marginLeft: 20 }}>{item.price}</div>
+              </div>
+              <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                <button style={{ padding: "6px 16px", backgroundColor: "white", border: "1px solid #e2e8f0", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 }}>✏️ Editar</button>
+                <button style={{ padding: "6px 16px", backgroundColor: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 }}>🗑️ Remover</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Componentes auxiliares
+function StatCard({ icon, title, value, subtitle, change, color }: any) {
+  return (
+    <div style={{ backgroundColor: "white", borderRadius: 16, padding: 24, border: "1px solid #e2e8f0", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, background: `${color}20`, borderRadius: "50%", opacity: 0.5 }} />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: 32, marginBottom: 8 }}>{icon}</div>
+        <div style={{ fontSize: 14, color: "#64748b", marginBottom: 4 }}>{title}</div>
+        <div style={{ fontSize: 32, fontWeight: 800, color: "#0f172a", marginBottom: 4 }}>{value}</div>
+        {change && <div style={{ fontSize: 13, color: "#10b981", fontWeight: 600 }}>↑ {change} vs mês anterior</div>}
+        {subtitle && <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>{subtitle}</div>}
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, value, editMode, onChange, type = "text", disabled = false, placeholder = "", prefix = "", fullWidth = false, style = {} }: any) {
+  return (
+    <div style={{ ...style, ...(fullWidth ? { gridColumn: "1 / -1" } : {}) }}>
+      <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#64748b", marginBottom: 8, textTransform: "uppercase" }}>{label}</label>
+      <div style={{ position: "relative" }}>
+        {prefix && <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#64748b", fontSize: 14 }}>{prefix}</span>}
+        <input
+          type={type}
+          value={value}
+          disabled={disabled || !editMode}
+          onChange={(e) => onChange && onChange(e.target.value)}
+          placeholder={placeholder}
+          style={{
+            width: "100%",
+            padding: prefix ? "12px 14px 12px 32px" : "12px 14px",
+            border: "2px solid #e2e8f0",
+            borderRadius: 10,
+            fontSize: 14,
+            backgroundColor: (disabled || !editMode) ? "#f8fafc" : "white",
+            color: "#0f172a",
+            fontWeight: 500,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function InfoBox({ label, value, color }: any) {
+  return (
+    <div style={{ padding: 16, backgroundColor: "#f8fafc", borderRadius: 10, border: "1px solid #e2e8f0" }}>
+      <div style={{ fontSize: 12, fontWeight: 600, color: "#64748b", marginBottom: 6, textTransform: "uppercase" }}>{label}</div>
+      <div style={{ fontSize: 16, fontWeight: 700, color }}>{value}</div>
+    </div>
+  );
+}
+
+// ABA: Favoritos (Cliente)
+function FavoritosTab({ data }: any) {
+  return (
+    <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 24, color: "#0f172a" }}>
+        ❤️ Meus Profissionais Favoritos
+      </h2>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {data.favorites.map((prof: any) => (
+          <a
+            key={prof.id}
+            href={`/profissionais/${prof.username}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 20,
+              padding: 20,
+              backgroundColor: "#f8fafc",
+              borderRadius: 12,
+              border: "1px solid #e2e8f0",
+              textDecoration: "none",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#10b981";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(16, 185, 129, 0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "#e2e8f0";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            <div style={{ position: "relative" }}>
+              <img
+                src={prof.image}
+                alt={prof.name}
+                style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", border: "3px solid #10b981" }}
+              />
+              {prof.verified && (
+                <div style={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  width: 24,
+                  height: 24,
+                  backgroundColor: "#10b981",
+                  borderRadius: "50%",
+                  border: "2px solid white",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 12,
+                }}>✓</div>
+              )}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", marginBottom: 4 }}>
+                {prof.name}
+              </div>
+              <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8 }}>
+                {prof.specialty}
+              </div>
+              <div style={{ fontSize: 13, color: "#64748b", display: "flex", alignItems: "center", gap: 8 }}>
+                <span>📍 {prof.location}</span>
+                <span>⭐ {prof.rating}</span>
+              </div>
+            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                alert("Remover dos favoritos");
+              }}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#fef2f2",
+                color: "#dc2626",
+                border: "1px solid #fecaca",
+                borderRadius: 10,
+                fontWeight: 600,
+                fontSize: 14,
+                cursor: "pointer",
+              }}
+            >
+              🗑️ Remover
+            </button>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ABA: Minhas Avaliações (Cliente)
+function MinhasAvaliacoesTab({ data }: any) {
+  return (
+    <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 24, color: "#0f172a" }}>
+        ⭐ Minhas Avaliações
+      </h2>
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        {data.myReviews.map((review: any) => (
+          <div
+            key={review.id}
+            style={{
+              padding: 24,
+              backgroundColor: "#f8fafc",
+              borderRadius: 12,
+              border: "1px solid #e2e8f0",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+              <img
+                src={review.professionalImage}
+                alt={review.professionalName}
+                style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover" }}
+              />
+              <div style={{ flex: 1 }}>
+                <a
+                  href={`/profissionais/${review.professionalUsername}`}
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: "#0f172a",
+                    textDecoration: "none",
+                    marginBottom: 4,
+                    display: "block",
+                  }}
+                >
+                  {review.professionalName}
+                </a>
+                <div style={{ fontSize: 13, color: "#64748b" }}>{review.date}</div>
+              </div>
+              <div style={{ display: "flex", gap: 4 }}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} style={{ fontSize: 20, color: i < review.rating ? "#f59e0b" : "#e5e7eb" }}>
+                    ⭐
+                  </span>
+                ))}
+              </div>
+            </div>
+            <p style={{ fontSize: 15, color: "#0f172a", lineHeight: 1.6, margin: 0, marginBottom: 16 }}>
+              {review.comment}
+            </p>
+            <div style={{ display: "flex", gap: 12 }}>
+              <button
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "white",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+              >
+                ✏️ Editar
+              </button>
+              <button
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "#fef2f2",
+                  border: "1px solid #fecaca",
+                  color: "#dc2626",
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+              >
+                🗑️ Excluir
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ABA: Avaliações Recebidas (Profissional)
+function AvaliacoesRecebidasTab({ data }: any) {
+  return (
+    <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <div>
+          <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, marginBottom: 4, color: "#0f172a" }}>
+            ⭐ Avaliações Recebidas
+          </h2>
+          <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
+            Avaliação média: <strong style={{ color: "#f59e0b" }}>{data.rating} estrelas</strong> ({data.totalReviews} avaliações)
+          </p>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        {data.receivedReviews?.map((review: any) => (
+          <div
+            key={review.id}
+            style={{
+              padding: 24,
+              backgroundColor: "#f8fafc",
+              borderRadius: 12,
+              border: "1px solid #e2e8f0",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+              <img
+                src={review.clientImage}
+                alt={review.clientName}
+                style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover", border: "3px solid #e2e8f0" }}
+              />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginBottom: 4 }}>
+                  {review.clientName}
+                </div>
+                <div style={{ fontSize: 13, color: "#64748b" }}>{review.date}</div>
+              </div>
+              <div style={{ display: "flex", gap: 4 }}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} style={{ fontSize: 20, color: i < review.rating ? "#f59e0b" : "#e5e7eb" }}>
+                    ⭐
+                  </span>
+                ))}
+              </div>
+            </div>
+            <p style={{ fontSize: 15, color: "#0f172a", lineHeight: 1.6, margin: 0 }}>
+              {review.comment}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ABA: Mensagens (Ambos os modos)
+function MensagensTab({ data, userType }: any) {
+  return (
+    <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          💬 Mensagens
+        </h2>
+        <button style={{
+          padding: "10px 20px",
+          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+          color: "white",
+          border: "none",
+          borderRadius: 10,
+          fontWeight: 600,
+          cursor: "pointer",
+          fontSize: 14,
+        }}>
+          ✉️ Nova Mensagem
+        </button>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {data.messages?.map((message: any) => (
+          <div
+            key={message.id}
+            style={{
+              padding: 20,
+              backgroundColor: message.unread ? "#f0fdf4" : "#f8fafc",
+              borderRadius: 12,
+              border: message.unread ? "2px solid #10b981" : "1px solid #e2e8f0",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#10b981";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(16, 185, 129, 0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = message.unread ? "#10b981" : "#e2e8f0";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ position: "relative" }}>
+                <img
+                  src={message.senderImage}
+                  alt={message.senderName}
+                  style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover" }}
+                />
+                {message.unread && (
+                  <div style={{
+                    position: "absolute",
+                    top: -4,
+                    right: -4,
+                    width: 16,
+                    height: 16,
+                    backgroundColor: "#ef4444",
+                    borderRadius: "50%",
+                    border: "2px solid white",
+                  }} />
+                )}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+                    {message.senderName}
+                  </div>
+                  <div style={{ fontSize: 13, color: "#64748b" }}>{message.time}</div>
+                </div>
+                <p style={{ fontSize: 14, color: "#475569", margin: 0, lineHeight: 1.5 }}>
+                  {message.message}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ABA: Perfil Cliente
+function PerfilClienteTab({ data, setData }: any) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* Informações Básicas */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: "#0f172a" }}>📝 Informações Básicas</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <Field label="Nome Completo" value={data.name} editMode={false} />
+          <Field label="Username" value={data.username} editMode={false} prefix="@" />
+          <Field label="E-mail" value={data.email} editMode={false} type="email" disabled />
+          <Field label="Telefone" value={data.phone} editMode={false} />
+          <Field label="Cidade/Estado" value={data.city} editMode={false} />
+          <Field label="Instagram" value={data.instagram} editMode={false} />
+        </div>
+      </div>
+
+      {/* Status */}
+      <div style={{ backgroundColor: "white", borderRadius: 16, padding: 28, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: "#0f172a" }}>📊 Estatísticas</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
+          <InfoBox label="Membro desde" value={data.memberSince} color="#64748b" />
+          <InfoBox label="Profissionais Favoritos" value={data.favoriteProfessionals} color="#ef4444" />
+          <InfoBox label="Consultas Realizadas" value={data.consultationsCompleted} color="#8b5cf6" />
+        </div>
+      </div>
     </div>
   );
 }
