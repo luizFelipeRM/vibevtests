@@ -1,5 +1,5 @@
 import React from "react";
-import { Settings } from "lucide-react";
+import { Settings, LineChart, Dumbbell } from "lucide-react";
 import { Mode } from "../../types";
 import { tokens } from "../../styles/tokens";
 import { ModeToggle } from "../shared/ModeToggle";
@@ -16,6 +16,8 @@ interface DashboardHeaderProps {
   onNextDay: () => void;
   onToday: () => void;
   onSettingsClick: () => void;
+  onMeasurementsClick: () => void;
+  onWorkoutsClick: () => void;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -28,6 +30,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onNextDay,
   onToday,
   onSettingsClick,
+  onMeasurementsClick,
+  onWorkoutsClick,
 }) => {
   return (
     <div
@@ -129,6 +133,39 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               }}
             >
               <Settings size={20} color={tokens.colors.text} />
+            </button>
+          )}
+
+          {/* Botão de Evolução / Medidas (apenas em fitness) */}
+          {isFitness && (
+            <button
+              onClick={onMeasurementsClick}
+              title="Evolução e Medidas"
+              style={{
+                width: 42,
+                height: 42,
+                background: "white",
+                border: `1px solid ${tokens.colors.border}`,
+                borderRadius: tokens.radii.md,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = tokens.colors.primaryLight || tokens.colors.bg;
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.05)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "white";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.02)";
+              }}
+            >
+              <LineChart size={20} color={tokens.colors.primary} />
             </button>
           )}
         </div>

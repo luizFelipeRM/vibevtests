@@ -1,6 +1,6 @@
 import { LucideIcon } from "lucide-react";
 
-export type MealType = "breakfast" | "lunch" | "dinner" | "supper";
+export type MealType = string;
 
 export interface MealInfo {
   label: string;
@@ -9,10 +9,7 @@ export interface MealInfo {
 }
 
 export interface MealInfoMap {
-  breakfast: MealInfo;
-  lunch: MealInfo;
-  dinner: MealInfo;
-  supper: MealInfo;
+  [key: string]: MealInfo;
 }
 
 export const mealInfoMap: MealInfoMap = {

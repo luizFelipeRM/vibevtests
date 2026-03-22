@@ -12,10 +12,13 @@ import { ProfileSetup } from "./fitness/ProfileSetup";
 import { useProfileSetup } from "../hooks/useProfileSetup";
 import { NutritionalStatusBanner } from "./unified/NutritionalStatusBanner";
 import { DashboardHeader } from "./unified/DashboardHeader";
+import { MeasurementsSection } from "./unified/MeasurementsSection";
+import { WorkoutsSection } from "./unified/WorkoutsSection";
 
 export const UnifiedNutriVegContainer: React.FC = () => {
   const { mode, toggleMode, isBasic, isFitness } = useNutriVegMode();
   const [showProfileSetup, setShowProfileSetup] = useState(false);
+  const [currentView, setCurrentView] = useState<"dashboard" | "measurements" | "workouts">("dashboard");
   const { profile, updateProfile } = useProfileSetup();
 
   const {
@@ -52,12 +55,11 @@ export const UnifiedNutriVegContainer: React.FC = () => {
 
   // Show profile setup on first time in fitness mode
   useEffect(() => {
-    if (isFitness && !profile.height) {
+    if (isFitness && (!profile.height || !profile.weight || !profile.age)) {
       setShowProfileSetup(true);
-    } else {
-      setShowProfileSetup(false);
     }
-  }, [isFitness, profile.height]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFitness]);
 
   if (showProfileSetup) {
     return (
@@ -89,52 +91,76 @@ export const UnifiedNutriVegContainer: React.FC = () => {
         onNextDay={goToNextDay}
         onToday={goToToday}
         onSettingsClick={() => setShowProfileSetup(true)}
+        onMeasurementsClick={() => setCurrentView("measurements")}
+        onWorkoutsClick={() => setCurrentView("workouts")}
       />
 
-      {/* Nutritional Status Feedback */}
-      {isFitness && (
-        <NutritionalStatusBanner
-          daysInStreak={5}
-          isPositive={true}
+      {currentView === "workouts" ? (
+        <WorkoutsSection
+           onBack={() => setCurrentView("dashboard")}
+           profile={profile}
         />
-      )}
-
-      {/* Macro Summary Cards */}
-      <MacroSummarySection mode={mode} currentMacros={currentMacros} />
-
-      {/* Main Content Grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "2fr 1fr",
-          gap: tokens.space.xl,
-          marginBottom: tokens.space.xxl,
-        }}
-      >
-        {/* Left: Food Input */}
-        <FoodInputSection
-          mode={mode}
-          selectedDate={isBasic ? new Date(1970, 0, 1) : selectedDate}
-          onAddFood={addFoodToDate}
-          foodItems={currentItems}
-          onRemoveFood={removeFoodFromDate}
-          onUpdateQuantity={updateFoodQuantity}
-        />
-
-        {/* Right: Charts */}
-        <ChartsSection
-          mode={mode}
-          currentMacros={currentMacros}
-          dailyLogs={dailyLogs}
+      ) : currentView === "measurements" ? (
+        <MeasurementsSection
+          onBack={() => setCurrentView("dashboard")}
           currentDate={selectedDate}
         />
-      </div>
+      ) : (
+        <>
+          {/* Coach Banners */}
+          {isFitness && profile.assignedNutritionist && (
+            <div style={{ padding: tokens.space.md, background: tokens.colors.primaryLight, color: tokens.colors.primary, borderRadius: tokens.radii.lg, marginBottom: tokens.space.xl, fontWeight: 700, display: "flex", alignItems: "center", gap: tokens.space.sm }}>
+              <span>👩‍⚕️</span> Sua dieta está sendo acompanhada e gerenciada de perto por {profile.assignedNutritionist}.
+            </div>
+          )}
 
-      {/* Social & Gamification */}
-      {isFitness && <SocialHypeSection />}
+          {/* Nutritional Status Feedback */}
+          {isFitness && (
+            <NutritionalStatusBanner
+              daysInStreak={5}
+              isPositive={true}
+            />
+          )}
 
-      {/* Recommendations */}
-      {isBasic && <RecommendationsSection />}
+          {/* Macro Summary Cards */}
+          <MacroSummarySection mode={mode} currentMacros={currentMacros} />
+
+          {/* Main Content Grid */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "2fr 1fr",
+              gap: tokens.space.xl,
+              marginBottom: tokens.space.xxl,
+            }}
+          >
+            {/* Left: Food Input */}
+            <FoodInputSection
+              mode={mode}
+              selectedDate={isBasic ? new Date(1970, 0, 1) : selectedDate}
+              profile={profile}
+              onAddFood={addFoodToDate}
+              foodItems={currentItems}
+              onRemoveFood={removeFoodFromDate}
+              onUpdateQuantity={updateFoodQuantity}
+            />
+
+            {/* Right: Charts */}
+            <ChartsSection
+              mode={mode}
+              currentMacros={currentMacros}
+              dailyLogs={dailyLogs}
+              currentDate={selectedDate}
+            />
+          </div>
+
+          {/* Social & Gamification */}
+          {isFitness && <SocialHypeSection />}
+
+          {/* Recommendations */}
+          {isBasic && <RecommendationsSection />}
+        </>
+      )}
     </div>
   );
 };

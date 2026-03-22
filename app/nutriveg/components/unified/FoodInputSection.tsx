@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Mode, Macros, LogEntry, MealType, mealInfoMap } from "../../types";
+import React, { useState, useEffect } from "react";
+import { Mode, Macros, LogEntry, MealType, mealInfoMap, Profile } from "../../types";
 import { foodDatabase } from "../../data/foodDatabase";
 import { tokens } from "../../styles/tokens";
 import { multiplyMacros } from "../../utils/macroCalculations";
@@ -10,6 +10,7 @@ import { Trash2, Plus, Edit2, Check, X, Coffee, Salad, Soup, Moon } from "lucide
 interface FoodInputSectionProps {
   mode: Mode;
   selectedDate: Date;
+  profile?: Profile;
   onAddFood: (date: Date, name: string, macros: Macros, quantity: number, unit: string, meal?: MealType) => void;
   foodItems: LogEntry[];
   onRemoveFood: (date: Date, id: string) => void;
@@ -19,6 +20,7 @@ interface FoodInputSectionProps {
 export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
   mode,
   selectedDate,
+  profile,
   onAddFood,
   foodItems = [],
   onRemoveFood,
@@ -33,6 +35,14 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
   const [activeTab, setActiveTab] = useState<"popular" | "recent">("popular");
   const { recentFoods, addRecentFood } = useRecentFoods();
 
+  useEffect(() => {
+    if (profile?.meals?.length) {
+      if (!profile.meals.find(m => m.id === selectedMeal)) {
+        setSelectedMeal(profile.meals[0].id);
+      }
+    }
+  }, [profile?.meals, selectedMeal]);
+
   const handleAddFood = () => {
     if (!foodName || !quantity) return;
 
@@ -42,7 +52,7 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
     const multiplier = parseFloat(quantity) || 1;
     const macrosToAdd = multiplyMacros(food, multiplier);
 
-    onAddFood(selectedDate, foodName, macrosToAdd, multiplier, unit, mode === "basic" ? selectedMeal : undefined);
+    onAddFood(selectedDate, foodName, macrosToAdd, multiplier, unit, selectedMeal);
 
     // Adicionar aos alimentos recentes
     addRecentFood(foodName);
@@ -281,37 +291,82 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
           </button>
         </div>
 
-        {/* Seleção de Refeição (apenas no modo básico) */}
-        {mode === "basic" && (
-          <div style={{ display: "flex", gap: tokens.space.sm, marginBottom: tokens.space.lg }}>
-            {(["breakfast", "lunch", "dinner", "supper"] as MealType[]).map((m) => {
-              const Icon = m === "breakfast" ? Coffee : m === "lunch" ? Salad : m === "dinner" ? Soup : Moon;
-              const isSelected = selectedMeal === m;
-              return (
-                <button
-                  key={m}
-                  onClick={() => setSelectedMeal(m)}
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 4,
-                    padding: tokens.space.sm,
-                    background: isSelected ? tokens.colors.primary + "10" : "transparent",
-                    border: `1px solid ${isSelected ? tokens.colors.primary : tokens.colors.border}`,
-                    borderRadius: tokens.radii.lg,
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  <Icon size={18} color={isSelected ? tokens.colors.primary : tokens.colors.textMuted} />
-                  <span style={{ fontSize: 10, fontWeight: 700, color: isSelected ? tokens.colors.primary : tokens.colors.textMuted }}>
-                    {mealInfoMap[m].label}
-                  </span>
-                </button>
-              );
-            })}
+        {/* Seleção de Refeição (sempre visível e dinâmica) */}
+        {profile?.meals && profile.meals.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: tokens.space.sm, marginBottom: tokens.space.lg }}>
+            <div style={{ display: "flex", gap: tokens.space.sm, overflowX: "auto", paddingBottom: tokens.space.xs, scrollbarWidth: "none" }}>
+              {profile.meals.map((m) => {
+                const isSelected = selectedMeal === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    onClick={() => setSelectedMeal(m.id)}
+                    style={{
+                      flex: "0 0 auto",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: tokens.space.sm,
+                      padding: `${tokens.space.sm}px ${tokens.space.md}px`,
+                      background: isSelected ? tokens.colors.primary + "10" : "transparent",
+                      border: `1px solid ${isSelected ? tokens.colors.primary : tokens.colors.border}`,
+                      borderRadius: tokens.radii.lg,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      minWidth: 100,
+                    }}
+                  >
+                    <span style={{ fontSize: 12, fontWeight: 700, color: isSelected ? tokens.colors.primary : tokens.colors.textMuted }}>
+                      {m.name} ({m.time})
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            
+            {/* Dica Contextual */}
+            {(() => {
+               const meal = profile.meals.find(m => m.id === selectedMeal);
+               if (!meal) return null;
+               const mealH = parseInt(meal.time.split(':')[0] || '0');
+               const wH = profile.workoutStartTime ? parseInt(profile.workoutStartTime.split(':')[0]) : null;
+               
+               let tip = "💡 Dica da Nutri: Beba água junto à refeição e mastigue bem devagar para facilitar absorção de nutrientes.";
+               if (wH !== null) {
+                 if (mealH === wH - 1 || mealH === wH - 2) {
+                   tip = `💡 Dica Pré-Treino (${profile.workoutStartTime}): Excelente hora para priorizar carboidratos (como aveia, banana ou raízes) e garantir energia no treino!`;
+                 } else if (mealH === wH || mealH === wH + 1) {
+                   tip = `💡 Dica Pós-Treino (${profile.workoutStartTime}): Capriche na proteína agora! Tofu, proteína isolada vegana vegetal com carboidratos para recuperar logo a musculatura.`;
+                 } else if (mealH < 10) {
+                   tip = "💡 Dica de Manhã: Garantir uma boa quantidade de proteína logo nas primeiras horas reduzirá as 'beliscadas' à tarde.";
+                 } else if (mealH >= 19) {
+                   tip = "💡 Dica Noturna: Reduza ligeiramente as gorduras pesadas se você costuma demorar a dormir, ou capriche se for a última refeição do dia!";
+                 }
+               } else {
+                 if (mealH < 10) tip = "💡 Dica de Manhã: Garantir proteína reduz as beliscadas à tarde.";
+                 if (mealH >= 19) tip = "💡 Dica Noturna: Não capriche muito na digestão pesada se for deitar logo.";
+               }
+
+               return (
+                 <motion.div
+                   key={meal.id}
+                   initial={{ opacity: 0, height: 0 }}
+                   animate={{ opacity: 1, height: "auto" }}
+                   transition={{ duration: 0.2 }}
+                   style={{
+                     padding: tokens.space.sm,
+                     background: tokens.colors.primary + "10",
+                     borderRadius: tokens.radii.md,
+                     borderLeft: `4px solid ${tokens.colors.primary}`,
+                     fontSize: 12,
+                     fontWeight: 600,
+                     color: tokens.colors.text
+                   }}
+                 >
+                   {tip}
+                 </motion.div>
+               );
+            })()}
           </div>
         )}
 
@@ -419,8 +474,8 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
         >
           <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: tokens.colors.text }}>🍽️ Diário de Alimentos</h3>
           <span style={{ fontSize: 12, fontWeight: 700, color: tokens.colors.textMuted, background: tokens.colors.bg, padding: "4px 10px", borderRadius: tokens.radii.full }}>
-            {mode === "basic"
-              ? `${foodItems.filter(i => i.meal === selectedMeal).length} itens no ${mealInfoMap[selectedMeal].label}`
+            {profile?.meals?.length
+              ? `${foodItems.filter(i => i.meal === selectedMeal).length} itens na refeição`
               : `${foodItems.length} itens`
             }
           </span>
@@ -440,7 +495,7 @@ export const FoodInputSection: React.FC<FoodInputSectionProps> = ({
                         style={{ padding: tokens.space.xl, textAlign: "center", color: tokens.colors.textMuted }}
                       >
                         <div style={{ fontSize: 24, marginBottom: tokens.space.sm }}>🍽️</div>
-                        <div style={{ fontSize: 13, fontWeight: 600 }}>Nenhum item em {mealInfoMap[selectedMeal].label}</div>
+                        <div style={{ fontSize: 13, fontWeight: 600 }}>Nenhum item adicionado nessa refeição ainda.</div>
                       </motion.div>
                     );
                   }

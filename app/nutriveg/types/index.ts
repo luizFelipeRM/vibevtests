@@ -1,8 +1,10 @@
 import { MealType } from "./meal.types";
-export * from "./food.types";
-export * from "./meal.types";
 export * from "./macro.types";
+export * from "./meal.types";
+export * from "./food.types";
 export * from "./profile.types";
+export * from "./measurements.types";
+export * from "./workouts.types";
 
 export type Mode = "basic" | "fitness";
 
