@@ -725,6 +725,27 @@ function Navbar() {
 
         {/* Icons */}
         <div style={{ display: "flex", alignItems: "center", gap: tokens.space.md }}>
+          <Link href="/profissionais/favoritos" style={{ textDecoration: "none" }}>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: tokens.radii.full,
+                backgroundColor: tokens.colors.bg,
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+              title="Meus Favoritos"
+            >
+              <Heart size={20} color={tokens.colors.text} />
+            </motion.button>
+          </Link>
+
           <div style={{ position: 'relative' }}>
             <motion.button
               whileHover={{ scale: 1.1 }}
